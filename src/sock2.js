@@ -203,6 +203,21 @@ function findRealisticOrders() {
     var goodBuyOrderCounter = 0;
     var goodSellOrderCounter = 0;
     
+    restBuys.map((obj, index) => {
+        if ((obj.price * obj.remaining_size) > realityCriteria) {
+            restBuys[index].goodOrder = true;
+            goodBuyOrderCounter++;
+        }
+    })
+    
+    restSells.map((obj, index) => {
+        if ((obj.price * obj.remaining_size) > realityCriteria) {
+            restSells[index].goodOrder = true;
+            goodSellOrderCounter++;
+        }
+    })
+
+/*
     for (var i = 0; i < restBook.buys.price.length; i++){
         if (realityCriteria < (restBook.buys.remaining_size[i] * restBook.buys.price[i])) {
             restBook.buys.goodOrder[i] = true;
@@ -215,12 +230,13 @@ function findRealisticOrders() {
             goodSellOrderCounter++;
         }
     }
-    var goodBuyPercent = Math.round(goodBuyOrderCounter / restBook.buys.price.length * 10000) / 100;
-    var goodSellPercent = Math.round(goodSellOrderCounter / restBook.sells.price.length * 10000) / 100;
+*/
+    var goodBuyPercent = (goodBuyOrderCounter / restBuys.length).toFixed(2);
+    var goodSellPercent = (goodSellOrderCounter / restSells.length).toFixed(2);
     var totalBadPercent = (100 - (goodBuyPercent + goodSellPercent));
     console.log('Market Order Benchmark:')
-    console.log(`Realistic buy  orders: ${goodBuyOrderCounter} out of a total of ${restBook.buys.price.length} buy orders ||| ${goodBuyPercent}% good buy orders`);
-    console.log(`Realistic sell orders: ${goodSellOrderCounter} out of a total of ${restBook.sells.price.length} sell orders ||| ${goodSellPercent}% good sell orders`);
+    console.log(`Realistic buy  orders: ${goodBuyOrderCounter} out of a total of ${restBuys.price.length} buy orders ||| ${goodBuyPercent}% good buy orders`);
+    console.log(`Realistic sell orders: ${goodSellOrderCounter} out of a total of ${restSells.price.length} sell orders ||| ${goodSellPercent}% good sell orders`);
     console.log(`${totalBadPercent}% Total market orders do not meet criteria requirement`);
     console.log('=====================================================================================================');
     checkMargins();
