@@ -10,30 +10,8 @@ var realityCriteria = 10000;
 var realMargin = 1.04;
 //==============REALITY CRITERIA===============
 //=============================================
-var restBook = {
-    buys: {
-        type: [],
-        time: [],
-        product_id: [],
-        sequence: [],
-        order_id: [],
-        price: [],
-        remaining_size: [],
-        side: [],
-        goodOrder: []
-    },
-    sells: {
-        type: [],
-        time: [],
-        product_id: [],
-        sequence: [],
-        order_id: [],
-        price: [],
-        remaining_size: [],
-        side: [],
-        goodOrder: []
-    }
-};
+var restBuys = [];
+var restSells = [];
 //=============================================
 //START>> GDAX Module REST API OrderBook Fetch
 function getOrderBook(level) {
@@ -53,15 +31,28 @@ getOrderBook(3).then(function(value) {
     
     for (let i = 0; i < level3buysIndex.length; i++){
         //console.log(`Index[0]: ${level3buysIndex[0]} Index[1]: ${level3buysIndex[1]} Index[2] ${level3buysIndex[2]}`)
-        restBook.buys.price[i] = level3buysIndex[i][0];
-        restBook.buys.remaining_size[i] = level3buysIndex[i][1];
-        restBook.buys.order_id[i] = level3buysIndex[i][2];
+        // restBook.buys.price[i] = level3buysIndex[i][0];
+        // restBook.buys.remaining_size[i] = level3buysIndex[i][1];
+        // restBook.buys.order_id[i] = level3buysIndex[i][2];
+        
+        restBuys[i] = {
+            price: level3buysIndex[i][0],
+            remaining_size: level3buysIndex[i][1],
+            order_id: level3buysIndex[i][2]
+        }
+        
     }    
     for (let i = 0; i < level3sellsIndex.length; i++){
         //console.log(`Index[0]: ${levelsellsIndex[0]} Index[1]: ${level3sellsIndex[1]} Index[2] ${level3sellsIndex[2]}`)
-        restBook.sells.price[i] = level3sellsIndex[i][0];
-        restBook.sells.remaining_size[i] = level3sellsIndex[i][1];
-        restBook.sells.order_id[i] = level3sellsIndex[i][2];
+        // restBook.sells.price[i] = level3sellsIndex[i][0];
+        // restBook.sells.remaining_size[i] = level3sellsIndex[i][1];
+        // restBook.sells.order_id[i] = level3sellsIndex[i][2];
+        
+        restSells[i] = {
+            price: level3sellsIndex[i][0],
+            remaining_size: level3sellsIndex[i][1],
+            order_id: level3sellsIndex[i][2]            
+        }
     }
     getWebSocketData();
     var realityCheckInterval = setInterval(findRealisticOrders, 2000);
