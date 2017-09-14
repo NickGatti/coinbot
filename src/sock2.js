@@ -24,39 +24,33 @@ function getOrderBook(level) {
 //=============================================
 //START>> Call GDAX function for ASYNC variable
 getOrderBook(3).then(function(value) {
-    //console.log(`Total buys: ${value[0]} Total sells: ${value[1]} Total: ${value[2]}`);
     
+    //console.log(`Total buys: ${value[0]} Total sells: ${value[1]} Total: ${value[2]}`);
     let level3buysIndex = value[3].bids;
     let level3sellsIndex = value[3].asks;
     
-    for (let i = 0; i < level3buysIndex.length; i++){
+    level3buysIndex.map((iter, i) => {
         //console.log(`Index[0]: ${level3buysIndex[0]} Index[1]: ${level3buysIndex[1]} Index[2] ${level3buysIndex[2]}`)
-        // restBook.buys.price[i] = level3buysIndex[i][0];
-        // restBook.buys.remaining_size[i] = level3buysIndex[i][1];
-        // restBook.buys.order_id[i] = level3buysIndex[i][2];
-        
         restBuys[i] = {
-            price: level3buysIndex[i][0],
-            last_size: level3buysIndex[i][1],
-            trade_id: level3buysIndex[i][2]
+            price: iter[i][0],
+            size: iter[i][1],
+            order_id: iter[i][2]
         }
-        
-    }    
-    for (let i = 0; i < level3sellsIndex.length; i++){
-        //console.log(`Index[0]: ${levelsellsIndex[0]} Index[1]: ${level3sellsIndex[1]} Index[2] ${level3sellsIndex[2]}`)
-        // restBook.sells.price[i] = level3sellsIndex[i][0];
-        // restBook.sells.remaining_size[i] = level3sellsIndex[i][1];
-        // restBook.sells.order_id[i] = level3sellsIndex[i][2];
-        
+    });
+    
+    level3sellsIndex.map((iter, i) => {
+        //console.log(`Index[0]: ${level3sellsIndex[0]} Index[1]: ${level3sellsIndex[1]} Index[2] ${level3sellsIndex[2]}`)
         restSells[i] = {
-            price: level3sellsIndex[i][0],
-            last_size: level3sellsIndex[i][1],
-            trade_id: level3sellsIndex[i][2]            
+            price: iter[i][0],
+            size: iter[i][1],
+            order_id: iter[i][2]
         }
-    }
+    });
+    
     getWebSocketData();
     var realityCheckInterval = setInterval(findRealisticOrders, 2000);
     //var marginCheckInterval = setInterval(checkMargins, 4000);
+    
 }).catch(function (err) {
     console.log(err);
 });
@@ -71,128 +65,77 @@ function getWebSocketData() {
     //Start of buy orders
     if (data.side == 'buy') {
         if (restBuys.map((obj) => { 
-           return (obj.order_id.includes(data.order_id)) 
+            return (obj.order_id.includes(data.order_id));
         })) {
-            let buyIndex = restBuys.map((obj) => {
-                return obj.order_id.indexOf(data.order_id)
-            })
+            let buyIndex = restBuys.map((obj, index) => {
+                if (obj.order_id == data.order_id) return index
+            });
             if (data.type == 'done') {
                 restBuys[buyIndex].type = (data.type);
             }
             if (data.type == 'change') {
-                restBuys[buyIndex].remaining_size = (data.new_funds);
+                data.new_size ? restBuys[buyIndex].size = (data.new_size) : restBuys[buyIndex].size = (data.new_funds);
             }
         } else {
-            if (data.type == 'open')
-            restBuys.push({
-                type: data.type,
-                trade_id: data.trade_id,
-                sequence: data.sequence,
-                time: data.time,
-                product_id: data.product_id,
-                price: data.price,
-                side: data.side,
-                last_size: data.last_size,
-                best_bid: data.best_bid,
-                best_ask: data.best_ask
-            })
+            if (data.type == 'open') {
+                restBuys.push({
+                    type: data.type,
+                    time: data.time,
+                    product_id: data.product_id,
+                    sequence: data.sequence,
+                    order_id: data.order_id,
+                    size: data.size,
+                    side: data.size,
+                    order_type: data.order_type
+            });
+            }
         }
     }
-        /*
-            "type": "ticker",
-            "trade_id": 20153558,
-            "sequence": 3262786978,
-            "time": "2017-09-02T17:05:49.250000Z",
-            "product_id": "BTC-USD",
-            "price": "4388.01000000",
-            "side": "buy", // Taker side
-            "last_size": "0.03000000",
-            "best_bid": "4388",
-            "best_ask": "4388.01"
-        */
+    //End of buy orders    
+    
+    
+/*
+        "type": "received",
+        "time": "2014-11-07T08:19:27.028459Z",
+        "product_id": "BTC-USD",
+        "sequence": 10,
+        "order_id": "d50ec984-77a8-460a-b958-66f114b0de9b",
+        "size": "1.34",
+        "price": "502.1",
+        "side": "buy",
+        "order_type": "limit"
+*/
         
-    //     if (restBook.buys.order_id.includes(data.order_id)) {
-    //         let buyIndex = restBook.buys.order_id.indexOf(data.order_id);
-    //         if (data.type == 'done') {
-    //             //console.log('Filled Buy Order!');
-    //             restBook.buys.type[buyIndex] = (data.type);
-    //         }
-    //         if (data.type == 'change') {
-    //             //console.log('Changed Buy Order!');
-    //             restBook.buys.remaining_size[buyIndex] = (data.new_funds);
-    //         }
-    //     } else {
-    //         if (data.type == 'open') {
-    //             //console.log('New Open Buy Order!');
-    //             restBook.buys.type.push(data.type);
-    //             restBook.buys.time.push(data.time);
-    //             restBook.buys.product_id.push(data.order_id);
-    //             restBook.buys.sequence.push(data.type);
-    //             restBook.buys.order_id.push(data.price);
-    //             restBook.buys.price.push(data.size);
-    //             restBook.buys.remaining_size.push(data.type);
-    //             restBook.buys.side.push(data.side);
-    //             restBook.buys.goodOrder.push(false);
-    //         }
-    //     }
-    // }
-    //End of buy orders
+
     //Start of sell orders
     if (data.side == 'sell') {
         if (restSells.map((obj) => { 
-           return (obj.order_id.includes(data.order_id)) 
+            return (obj.order_id.includes(data.order_id));
         })) {
-            let buyIndex = restSells.map((obj) => {
-                return obj.order_id.indexOf(data.order_id)
-            })
+            let sellIndex = restSells.map((obj, index) => {
+                if (obj.order_id == data.order_id) return index
+            });
             if (data.type == 'done') {
-                restSells[buyIndex].type = (data.type);
+                restSells[sellIndex].type = (data.type);
             }
             if (data.type == 'change') {
-                restSells[buyIndex].remaining_size = (data.new_funds);
+                data.new_size ? restSells[sellIndex].size = (data.new_size) : restSells[sellIndex].size = (data.new_funds);
             }
         } else {
-            if (data.type == 'open')
-            restSells.push({
-                type: data.type,
-                trade_id: data.trade_id,
-                sequence: data.sequence,
-                time: data.time,
-                product_id: data.product_id,
-                price: data.price,
-                side: data.side,
-                last_size: data.last_size,
-                best_bid: data.best_bid,
-                best_ask: data.best_ask
-            })
+            if (data.type == 'open') {
+                restSells.push({
+                    type: data.type,
+                    time: data.time,
+                    product_id: data.product_id,
+                    sequence: data.sequence,
+                    order_id: data.order_id,
+                    size: data.size,
+                    side: data.size,
+                    order_type: data.order_type
+            });
+            }
         }
     }
-    // if (data.side == 'sell') {
-    //     if (restBook.sells.order_id.includes(data.order_id)) {
-    //         let sellIndex = restBook.sells.order_id.indexOf(data.order_id);
-    //         if (data.type == 'done') {
-    //             //console.log('Filled Sell Order!');
-    //             restBook.sells.type[sellIndex] = (data.type);
-    //         }
-    //         if (data.type == 'change') {
-    //             //console.log('Changed Sell Order!');
-    //             restBook.sells.remaining_size[sellIndex] = (data.new_funds);
-    //         }
-    //     } else {
-    //         if (data.type == 'open') {
-    //             //console.log('New Open Sell Order!');
-    //             restBook.sells.type.push(data.type);
-    //             restBook.sells.time.push(data.time);
-    //             restBook.sells.product_id.push(data.order_id);
-    //             restBook.sells.sequence.push(data.type);
-    //             restBook.sells.order_id.push(data.price);
-    //             restBook.sells.price.push(data.size);
-    //             restBook.sells.remaining_size.push(data.type);
-    //             restBook.sells.side.push(data.side);
-    //             restBook.sells.goodOrder.push(false);
-    //         }
-    //     }
-    // }
     //End of sell orders
 })}
 //END>> Websocket Change Detections
@@ -204,33 +147,19 @@ function findRealisticOrders() {
     var goodSellOrderCounter = 0;
     
     restBuys.map((obj, index) => {
-        if ((obj.price * obj.remaining_size) > realityCriteria) {
+        if ((obj.price * obj.size) > realityCriteria) {
             restBuys[index].goodOrder = true;
             goodBuyOrderCounter++;
         }
     })
     
     restSells.map((obj, index) => {
-        if ((obj.price * obj.remaining_size) > realityCriteria) {
+        if ((obj.price * obj.size) > realityCriteria) {
             restSells[index].goodOrder = true;
             goodSellOrderCounter++;
         }
     })
 
-/*
-    for (var i = 0; i < restBook.buys.price.length; i++){
-        if (realityCriteria < (restBook.buys.remaining_size[i] * restBook.buys.price[i])) {
-            restBook.buys.goodOrder[i] = true;
-            goodBuyOrderCounter++;
-        }
-    }
-    for (var i = 0; i < restBook.sells.price.length; i++){
-        if (realityCriteria < (restBook.sells.remaining_size[i] * restBook.sells.price[i])) {
-            restBook.sells.goodOrder[i] = true;
-            goodSellOrderCounter++;
-        }
-    }
-*/
     var goodBuyPercent = (goodBuyOrderCounter / restBuys.length).toFixed(2);
     var goodSellPercent = (goodSellOrderCounter / restSells.length).toFixed(2);
     var totalBadPercent = (100 - (goodBuyPercent + goodSellPercent));
@@ -253,6 +182,8 @@ function checkMargins(){
     var buyCount = 0;
     var sellCount = 0;
     
+    
+    /*
     for (var i = 0; (i < restBook.buys.price.length && !foundWorkingMargin); i++){
         buyCount++;
         if (restBook.buys.goodOrder[i]) {
@@ -282,6 +213,7 @@ function checkMargins(){
             }
         }
     }
+    */
 }
 //End>> Margin Checks of Real Orders
 //=============================================
