@@ -236,8 +236,3 @@ function checkMargins(){
 }
 //End>> Margin Checks of Real Orders
 //=============================================
-//Start>> Sort
-function sort() {
-    //CONCATONATE A LARGE INTEGER TO THE LAST PART OF THE SORTED ARRAY INDEX TO SAVE THE INDEX POSITION
-    //PASRE OFF FIXED AMOUNT OF POSITIONS FOR INDEX AFTER
-}
