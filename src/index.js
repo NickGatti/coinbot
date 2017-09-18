@@ -18,6 +18,11 @@ var rest = {
     };
 //END>> Global Var Dec's
 //=============================================
+//START>> Run Our Program
+console.log('Conneting WebSocket...');
+getWebSocketData();
+//END>> Run Our Program
+//=============================================
 //START>> GDAX Module REST API OrderBook Fetch
 function getOrderBook(level) {
     return getProductOrderBook({'level': level}).then(function(data) {
@@ -28,34 +33,39 @@ function getOrderBook(level) {
 //END>> GDAX Module REST API OrderBook Fetch
 //=============================================
 //START>> Call GDAX function for ASYNC variable
-getOrderBook(3).then(function(value) {
-    
-    let level3buysIndex = value[3].bids;
-    let level3sellsIndex = value[3].asks;
-    
-    level3buysIndex.map((data, i) => {
-        rest['Buys'][i] = {
-            price: data[0],
-            size: data[1],
-            order_id: data[2]
-        };
+if (rest['Buys'][0] && rest['Sells'][0]) {
+console.log('WebSocket Connected! Downloading OrderBook...');
+    getOrderBook(3).then(function(value) {
+        
+        let level3buysIndex = value[3].bids;
+        let level3sellsIndex = value[3].asks;
+        
+        level3buysIndex.map((data, i) => {
+            rest['Buys'][i] = {
+                price: data[0],
+                size: data[1],
+                order_id: data[2]
+            };
+        });
+        
+        
+        level3sellsIndex.map((data, i) => {
+            rest['Sells'][i] = {
+                price: data[0],
+                size: data[1],
+                order_id: data[2]
+            };
+        });
+        
+        console.log('OrderBook Downloaded! de-Duping OrderBook!');
+        deDupe();
+        console.log('OrderBook De-duped!');
+        setInterval(findRealisticOrders, 2000);
+        
+    }).catch(function (err) {
+        console.log(err);
     });
-    
-    
-    level3sellsIndex.map((data, i) => {
-        rest['Sells'][i] = {
-            price: data[0],
-            size: data[1],
-            order_id: data[2]
-        };
-    });
-    
-    getWebSocketData();
-    setInterval(findRealisticOrders, 2000);
-    
-}).catch(function (err) {
-    console.log(err);
-});
+}
 //END>> Call GDAX function for ASYNC variable
 //=============================================
 //START>> Websocket Change Detections
@@ -125,6 +135,9 @@ function getWebSocketData() {
 */
 })}
 //END>> Websocket Change Detections
+//=============================================
+//>>START DeDupe OrderBook
+//>>END DeDupe OrderBook
 //=============================================
 //START>> Market Order Reality Checks
 function findRealisticOrders() {
