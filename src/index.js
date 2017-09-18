@@ -48,7 +48,6 @@ console.log('WebSocket Connected! Downloading OrderBook...');
             };
         });
         
-        
         level3sellsIndex.map((data, i) => {
             orderBook['Sells'][i] = {
                 price: data[0],
@@ -74,38 +73,30 @@ function getWebSocketData() {
     websocket.on('message', function(data) { 
     
     //if (data.type == 'match') data.size == 'sell' ? console.log('Up tick!') : console.log('Down tick!')
-    
-    let arraySide = 'Buys';
+    let objectSide = 'Buys';
     let dataSide = 'buy';
     
     for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++){
-        
         if (sideSwitch) {
-            arraySide = 'Sells';
+            objectSide = 'Sells';
             dataSide = 'sell';
         }
-        
         if (data.side == dataSide) {
-            
             let sideIndex = false;
-            
-            orderBook[arraySide].map((obj, index) => {
+            orderBook[objectSide].map((obj, index) => {
                 if (obj.order_id == data.order_id) sideIndex = index;
             });
-            
             if (sideIndex) {
-                
                 if (data.type == 'done') {
-                    orderBook[arraySide][sideIndex].type = (data.type);
+                    orderBook[objectSide][sideIndex].type = (data.type);
                 }
                 
                 if (data.type == 'change') {
-                    data.new_size ? orderBook[arraySide][sideIndex].size = (data.new_size) : orderBook[arraySide][sideIndex].size = (data.new_funds);
+                    data.new_size ? orderBook[objectSide][sideIndex].size = (data.new_size) : orderBook[objectSide][sideIndex].size = (data.new_funds);
                 }
-                
             } else {
                 if (data.type == 'open') {
-                    orderBook[arraySide]
+                    orderBook[objectSide]
                     .push({
                         type: data.type,
                         time: data.time,
@@ -146,17 +137,14 @@ function findRealisticOrders() {
         'Buys': 0,
         'Sells': 0
     };
-    
-    let arraySide = 'Buys';
+    let objectSide = 'Buys';
     
     for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++){
-        
-        if (sideSwitch) arraySide = 'Sells';
-        orderBook[arraySide].map((obj, index) => {
-            
+        if (sideSwitch) objectSide = 'Sells';
+        orderBook[objectSide].map((obj, index) => {
             if ((obj.price * obj.size) > realityCriteria) {
-                orderBook[arraySide][index].goodOrder = true;
-                good[arraySide]++;
+                orderBook[objectSide][index].goodOrder = true;
+                good[objectSide]++;
             }
         });
     }
@@ -164,13 +152,11 @@ function findRealisticOrders() {
     let goodBuyPercent = Number(good['Buys'] / orderBook['Buys'].length);
     let goodSellPercent = Number(good['Sells'] / orderBook['Sells'].length);
     let totalBadPercent = Number(100 - (goodBuyPercent + goodSellPercent));
-    
     console.log('Market Order Benchmark:');
     console.log(`Realistic buy  orders: ${good['Buys']} out of a total of ${orderBook['Buys'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
     console.log(`Realistic sell orders: ${good['Sells']} out of a total of ${orderBook['Sells'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
     console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
     console.log('=====================================================================================================');
-    
     checkMargins();
 }
 //End>> Market Order Reality Checks
@@ -179,7 +165,6 @@ function findRealisticOrders() {
 function checkMargins(){
     
     let foundWorkingMargin = false;
-    
     let orderData = {
         amountBetween: {
             'Buys': 0,
@@ -201,37 +186,27 @@ function checkMargins(){
     });
     
     for (let i = 0; (i < orderBook['Buys'].length && !foundWorkingMargin); i++){
-        
         orderData.count['Buys']++;
-        
         if (orderBook['Buys'][i].goodOrder) {
-            
             for (let z = 0; (z < orderBook['Sells'].length && !foundWorkingMargin); z++){
-                
                 orderData.count['Sells']++;
-                
                 if ((orderBook['Sells'][z].goodOrder) && ((orderBook['Sells'][z].price / orderBook['Buys'][i].price) > realMargin)) {
-                    
                     let totalCount = orderData.count['Buys'] + orderData.count['Sells'];
                     let totalAmountInBetween = 0;
                     let margin = (orderBook['Sells'][z].price / orderBook['Buys'][i].price);
-
                     for (let x = 0; x < orderData.count['Buys']; x++) {
                         orderData.amountBetween['Buys'] =+ Number(orderBook['Buys'][x].price * orderBook['Buys'][x].size);
                     }
                     for (let x = 0; x < orderData.count['Sells']; x++) {
                         orderData.amountBetween['Sells'] =+ Number(orderBook['Sells'][x].price * orderBook['Sells'][x].size);
                     }
-                    
                     totalAmountInBetween = orderData.amountBetween['Buys'] + orderData.amountBetween['Sells'];
-                    
                     console.log('Margin Data:');
                     console.log(`Found good margin (${margin.toFixed(2).slice(2)}%) || These matched real orders have ${totalCount} fake orders filling their gap`);
                     console.log(`$${orderData.amountBetween['Buys'].toFixed(2)} amount of USD needs to fill for the fake order *buy* gap`);
                     console.log(`$${orderData.amountBetween['Sells'].toFixed(2)} amount of USD needs to fill for the fake order *sell* gap`);
                     console.log(`$${totalAmountInBetween.toFixed(2)} *total* amount of USD needs to fill for the fake order gap`);
                     console.log('=====================================================================================================');
-                    
                     foundWorkingMargin = true;
                 }
             }
