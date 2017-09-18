@@ -175,15 +175,15 @@ function findRealisticOrders() {
         }
     });
 
-    var goodBuyPercent = (goodBuyOrderCounter / restBuys.length).toFixed(2);
-    var goodSellPercent = (goodSellOrderCounter / restSells.length).toFixed(2);
-    var totalBadPercent = (100 - (goodBuyPercent + goodSellPercent));
+    var goodBuyPercent = Number(goodBuyOrderCounter / restBuys.length);
+    var goodSellPercent = Number(goodSellOrderCounter / restSells.length);
+    var totalBadPercent = Number(100 - (goodBuyPercent + goodSellPercent));
     console.log('Market Order Benchmark:');
-    console.log(`Realistic buy  orders: ${goodBuyOrderCounter} out of a total of ${restBuys.length} buy orders ||| ${goodBuyPercent}% good buy orders`);
-    console.log(`Realistic sell orders: ${goodSellOrderCounter} out of a total of ${restSells.length} sell orders ||| ${goodSellPercent}% good sell orders`);
-    console.log(`${totalBadPercent}% Total market orders do not meet criteria requirement`);
+    console.log(`Realistic buy  orders: ${goodBuyOrderCounter} out of a total of ${restBuys.length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
+    console.log(`Realistic sell orders: ${goodSellOrderCounter} out of a total of ${restSells.length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
+    console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
     console.log('=====================================================================================================');
-    //checkMargins();
+    checkMargins();
 }
 //End>> Market Order Reality Checks
 //=============================================
@@ -215,18 +215,17 @@ function checkMargins(){
                     var totalAmountInBetween = 0;
                     margin = (restSells[z].price / restBuys[i].price);
                     for (var x = 0; x < buyCount; x++) {
-                        buyAmountInBetween =+ (restBuys[x].price * restBuys[x].remaining_size);
+                        buyAmountInBetween =+ Number(restBuys[x].price * restBuys[x].size);
                     }
                     for (var x = 0; x < sellCount; x++) {
-                        sellAmountInBetween =+ (restSells[x].price * restSells[x].remaining_size);
+                        sellAmountInBetween =+ Number(restSells[x].price * restSells[x].size);
                     }
                     totalAmountInBetween = buyAmountInBetween + sellAmountInBetween;
                     console.log('Margin Data:');
-                    console.log('UNSORTED ORDERS IGNORE AS REAL DATA -- SORT FUNCTION ADDED SOON');
-                    console.log(`Found good margin (${margin}%) || These matched real orders have ${totalCount} fake orders filling their gap`);
-                    console.log(`$${Math.round(buyAmountInBetween * 100) / 100} amount of USD needs to fill for the fake order *buy* gap`);
-                    console.log(`$${Math.round(sellAmountInBetween * 100) / 100} amount of USD needs to fill for the fake order *sell* gap`);
-                    console.log(`$${Math.round(totalAmountInBetween * 100) / 100} *total* amount of USD needs to fill for the fake order gap`);
+                    console.log(`Found good margin (${margin.toFixed(2).slice(2)}%) || These matched real orders have ${totalCount} fake orders filling their gap`);
+                    console.log(`$${(buyAmountInBetween).toFixed(2)} amount of USD needs to fill for the fake order *buy* gap`);
+                    console.log(`$${(sellAmountInBetween).toFixed(2)} amount of USD needs to fill for the fake order *sell* gap`);
+                    console.log(`$${(totalAmountInBetween).toFixed(2)} *total* amount of USD needs to fill for the fake order gap`);
                     console.log('=====================================================================================================');
                     foundWorkingMargin = true;
                 }
