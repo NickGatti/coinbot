@@ -12,7 +12,7 @@ const realityCriteria = 10000;
 const realMargin = 1.04;
 //==============REALITY CRITERIA===============
 //=============================================
-var rest = {
+var orderBook = {
     'Buys': [],
     'Sells': []
     };
@@ -33,7 +33,7 @@ function getOrderBook(level) {
 //END>> GDAX Module REST API OrderBook Fetch
 //=============================================
 //START>> Call GDAX function for ASYNC variable
-if (rest['Buys'][0] && rest['Sells'][0]) {
+if (orderBook['Buys'][0] && orderBook['Sells'][0]) {
 console.log('WebSocket Connected! Downloading OrderBook...');
     getOrderBook(3).then(function(value) {
         
@@ -41,7 +41,7 @@ console.log('WebSocket Connected! Downloading OrderBook...');
         let level3sellsIndex = value[3].asks;
         
         level3buysIndex.map((data, i) => {
-            rest['Buys'][i] = {
+            orderBook['Buys'][i] = {
                 price: data[0],
                 size: data[1],
                 order_id: data[2]
@@ -50,7 +50,7 @@ console.log('WebSocket Connected! Downloading OrderBook...');
         
         
         level3sellsIndex.map((data, i) => {
-            rest['Sells'][i] = {
+            orderBook['Sells'][i] = {
                 price: data[0],
                 size: data[1],
                 order_id: data[2]
@@ -89,23 +89,23 @@ function getWebSocketData() {
             
             let sideIndex = false;
             
-            rest[arraySide].map((obj, index) => {
+            orderBook[arraySide].map((obj, index) => {
                 if (obj.order_id == data.order_id) sideIndex = index;
             });
             
             if (sideIndex) {
                 
                 if (data.type == 'done') {
-                    rest[arraySide][sideIndex].type = (data.type);
+                    orderBook[arraySide][sideIndex].type = (data.type);
                 }
                 
                 if (data.type == 'change') {
-                    data.new_size ? rest[arraySide][sideIndex].size = (data.new_size) : rest[arraySide][sideIndex].size = (data.new_funds);
+                    data.new_size ? orderBook[arraySide][sideIndex].size = (data.new_size) : orderBook[arraySide][sideIndex].size = (data.new_funds);
                 }
                 
             } else {
                 if (data.type == 'open') {
-                    rest[arraySide]
+                    orderBook[arraySide]
                     .push({
                         type: data.type,
                         time: data.time,
@@ -152,22 +152,22 @@ function findRealisticOrders() {
     for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++){
         
         if (sideSwitch) arraySide = 'Sells';
-        rest[arraySide].map((obj, index) => {
+        orderBook[arraySide].map((obj, index) => {
             
             if ((obj.price * obj.size) > realityCriteria) {
-                rest[arraySide][index].goodOrder = true;
+                orderBook[arraySide][index].goodOrder = true;
                 good[arraySide]++;
             }
         });
     }
     
-    let goodBuyPercent = Number(good['Buys'] / rest['Buys'].length);
-    let goodSellPercent = Number(good['Sells'] / rest['Sells'].length);
+    let goodBuyPercent = Number(good['Buys'] / orderBook['Buys'].length);
+    let goodSellPercent = Number(good['Sells'] / orderBook['Sells'].length);
     let totalBadPercent = Number(100 - (goodBuyPercent + goodSellPercent));
     
     console.log('Market Order Benchmark:');
-    console.log(`Realistic buy  orders: ${good['Buys']} out of a total of ${rest['Buys'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
-    console.log(`Realistic sell orders: ${good['Sells']} out of a total of ${rest['Sells'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
+    console.log(`Realistic buy  orders: ${good['Buys']} out of a total of ${orderBook['Buys'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
+    console.log(`Realistic sell orders: ${good['Sells']} out of a total of ${orderBook['Sells'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
     console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
     console.log('=====================================================================================================');
     
@@ -191,36 +191,36 @@ function checkMargins(){
         }
     };
     
-    rest['Buys']
+    orderBook['Buys']
     .sort((a, b) => {
         return b.price - a.price;
     });
-    rest['Sells']
+    orderBook['Sells']
     .sort((a, b) => {
         return a.price - b.price;
     });
     
-    for (let i = 0; (i < rest['Buys'].length && !foundWorkingMargin); i++){
+    for (let i = 0; (i < orderBook['Buys'].length && !foundWorkingMargin); i++){
         
         orderData.count['Buys']++;
         
-        if (rest['Buys'][i].goodOrder) {
+        if (orderBook['Buys'][i].goodOrder) {
             
-            for (let z = 0; (z < rest['Sells'].length && !foundWorkingMargin); z++){
+            for (let z = 0; (z < orderBook['Sells'].length && !foundWorkingMargin); z++){
                 
                 orderData.count['Sells']++;
                 
-                if ((rest['Sells'][z].goodOrder) && ((rest['Sells'][z].price / rest['Buys'][i].price) > realMargin)) {
+                if ((orderBook['Sells'][z].goodOrder) && ((orderBook['Sells'][z].price / orderBook['Buys'][i].price) > realMargin)) {
                     
                     let totalCount = orderData.count['Buys'] + orderData.count['Sells'];
                     let totalAmountInBetween = 0;
-                    let margin = (rest['Sells'][z].price / rest['Buys'][i].price);
+                    let margin = (orderBook['Sells'][z].price / orderBook['Buys'][i].price);
 
                     for (let x = 0; x < orderData.count['Buys']; x++) {
-                        orderData.amountBetween['Buys'] =+ Number(rest['Buys'][x].price * rest['Buys'][x].size);
+                        orderData.amountBetween['Buys'] =+ Number(orderBook['Buys'][x].price * orderBook['Buys'][x].size);
                     }
                     for (let x = 0; x < orderData.count['Sells']; x++) {
-                        orderData.amountBetween['Sells'] =+ Number(rest['Sells'][x].price * rest['Sells'][x].size);
+                        orderData.amountBetween['Sells'] =+ Number(orderBook['Sells'][x].price * orderBook['Sells'][x].size);
                     }
                     
                     totalAmountInBetween = orderData.amountBetween['Buys'] + orderData.amountBetween['Sells'];
@@ -245,5 +245,5 @@ function checkMargins(){
 //TODO
 //FIX REMAINING SIZE ISSUE + OTHER CHANGING VALUES NOT USED
 //WEBSOCKET CONNECTS **FIRST**
-//RESTBOOK PULLED **AFTER**
+//ORDERBOOK PULLED **AFTER**
 //ORDERS ARE COMPARED AND DROPPED IF DUPED
