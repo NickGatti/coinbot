@@ -1,4 +1,6 @@
 //=============================================
+//START>> Global Var Dec's
+//=============================================
 const Gdax = require('gdax');
 const util = require('util');
 const publicClient = new Gdax.PublicClient('ETH-USD');
@@ -6,17 +8,20 @@ const websocket = new Gdax.WebsocketClient(['ETH-USD']);
 const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind(publicClient));
 //=============================================
 //==============REALITY CRITERIA===============
-var realityCriteria = 10000;
-var realMargin = 1.04;
+const realityCriteria = 10000;
+const realMargin = 1.04;
 //==============REALITY CRITERIA===============
 //=============================================
-var restBuys = [];
-var restSells = [];
+var rest = {
+    'Buys': [],
+    'Sells': []
+    };
+//END>> Global Var Dec's
 //=============================================
 //START>> GDAX Module REST API OrderBook Fetch
 function getOrderBook(level) {
     return getProductOrderBook({'level': level}).then(function(data) {
-        var obj = JSON.parse(data.body);
+        let obj = JSON.parse(data.body);
         return [obj.bids.length, obj.asks.length, (obj.bids.length + obj.asks.length), obj];
     }); 
 }
@@ -25,20 +30,20 @@ function getOrderBook(level) {
 //START>> Call GDAX function for ASYNC variable
 getOrderBook(3).then(function(value) {
     
-    //console.log(`Total buys: ${value[0]} Total sells: ${value[1]} Total: ${value[2]}`);
     let level3buysIndex = value[3].bids;
     let level3sellsIndex = value[3].asks;
     
     level3buysIndex.map((data, i) => {
-        restBuys[i] = {
+        rest['Buys'][i] = {
             price: data[0],
             size: data[1],
             order_id: data[2]
         };
     });
     
+    
     level3sellsIndex.map((data, i) => {
-        restSells[i] = {
+        rest['Sells'][i] = {
             price: data[0],
             size: data[1],
             order_id: data[2]
@@ -59,40 +64,55 @@ function getWebSocketData() {
     websocket.on('message', function(data) { 
     
     //if (data.type == 'match') data.size == 'sell' ? console.log('Up tick!') : console.log('Down tick!')
-    //Start of buy orders
-    if (data.side == 'buy') {
+    
+    let arraySide = 'Buys';
+    let dataSide = 'buy';
+    
+    for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++){
         
-        let buyIndex = false;
-        restBuys.map((obj, index) => {
-            if (obj.order_id == data.order_id) buyIndex = index
-        });
+        if (sideSwitch) {
+            arraySide = 'Sells';
+            dataSide = 'sell';
+        }
         
-        if (buyIndex) {
-            if (data.type == 'done') {
-                restBuys[buyIndex].type = (data.type);
-            }
-            if (data.type == 'change') {
-                data.new_size ? restBuys[buyIndex].size = (data.new_size) : restBuys[buyIndex].size = (data.new_funds);
-            }
-        } else {
-            if (data.type == 'open') {
-                restBuys.push({
-                    type: data.type,
-                    time: data.time,
-                    product_id: data.product_id,
-                    sequence: data.sequence,
-                    order_id: data.order_id,
-                    size: data.size,
-                    side: data.size,
-                    order_type: data.order_type
+        if (data.side == dataSide) {
+            
+            let sideIndex = false;
+            
+            rest[arraySide].map((obj, index) => {
+                if (obj.order_id == data.order_id) sideIndex = index;
             });
+            
+            if (sideIndex) {
+                
+                if (data.type == 'done') {
+                    rest[arraySide][sideIndex].type = (data.type);
+                }
+                
+                if (data.type == 'change') {
+                    data.new_size ? rest[arraySide][sideIndex].size = (data.new_size) : rest[arraySide][sideIndex].size = (data.new_funds);
+                }
+                
+            } else {
+                if (data.type == 'open') {
+                    rest[arraySide]
+                    .push({
+                        type: data.type,
+                        time: data.time,
+                        product_id: data.product_id,
+                        sequence: data.sequence,
+                        order_id: data.order_id,
+                        size: data.size,
+                        side: data.size,
+                        order_type: data.order_type
+                });
+                }
             }
         }
     }
-    //End of buy orders    
-    
-    
 /*
+        EXAMPLE OF WEBSOCKET OUTPUT:
+        
         "type": "received",
         "time": "2014-11-07T08:19:27.028459Z",
         "product_id": "BTC-USD",
@@ -103,69 +123,41 @@ function getWebSocketData() {
         "side": "buy",
         "order_type": "limit"
 */
-        
-
-    //Start of sell orders
-    if (data.side == 'sell') {
-        let sellIndex = false;
-        restSells.map((obj, index) => {
-            if (obj.order_id == data.order_id) sellIndex = index
-        });
-        
-        if (sellIndex) {
-            if (data.type == 'done') {
-                restSells[sellIndex].type = (data.type);
-            }
-            if (data.type == 'change') {
-                data.new_size ? restSells[sellIndex].size = (data.new_size) : restSells[sellIndex].size = (data.new_funds);
-            }
-        } else {
-            if (data.type == 'open') {
-                restSells.push({
-                    type: data.type,
-                    time: data.time,
-                    product_id: data.product_id,
-                    sequence: data.sequence,
-                    order_id: data.order_id,
-                    size: data.size,
-                    side: data.size,
-                    order_type: data.order_type
-            });
-            }
-        }
-    }
-    //End of sell orders
 })}
 //END>> Websocket Change Detections
 //=============================================
 //START>> Market Order Reality Checks
 function findRealisticOrders() {
 
-    var goodBuyOrderCounter = 0;
-    var goodSellOrderCounter = 0;
+    let good = {
+        'Buys': 0,
+        'Sells': 0
+    };
     
-    restBuys.map((obj, index) => {
-        if ((obj.price * obj.size) > realityCriteria) {
-            restBuys[index].goodOrder = true;
-            goodBuyOrderCounter++;
-        }
-    });
+    let arraySide = 'Buys';
     
-    restSells.map((obj, index) => {
-        if ((obj.price * obj.size) > realityCriteria) {
-            restSells[index].goodOrder = true;
-            goodSellOrderCounter++;
-        }
-    });
-
-    var goodBuyPercent = Number(goodBuyOrderCounter / restBuys.length);
-    var goodSellPercent = Number(goodSellOrderCounter / restSells.length);
-    var totalBadPercent = Number(100 - (goodBuyPercent + goodSellPercent));
+    for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++){
+        
+        if (sideSwitch) arraySide = 'Sells';
+        rest[arraySide].map((obj, index) => {
+            
+            if ((obj.price * obj.size) > realityCriteria) {
+                rest[arraySide][index].goodOrder = true;
+                good[arraySide]++;
+            }
+        });
+    }
+    
+    let goodBuyPercent = Number(good['Buys'] / rest['Buys'].length);
+    let goodSellPercent = Number(good['Sells'] / rest['Sells'].length);
+    let totalBadPercent = Number(100 - (goodBuyPercent + goodSellPercent));
+    
     console.log('Market Order Benchmark:');
-    console.log(`Realistic buy  orders: ${goodBuyOrderCounter} out of a total of ${restBuys.length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
-    console.log(`Realistic sell orders: ${goodSellOrderCounter} out of a total of ${restSells.length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
+    console.log(`Realistic buy  orders: ${good['Buys']} out of a total of ${rest['Buys'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
+    console.log(`Realistic sell orders: ${good['Sells']} out of a total of ${rest['Sells'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
     console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
     console.log('=====================================================================================================');
+    
     checkMargins();
 }
 //End>> Market Order Reality Checks
@@ -173,43 +165,60 @@ function findRealisticOrders() {
 //Start>> Margin Checks of Real Orders
 function checkMargins(){
     
-    var foundWorkingMargin = false;
-    var margin = 0;
-    var buyAmountInBetween = 0;
-    var sellAmountInBetween = 0;
-    var buyCount = 0;
-    var sellCount = 0;
+    let foundWorkingMargin = false;
     
-    restBuys.sort((a, b) => {
-        return b.price - a.price
-    })    
-    restSells.sort((a, b) => {
-        return a.price - b.price
-    })
+    let orderData = {
+        amountBetween: {
+            'Buys': 0,
+            'Sells': 0
+        },
+        count: {
+            'Buys': 0,
+            'Sells': 0
+        }
+    };
     
-    for (var i = 0; (i < restBuys.length && !foundWorkingMargin); i++){
-        buyCount++;
-        if (restBuys[i].goodOrder) {
-            for (var z = 0; (z < restSells.length && !foundWorkingMargin); z++){
-                sellCount++;
-                //restBook.sells.goodOrder[z] ? console.log(`${(restBook.sells.price[z] / restBook.buys.price[i])} has to be more than 4.02%`) : 0;
-                if ((restSells[z].goodOrder) && ((restSells[z].price / restBuys[i].price) > realMargin)) {
-                    var totalCount = buyCount + sellCount;
-                    var totalAmountInBetween = 0;
-                    margin = (restSells[z].price / restBuys[i].price);
-                    for (var x = 0; x < buyCount; x++) {
-                        buyAmountInBetween =+ Number(restBuys[x].price * restBuys[x].size);
+    rest['Buys']
+    .sort((a, b) => {
+        return b.price - a.price;
+    });
+    rest['Sells']
+    .sort((a, b) => {
+        return a.price - b.price;
+    });
+    
+    for (let i = 0; (i < rest['Buys'].length && !foundWorkingMargin); i++){
+        
+        orderData.count['Buys']++;
+        
+        if (rest['Buys'][i].goodOrder) {
+            
+            for (let z = 0; (z < rest['Sells'].length && !foundWorkingMargin); z++){
+                
+                orderData.count['Sells']++;
+                
+                if ((rest['Sells'][z].goodOrder) && ((rest['Sells'][z].price / rest['Buys'][i].price) > realMargin)) {
+                    
+                    let totalCount = orderData.count['Buys'] + orderData.count['Sells'];
+                    let totalAmountInBetween = 0;
+                    let margin = (rest['Sells'][z].price / rest['Buys'][i].price);
+
+                    for (let x = 0; x < orderData.count['Buys']; x++) {
+                        orderData.amountBetween['Buys'] =+ Number(rest['Buys'][x].price * rest['Buys'][x].size);
                     }
-                    for (var x = 0; x < sellCount; x++) {
-                        sellAmountInBetween =+ Number(restSells[x].price * restSells[x].size);
+                    for (let x = 0; x < orderData.count['Sells']; x++) {
+                        orderData.amountBetween['Sells'] =+ Number(rest['Sells'][x].price * rest['Sells'][x].size);
                     }
-                    totalAmountInBetween = buyAmountInBetween + sellAmountInBetween;
+                    
+                    totalAmountInBetween = orderData.amountBetween['Buys'] + orderData.amountBetween['Sells'];
+                    
                     console.log('Margin Data:');
                     console.log(`Found good margin (${margin.toFixed(2).slice(2)}%) || These matched real orders have ${totalCount} fake orders filling their gap`);
-                    console.log(`$${(buyAmountInBetween).toFixed(2)} amount of USD needs to fill for the fake order *buy* gap`);
-                    console.log(`$${(sellAmountInBetween).toFixed(2)} amount of USD needs to fill for the fake order *sell* gap`);
-                    console.log(`$${(totalAmountInBetween).toFixed(2)} *total* amount of USD needs to fill for the fake order gap`);
+                    console.log(`$${orderData.amountBetween['Buys'].toFixed(2)} amount of USD needs to fill for the fake order *buy* gap`);
+                    console.log(`$${orderData.amountBetween['Sells'].toFixed(2)} amount of USD needs to fill for the fake order *sell* gap`);
+                    console.log(`$${totalAmountInBetween.toFixed(2)} *total* amount of USD needs to fill for the fake order gap`);
                     console.log('=====================================================================================================');
+                    
                     foundWorkingMargin = true;
                 }
             }
@@ -218,3 +227,7 @@ function checkMargins(){
 }
 //End>> Margin Checks of Real Orders
 //=============================================
+
+
+
+//FIX REMAINING SIZE ISSUE
