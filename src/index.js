@@ -21,6 +21,7 @@ var orderBook = {
 //START>> Run Our Program
 console.log('Conneting WebSocket...');
 var pauseOrderBook = false;
+var runBenchmark = false;
 getWebSocketData();
 //END>> Run Our Program
 //=============================================
@@ -61,11 +62,9 @@ function downloadOrderBook(){
                 };
             });
             
-            console.log('OrderBook Downloaded! de-Duping OrderBook!');
             deDupe();
-            console.log('OrderBook De-duped!');
             setInterval(findRealisticOrders, 2000);
-            
+
         }).catch(function (err) {
             console.log(err);
         });
@@ -136,7 +135,7 @@ function getWebSocketData() {
 //=============================================
 //>>START DeDupe OrderBook
 function deDupe() {
-    
+    console.log('OrderBook Downloaded! de-Duping OrderBook!');
     let objectSide = 'Buys';
     
     for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++){
@@ -150,37 +149,40 @@ function deDupe() {
             });
         }
     }
+    console.log('OrderBook De-duped! Running program...');
+    runBenchmark = true;
 }
 //>>END DeDupe OrderBook
 //=============================================
 //START>> Market Order Reality Checks
 function findRealisticOrders() {
-
-    let good = {
-        'Buys': 0,
-        'Sells': 0
-    };
-    let objectSide = 'Buys';
-    
-    for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++){
-        if (sideSwitch) objectSide = 'Sells';
-        orderBook[objectSide].map((obj, index) => {
-            if ((obj.price * obj.size) > realityCriteria) {
-                orderBook[objectSide][index].goodOrder = true;
-                good[objectSide]++;
-            }
-        });
+    if (runBenchmark) {
+        let good = {
+            'Buys': 0,
+            'Sells': 0
+        };
+        let objectSide = 'Buys';
+        
+        for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++){
+            if (sideSwitch) objectSide = 'Sells';
+            orderBook[objectSide].map((obj, index) => {
+                if ((obj.price * obj.size) > realityCriteria) {
+                    orderBook[objectSide][index].goodOrder = true;
+                    good[objectSide]++;
+                }
+            });
+        }
+        
+        let goodBuyPercent = Number(good['Buys'] / orderBook['Buys'].length);
+        let goodSellPercent = Number(good['Sells'] / orderBook['Sells'].length);
+        let totalBadPercent = Number(100 - (goodBuyPercent + goodSellPercent));
+        console.log('Market Order Benchmark:');
+        console.log(`Realistic buy  orders: ${good['Buys']} out of a total of ${orderBook['Buys'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
+        console.log(`Realistic sell orders: ${good['Sells']} out of a total of ${orderBook['Sells'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
+        console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
+        console.log('=====================================================================================================');
+        checkMargins();
     }
-    
-    let goodBuyPercent = Number(good['Buys'] / orderBook['Buys'].length);
-    let goodSellPercent = Number(good['Sells'] / orderBook['Sells'].length);
-    let totalBadPercent = Number(100 - (goodBuyPercent + goodSellPercent));
-    console.log('Market Order Benchmark:');
-    console.log(`Realistic buy  orders: ${good['Buys']} out of a total of ${orderBook['Buys'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
-    console.log(`Realistic sell orders: ${good['Sells']} out of a total of ${orderBook['Sells'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
-    console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
-    console.log('=====================================================================================================');
-    checkMargins();
 }
 //End>> Market Order Reality Checks
 //=============================================
