@@ -56,11 +56,6 @@ getOrderBook(3).then(function(value) {
 //START>> Websocket Change Detections
 function getWebSocketData() { 
     
-    //console.log('The type of restBuys is: ', typeof restBuys)
-    //console.log('restBuys length: ', restBuys.length)    
-    //console.log('The type of restSells is: ', typeof restSells)
-    //console.log('restSells length: ', restSells.length)
-    
     websocket.on('message', function(data) { 
     
     //if (data.type == 'match') data.size == 'sell' ? console.log('Up tick!') : console.log('Down tick!')
@@ -71,12 +66,6 @@ function getWebSocketData() {
         restBuys.map((obj, index) => {
             if (obj.order_id == data.order_id) buyIndex = index
         });
-        
-        //console.log('BuyIndex: ', buyIndex)
-        if (buyIndex) {
-            //console.log('In the index: ', restBuys[buyIndex])
-            //console.log(('Type of in the index is: ', typeof restBuys[buyIndex]))
-        }
         
         if (buyIndex) {
             if (data.type == 'done') {
@@ -122,12 +111,6 @@ function getWebSocketData() {
         restSells.map((obj, index) => {
             if (obj.order_id == data.order_id) sellIndex = index
         });
-        
-        //console.log('SellIndex: ', sellIndex)
-        if (sellIndex) {
-            //console.log('In the index: ', restSells[sellIndex])        
-            //console.log(('Type of in the index is: ', restSells[sellIndex]))
-        }
         
         if (sellIndex) {
             if (data.type == 'done') {
@@ -198,10 +181,10 @@ function checkMargins(){
     var sellCount = 0;
     
     restBuys.sort((a, b) => {
-        return b - a
+        return b.price - a.price
     })    
     restSells.sort((a, b) => {
-        return a - b
+        return a.price - b.price
     })
     
     for (var i = 0; (i < restBuys.length && !foundWorkingMargin); i++){
