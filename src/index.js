@@ -43,24 +43,22 @@ function downloadOrderBook(){
         
         getOrderBook(3).then(function(value) {
             
-            let level3buysIndex = value[3].bids;
-            let level3sellsIndex = value[3].asks;
+            let rawOrderBookData = {
+                'Buys': value[3].bids,
+                'Sells': value[3].asks
+            };
             
-            level3buysIndex.map((data, i) => {
-                orderBook['Buys'][i] = {
-                    price: data[0],
-                    size: data[1],
-                    order_id: data[2]
-                };
-            });
-            
-            level3sellsIndex.map((data, i) => {
-                orderBook['Sells'][i] = {
-                    price: data[0],
-                    size: data[1],
-                    order_id: data[2]
-                };
-            });
+            let objectSide = 'Buys';
+            for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++) {
+                if (sideSwitch) objectSide = 'Sells'
+                rawOrderBookData[objectSide].map((data, i) => {
+                    orderBook[objectSide][i] = {
+                        price: data[0],
+                        size: data[1],
+                        order_id: data[2]
+                    };
+                });                
+            }
             
             deDupe();
             setInterval(findRealisticOrders, 2000);
