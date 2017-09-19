@@ -322,7 +322,7 @@ function deDupe() {
     
     for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++) {
         if (sideSwitch) objectSide = 'Sells';
-        orderBook = orderBook[objectSide].filter((item) => {
+        orderBook[objectSide] = orderBook[objectSide].filter((item) => {
             return item.order_id != orderBook[objectSide].order_id;
         });
     }
