@@ -90,6 +90,7 @@ function getWebSocketData() {
                 if (obj.order_id == data.order_id) sideIndex = index;
             });
             if (sideIndex) {
+                //If sideIndex is true then the orderID is found in the orderBook already
                 if (data.type == 'change') {
                     /*
                         An order has changed. 
@@ -115,46 +116,6 @@ function getWebSocketData() {
                         }                        
                     */
                     data.new_size ? orderBook[objectSide][sideIndex].size = (data.new_size) : orderBook[objectSide][sideIndex].size = (data.new_funds);
-                } else if (data.type == 'done') {
-                    /*
-                    The order is no longer on the order book. 
-                    Sent for all orders for which there was a received message. 
-                    This message can result from an order being canceled or filled. 
-                    There will be no more messages for this order_id after a done message. remaining_size indicates how much of the order went unfilled; 
-                    this will be 0 for filled orders.
-                    {
-                        "type": "done",
-                        "time": "2014-11-07T08:19:27.028459Z",
-                        "product_id": "BTC-USD",
-                        "sequence": 10,
-                        "price": "200.2",
-                        "order_id": "d50ec984-77a8-460a-b958-66f114b0de9b",
-                        "reason": "filled", // or "canceled"
-                        "side": "sell",
-                        "remaining_size": "0"
-                    }
-                    */
-                    orderBook[objectSide][sideIndex].type = (data.type);
-                } else if (data.type == 'match') {
-                    /*
-                    A trade occurred between two orders. 
-                    The aggressor or taker order is the one executing immediately after being received and the maker order is a resting order on the book. 
-                    The side field indicates the maker order side. 
-                    If the side is sell this indicates the maker was a sell order and the match is considered an up-tick. 
-                    A buy side match is a down-tick. If authenticated, and you were the taker, the message would also have the following fields:
-                    {
-                        "type": "match",
-                        "trade_id": 10,
-                        "sequence": 50,
-                        "maker_order_id": "ac928c66-ca53-498f-9c13-a110027a60e8",
-                        "taker_order_id": "132fb6ae-456b-4654-b4e0-d681ac05cea1",
-                        "time": "2014-11-07T08:19:27.028459Z",
-                        "product_id": "BTC-USD",
-                        "size": "5.23512",
-                        "price": "400.23",
-                        "side": "sell"
-                    }
-                    */
                 } else if (data.type == 'activate') {
                     /*
                     An activate message is sent when a stop order is placed. 
@@ -224,6 +185,7 @@ function getWebSocketData() {
                     console.log('Message: ', data.message);
                 }
             } else if (data.type == 'open') {
+                //sideIndex is not true here so orders are not found in the orderBook
                     /*
                     The order is now open on the order book. 
                     This message will only be sent for orders which are not fully filled immediately. 
@@ -251,6 +213,54 @@ function getWebSocketData() {
                         order_type: data.order_type
                     });
                     if (!pauseOrderBook) downloadOrderBook();
+                } else if (data.type == 'done') {
+                    /*
+                    The order is no longer on the order book. 
+                    Sent for all orders for which there was a received message. 
+                    This message can result from an order being canceled or filled. 
+                    There will be no more messages for this order_id after a done message. remaining_size indicates how much of the order went unfilled; 
+                    this will be 0 for filled orders.
+                    {
+                        "type": "done",
+                        "time": "2014-11-07T08:19:27.028459Z",
+                        "product_id": "BTC-USD",
+                        "sequence": 10,
+                        "price": "200.2",
+                        "order_id": "d50ec984-77a8-460a-b958-66f114b0de9b",
+                        "reason": "filled", // or "canceled"
+                        "side": "sell",
+                        "remaining_size": "0"
+                    }
+                    */
+                    orderBook[objectSide] = [objectSide].filter((item) => {
+                        return data.order_id != item.order_id;
+                    });
+                } else if (data.type == 'match') {
+                    /*
+                    A trade occurred between two orders. 
+                    The aggressor or taker order is the one executing immediately after being received and the maker order is a resting order on the book. 
+                    The side field indicates the maker order side. 
+                    If the side is sell this indicates the maker was a sell order and the match is considered an up-tick. 
+                    A buy side match is a down-tick. If authenticated, and you were the taker, the message would also have the following fields:
+                    {
+                        "type": "match",
+                        "trade_id": 10,
+                        "sequence": 50,
+                        "maker_order_id": "ac928c66-ca53-498f-9c13-a110027a60e8",
+                        "taker_order_id": "132fb6ae-456b-4654-b4e0-d681ac05cea1",
+                        "time": "2014-11-07T08:19:27.028459Z",
+                        "product_id": "BTC-USD",
+                        "size": "5.23512",
+                        "price": "400.23",
+                        "side": "sell"
+                    }
+                    */
+                    orderBook[objectSide] = [objectSide].filter((item) => {
+                        return data.maker_order_id != item.order_id;
+                    });                    
+                    orderBook[objectSide] = [objectSide].filter((item) => {
+                        return data.taker_order_id != item.order_id;
+                    });                    
                 } else if (data.type == 'received') {
                     /*
                     A valid order has been received and is now active. 
