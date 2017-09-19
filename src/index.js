@@ -232,7 +232,7 @@ function getWebSocketData() {
                         "remaining_size": "0"
                     }
                     */
-                    orderBook[objectSide] = [objectSide].filter((item) => {
+                    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
                         return data.order_id != item.order_id;
                     });
                 } else if (data.type == 'match') {
@@ -255,10 +255,10 @@ function getWebSocketData() {
                         "side": "sell"
                     }
                     */
-                    orderBook[objectSide] = [objectSide].filter((item) => {
+                    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
                         return data.maker_order_id != item.order_id;
                     });                    
-                    orderBook[objectSide] = [objectSide].filter((item) => {
+                    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
                         return data.taker_order_id != item.order_id;
                     });                    
                 } else if (data.type == 'received') {
