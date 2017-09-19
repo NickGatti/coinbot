@@ -90,6 +90,22 @@ function getWebSocketData() {
                 if (obj.order_id == data.order_id) sideIndex = index;
             });
             if (sideIndex) {
+                /*
+                
+                RAPE THE FUCK OUT OF SIDE INDEX
+                RAPE THE FUCK OUT OF SIDE INDEX
+                RAPE THE FUCK OUT OF SIDE INDEX
+                RAPE THE FUCK OUT OF SIDE INDEX
+                RAPE THE FUCK OUT OF SIDE INDEX
+                
+                */
+                
+                
+                
+                
+                
+                
+                
                 //If sideIndex is true then the orderID is found in the orderBook already
                 if (data.type == 'change') {
                     /*
@@ -116,6 +132,28 @@ function getWebSocketData() {
                         }                        
                     */
                     data.new_size ? orderBook[objectSide][sideIndex].size = (data.new_size) : orderBook[objectSide][sideIndex].size = (data.new_funds);
+                } else if (data.type == 'done') {
+                    /*
+                    The order is no longer on the order book. 
+                    Sent for all orders for which there was a received message. 
+                    This message can result from an order being canceled or filled. 
+                    There will be no more messages for this order_id after a done message. remaining_size indicates how much of the order went unfilled; 
+                    this will be 0 for filled orders.
+                    {
+                        "type": "done",
+                        "time": "2014-11-07T08:19:27.028459Z",
+                        "product_id": "BTC-USD",
+                        "sequence": 10,
+                        "price": "200.2",
+                        "order_id": "d50ec984-77a8-460a-b958-66f114b0de9b",
+                        "reason": "filled", // or "canceled"
+                        "side": "sell",
+                        "remaining_size": "0"
+                    }
+                    */
+                    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
+                        return data.order_id != item.order_id;
+                    });
                 } else if (data.type == 'activate') {
                     /*
                     An activate message is sent when a stop order is placed. 
@@ -213,28 +251,6 @@ function getWebSocketData() {
                         order_type: data.order_type
                     });
                     if (!pauseOrderBook) downloadOrderBook();
-                } else if (data.type == 'done') {
-                    /*
-                    The order is no longer on the order book. 
-                    Sent for all orders for which there was a received message. 
-                    This message can result from an order being canceled or filled. 
-                    There will be no more messages for this order_id after a done message. remaining_size indicates how much of the order went unfilled; 
-                    this will be 0 for filled orders.
-                    {
-                        "type": "done",
-                        "time": "2014-11-07T08:19:27.028459Z",
-                        "product_id": "BTC-USD",
-                        "sequence": 10,
-                        "price": "200.2",
-                        "order_id": "d50ec984-77a8-460a-b958-66f114b0de9b",
-                        "reason": "filled", // or "canceled"
-                        "side": "sell",
-                        "remaining_size": "0"
-                    }
-                    */
-                    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
-                        return data.order_id != item.order_id;
-                    });
                 } else if (data.type == 'match') {
                     /*
                     A trade occurred between two orders. 
@@ -287,6 +303,23 @@ function getWebSocketData() {
                         "order_type": "limit"
                     }
                     */
+                } else if (data.type == 'ticker') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type == 'snapshot') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='l2update') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='heartbeat') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='subscribe') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='unsubscribe') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='subscriptions') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='error') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                    console.log('Message was an error: ', data.message);
                 } else {
                     console.log('Uncaught WebSocket type in feed: ', data.type);
                 }
@@ -318,13 +351,18 @@ function getWebSocketData() {
 function deDupe() {
     console.log('OrderBook Downloaded! de-Duping OrderBook!');
 
-    let objectSide = 'Buys';
+    let objSwitch = 'Buys';
     
-    for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++) {
-        if (sideSwitch) objectSide = 'Sells';
-        orderBook[objectSide] = orderBook[objectSide].filter((item) => {
-            return item.order_id != orderBook[objectSide].order_id;
-        });
+    for (let x = 0; x < 2; x++) {
+        if (x) objSwitch = 'Sells';
+        for (let i = 0; i < orderBook[objSwitch].length; i++) {
+            for(let z = i+1; z < orderBook[objSwitch].length; z++) {
+                if (orderBook[objSwitch][i].order_id == orderBook[objSwitch][z].order_id) {
+                    console.log('Duped Order Found! You should probably never really see this message!');
+                    orderBook[objSwitch].splice(z, 1);
+                }
+            }
+        }
     }
     
     console.log('OrderBook De-duped! Running program...');
