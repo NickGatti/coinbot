@@ -90,15 +90,155 @@ function getWebSocketData() {
                 if (obj.order_id == data.order_id) sideIndex = index;
             });
             if (sideIndex) {
-                if (data.type == 'done') {
-                    orderBook[objectSide][sideIndex].type = (data.type);
-                }
-                
                 if (data.type == 'change') {
+                    /*
+                        An order has changed. 
+                        This is the result of self-trade prevention adjusting the order size or available funds. 
+                        Orders can only decrease in size or funds. change messages are sent anytime an order changes in size; this includes resting orders (open) as well as received but not yet open. 
+                        Change messages are also sent when a new market order goes through self trade prevention and the funds for the market order have changed.
+                        
+                         Change messages for received but not yet open orders can be ignored when building a real-time order book. 
+                         The side field of a change message and price can be used as indicators for whether the change message is relevant if building from a level 2 book.
+                        
+                        Any change message where the price is null indicates that the change message is for a market order. 
+                        Change messages for limit orders will always have a price specified.           
+                        {
+                            "type": "change",
+                            "time": "2014-11-07T08:19:27.028459Z",
+                            "sequence": 80,
+                            "order_id": "ac928c66-ca53-498f-9c13-a110027a60e8",
+                            "product_id": "BTC-USD",
+                            "new_size": "5.23512",
+                            "old_size": "12.234412",
+                            "price": "400.23",
+                            "side": "sell"
+                        }                        
+                    */
                     data.new_size ? orderBook[objectSide][sideIndex].size = (data.new_size) : orderBook[objectSide][sideIndex].size = (data.new_funds);
+                } else if (data.type == 'done') {
+                    /*
+                    The order is no longer on the order book. 
+                    Sent for all orders for which there was a received message. 
+                    This message can result from an order being canceled or filled. 
+                    There will be no more messages for this order_id after a done message. remaining_size indicates how much of the order went unfilled; 
+                    this will be 0 for filled orders.
+                    {
+                        "type": "done",
+                        "time": "2014-11-07T08:19:27.028459Z",
+                        "product_id": "BTC-USD",
+                        "sequence": 10,
+                        "price": "200.2",
+                        "order_id": "d50ec984-77a8-460a-b958-66f114b0de9b",
+                        "reason": "filled", // or "canceled"
+                        "side": "sell",
+                        "remaining_size": "0"
+                    }
+                    */
+                    orderBook[objectSide][sideIndex].type = (data.type);
+                } else if (data.type == 'match') {
+                    /*
+                    A trade occurred between two orders. 
+                    The aggressor or taker order is the one executing immediately after being received and the maker order is a resting order on the book. 
+                    The side field indicates the maker order side. 
+                    If the side is sell this indicates the maker was a sell order and the match is considered an up-tick. 
+                    A buy side match is a down-tick. If authenticated, and you were the taker, the message would also have the following fields:
+                    {
+                        "type": "match",
+                        "trade_id": 10,
+                        "sequence": 50,
+                        "maker_order_id": "ac928c66-ca53-498f-9c13-a110027a60e8",
+                        "taker_order_id": "132fb6ae-456b-4654-b4e0-d681ac05cea1",
+                        "time": "2014-11-07T08:19:27.028459Z",
+                        "product_id": "BTC-USD",
+                        "size": "5.23512",
+                        "price": "400.23",
+                        "side": "sell"
+                    }
+                    */
+                } else if (data.type == 'activate') {
+                    /*
+                    An activate message is sent when a stop order is placed. 
+                    When the stop is triggered the order will be placed and go through the order lifecycle.
+                    {
+                      "type": "activate",
+                      "product_id": "test-product",
+                      "timestamp": "1483736448.299000",
+                      "user_id": "12",
+                      "profile_id": "30000727-d308-cf50-7b1c-c06deb1934fc",
+                      "order_id": "7b52009b-64fd-0a2a-49e6-d8a939753077",
+                      "stop_type": "entry",
+                      "side": "buy",
+                      "stop_price": "80",
+                      "size": "2",
+                      "funds": "50",
+                      "taker_fee_rate": "0.0025",
+                      "private": true,
+                    }
+                    */
+                } else if (data.type == 'margin_profile_update') {
+                    /*
+                    This feed message will only be received if you are authenticated with a margin profile.
+                    {
+                      "type": "margin_profile_update",
+                      "product_id": "BTC-USD",
+                      "timestamp": "2017-03-13T20:58:59.071Z",
+                      "user_id": "4fee694c4ddbe2000300017e",
+                      "profile_id": "df46176d-798e-40be-819c-c94b1cbf97a7",
+                      "nonce": 4,
+                      "position": "long",
+                      "position_size": "16.65808012",
+                      "position_compliment": "-21049.99999776145250000000000000",
+                      "position_max_size": "16.65808012",
+                      "call_side": "sell",
+                      "call_price": "750.39",
+                      "call_size": "16.65808012",
+                      "call_funds": "10025.06265440",
+                      "covered": false,
+                      "next_expire_time": "2017-04-10T18:58:59.070Z",
+                      "base_balance": "16.65808012",
+                      "base_funding": "0",
+                      "quote_balance": "0.00000223457250000000000000",
+                      "quote_funding": "9999.9999999960250000",
+                      "private": true
+                    }                    
+                    */
+                } else if (data.type == 'ticker') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type == 'snapshot') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='l2update') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='heartbeat') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='subscribe') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='unsubscribe') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='subscriptions') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                } else if (data.type =='error') {
+                    console.log('Error on WebSocket Feed data.type == ', data.type);
+                    console.log('Message was an error: ', data.message);
+                } else {
+                    console.log('Error! data.type not caught!: ', data.type);
+                    console.log('Message: ', data.message);
                 }
-            } else {
-                if (data.type == 'open') {
+            } else if (data.type == 'open') {
+                    /*
+                    The order is now open on the order book. 
+                    This message will only be sent for orders which are not fully filled immediately. 
+                    Remaining_size will indicate how much of the order is unfilled and going on the book.
+                    {
+                        "type": "open",
+                        "time": "2014-11-07T08:19:27.028459Z",
+                        "product_id": "BTC-USD",
+                        "sequence": 10,
+                        "order_id": "d50ec984-77a8-460a-b958-66f114b0de9b",
+                        "price": "200.2",
+                        "remaining_size": "1.00",
+                        "side": "sell"
+                    }
+                    */
                     orderBook[objectSide]
                     .push({
                         type: data.type,
@@ -109,14 +249,47 @@ function getWebSocketData() {
                         size: data.size,
                         side: data.size,
                         order_type: data.order_type
-                });
-                if (!pauseOrderBook) downloadOrderBook();
+                    });
+                    if (!pauseOrderBook) downloadOrderBook();
+                } else if (data.type == 'received') {
+                    /*
+                    A valid order has been received and is now active. 
+                    This message is emitted for every single valid order as soon as the matching engine receives it whether it fills immediately or not.
+
+                    The received message does not indicate a resting order on the order book. 
+                    It simply indicates a new incoming order which as been accepted by the matching engine for processing. 
+                    Received orders may cause match message to follow if they are able to begin being filled (taker behavior). 
+                    Self-trade prevention may also trigger change messages to follow if the order size needs to be adjusted. 
+                    Orders which are not fully filled or canceled due to self-trade prevention result in an open message and become resting orders on the order book. 
+                    
+                    Market orders (indicated by the order_type field) may have an optional funds field which indicates how much quote currency will be used to buy or sell. 
+                    For example, a funds field of 100.00 for the BTC-USD product would indicate a purchase of up to 100.00 USD worth of bitcoin.
+                    
+                    {
+                        "type": "received",
+                        "time": "2014-11-07T08:19:27.028459Z",
+                        "product_id": "BTC-USD",
+                        "sequence": 10,
+                        "order_id": "d50ec984-77a8-460a-b958-66f114b0de9b",
+                        "size": "1.34",
+                        "price": "502.1",
+                        "side": "buy",
+                        "order_type": "limit"
+                    }
+                    */
+                } else {
+                    console.log('Uncaught WebSocket type in feed: ', data.type);
                 }
-            }
         }
     }
 /*
         EXAMPLE OF WEBSOCKET OUTPUT:
+        
+{
+    "type": "open", // "received" | "open" | "done" | "match" | "change" | "activate"
+    "user_id": "5844eceecf7e803e259d0365",
+    "profile_id": "765d1549-9660-4be2-97d4-fa2d65fa3352",
+}
         
         "type": "received",
         "time": "2014-11-07T08:19:27.028459Z",
@@ -241,4 +414,4 @@ function checkMargins(){
 
 
 //TODO
-//FIX REMAINING SIZE ISSUE + OTHER CHANGING VALUES NOT USED
+//FIX WEBSOCKET FEED DATA
