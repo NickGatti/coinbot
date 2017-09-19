@@ -34,8 +34,7 @@ getWebSocketData();
 //=============================================
 function getOrderBook(level) {
     return getProductOrderBook({'level': level}).then(function(data) {
-        let obj = JSON.parse(data.body);
-        return [obj.bids.length, obj.asks.length, (obj.bids.length + obj.asks.length), obj];
+        return JSON.parse(data.body);
     }); 
 }
 //=============================================
@@ -52,13 +51,13 @@ function downloadOrderBook(){
         getOrderBook(3).then(function(value) {
             
             let rawOrderBookData = {
-                'buy': value[3].bids,
-                'sell': value[3].asks
+                'buy': value.bids,
+                'sell': value.asks
             };
             
             let objectSide = 'buy';
             for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++) {
-                if (sideSwitch) objectSide = 'sell'
+                if (sideSwitch) objectSide = 'sell';
                 rawOrderBookData[objectSide].map((data, i) => {
                     orderBook[objectSide][i] = {
                         price: data[0],
@@ -408,7 +407,6 @@ function catchWebSocketMessage(data, objectSide) {
             console.log('Uncaught WebSocket type in feed: ', data.type);
         }
 }
+//=============================================
 //END>> WebSocket Message Filter
 //=============================================
-//TODO
-//FIX WEBSOCKET FEED DATA
