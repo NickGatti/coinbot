@@ -317,19 +317,16 @@ function getWebSocketData() {
 //>>START DeDupe OrderBook
 function deDupe() {
     console.log('OrderBook Downloaded! de-Duping OrderBook!');
+
     let objectSide = 'Buys';
     
-    for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++){
+    for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++) {
         if (sideSwitch) objectSide = 'Sells';
-        for(let i = 0; i < orderBook[objectSide].length; i++) {
-            orderBook[objectSide].map((obj, index) => {
-                if (obj.order_id == orderBook[objectSide][i].order_id && i != index) {
-                    console.log('Duped Order Detected!');
-                    orderBook[objectSide].splice(index, 1);
-                }
-            });
-        }
+        orderBook = orderBook[objectSide].filter((item) => {
+            return item.order_id != orderBook[objectSide].order_id;
+        });
     }
+    
     console.log('OrderBook De-duped! Running program...');
     runBenchmark = true;
 }
