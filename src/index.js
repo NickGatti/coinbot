@@ -55,9 +55,7 @@ function downloadOrderBook(){
                 'sell': value.asks
             };
             
-            let objectSide = 'buy';
-            for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++) {
-                if (sideSwitch) objectSide = 'sell';
+            let funt = (objectSide) => {
                 rawOrderBookData[objectSide].map((data, i) => {
                     orderBook[objectSide][i] = {
                         price: data[0],
@@ -65,7 +63,10 @@ function downloadOrderBook(){
                         order_id: data[2]
                     };
                 });                
-            }
+            };
+            
+            funt('buy');
+            funt('sell')
             
             deDupe();
             setInterval(findRealisticOrders, 2000);
@@ -101,121 +102,6 @@ function getWebSocketData() {
     })}
 //=============================================
 //END>> Websocket Change Detections
-//=============================================
-//START>> DeDupe OrderBook
-//=============================================
-function deDupe() {
-    console.log('OrderBook Downloaded! de-Duping OrderBook!');
-
-    let objSwitch = 'buy';
-    
-    for (let x = 0; x < 2; x++) {
-        if (x) objSwitch = 'sell';
-        for (let i = 0; i < orderBook[objSwitch].length; i++) {
-            for(let z = i+1; z < orderBook[objSwitch].length; z++) {
-                if (orderBook[objSwitch][i].order_id == orderBook[objSwitch][z].order_id) {
-                    console.log('Duped Order Found! You should probably never really see this message!');
-                    orderBook[objSwitch].splice(z, 1);
-                }
-            }
-        }
-    }
-    
-    console.log('OrderBook De-duped! Running program...');
-    runBenchmark = true;
-}
-//=============================================
-//END>> DeDupe OrderBook
-//=============================================
-//START>> Market Order Reality Checks
-//=============================================
-function findRealisticOrders() {
-    if (runBenchmark) {
-        let good = {
-            'buy': 0,
-            'sell': 0
-        };
-        let objectSide = 'buy';
-        
-        for (let sideSwitch = 0; sideSwitch < 2; sideSwitch++){
-            if (sideSwitch) objectSide = 'sell';
-            orderBook[objectSide].map((obj, index) => {
-                if ((obj.price * obj.size) > realityCriteria) {
-                    orderBook[objectSide][index].goodOrder = true;
-                    good[objectSide]++;
-                }
-            });
-        }
-        
-        let goodBuyPercent = Number(good['buy'] / orderBook['buy'].length);
-        let goodSellPercent = Number(good['sell'] / orderBook['sell'].length);
-        let totalBadPercent = Number(100 - (goodBuyPercent + goodSellPercent));
-        console.log('Market Order Benchmark:');
-        console.log(`Realistic buy  orders: ${good['buy']} out of a total of ${orderBook['buy'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
-        console.log(`Realistic sell orders: ${good['sell']} out of a total of ${orderBook['sell'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
-        console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
-        console.log('=====================================================================================================');
-        checkMargins();
-    }
-}
-//=============================================
-//END>> Market Order Reality Checks
-//=============================================
-//START>> Margin Checks of Real Orders
-//=============================================
-function checkMargins(){
-    
-    let foundWorkingMargin = false;
-    let orderData = {
-        amountBetween: {
-            'buy': 0,
-            'sell': 0
-        },
-        count: {
-            'buy': 0,
-            'sell': 0
-        }
-    };
-    
-    orderBook['buy']
-    .sort((a, b) => {
-        return b.price - a.price;
-    });
-    orderBook['sell']
-    .sort((a, b) => {
-        return a.price - b.price;
-    });
-    
-    for (let i = 0; (i < orderBook['buy'].length && !foundWorkingMargin); i++){
-        orderData.count['buy']++;
-        if (orderBook['buy'][i].goodOrder) {
-            for (let z = 0; (z < orderBook['sell'].length && !foundWorkingMargin); z++){
-                orderData.count['sell']++;
-                if ((orderBook['sell'][z].goodOrder) && ((orderBook['sell'][z].price / orderBook['buy'][i].price) > realMargin)) {
-                    let totalCount = orderData.count['buy'] + orderData.count['sell'];
-                    let totalAmountInBetween = 0;
-                    let margin = (orderBook['sell'][z].price / orderBook['buy'][i].price);
-                    for (let x = 0; x < orderData.count['buy']; x++) {
-                        orderData.amountBetween['buy'] =+ Number(orderBook['buy'][x].price * orderBook['buy'][x].size);
-                    }
-                    for (let x = 0; x < orderData.count['sell']; x++) {
-                        orderData.amountBetween['sell'] =+ Number(orderBook['sell'][x].price * orderBook['sell'][x].size);
-                    }
-                    totalAmountInBetween = orderData.amountBetween['buy'] + orderData.amountBetween['sell'];
-                    console.log('Margin Data:');
-                    console.log(`Found good margin (${margin.toFixed(2).slice(2)}%) || These matched real orders have ${totalCount} fake orders filling their gap`);
-                    console.log(`$${orderData.amountBetween['buy'].toFixed(2)} amount of USD needs to fill for the fake order *buy* gap`);
-                    console.log(`$${orderData.amountBetween['sell'].toFixed(2)} amount of USD needs to fill for the fake order *sell* gap`);
-                    console.log(`$${totalAmountInBetween.toFixed(2)} *total* amount of USD needs to fill for the fake order gap`);
-                    console.log('=====================================================================================================');
-                    foundWorkingMargin = true;
-                }
-            }
-        }
-    }
-}
-//=============================================
-//END>> Margin Checks of Real Orders
 //=============================================
 //START>> WebSocket Message Filter
 //=============================================
@@ -410,3 +296,122 @@ function catchWebSocketMessage(data, objectSide) {
 //=============================================
 //END>> WebSocket Message Filter
 //=============================================
+//START>> DeDupe OrderBook
+//=============================================
+function deDupe() {
+    console.log('OrderBook Downloaded! de-Duping OrderBook!');
+    
+    let funt = (objectSide) => {
+        for (let i = 0; i < orderBook[objectSide].length; i++) {
+            for(let z = i+1; z < orderBook[objectSide].length; z++) {
+                if (orderBook[objectSide][i].order_id == orderBook[objectSide][z].order_id) {
+                    console.log('Duped Order Found! You should probably never really see this message!');
+                    orderBook[objectSide].splice(z, 1);
+                }
+            }
+        }
+    };
+
+    funt('buy');
+    funt('sell');
+    
+    console.log('OrderBook De-duped! Running program...');
+    runBenchmark = true;
+}
+//=============================================
+//END>> DeDupe OrderBook
+//=============================================
+//START>> Market Order Reality Checks
+//=============================================
+function findRealisticOrders() {
+    if (runBenchmark) {
+        
+        let good = {
+            'buy': 0,
+            'sell': 0
+        };
+        
+        let funt = (objectSide) => {
+            orderBook[objectSide].map((obj, index) => {
+                if ((obj.price * obj.size) > realityCriteria) {
+                    orderBook[objectSide][index].goodOrder = true;
+                    good[objectSide]++;
+                }
+            });            
+        };
+        
+        funt('buy');
+        funt('sell');
+        
+        let goodBuyPercent = Number(good['buy'] / orderBook['buy'].length);
+        let goodSellPercent = Number(good['sell'] / orderBook['sell'].length);
+        let totalBadPercent = Number(100 - (goodBuyPercent + goodSellPercent));
+        console.log('Market Order Benchmark:');
+        console.log(`Realistic buy  orders: ${good['buy']} out of a total of ${orderBook['buy'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
+        console.log(`Realistic sell orders: ${good['sell']} out of a total of ${orderBook['sell'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
+        console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
+        console.log('=====================================================================================================');
+        checkMargins();
+    }
+}
+//=============================================
+//END>> Market Order Reality Checks
+//=============================================
+//START>> Margin Checks of Real Orders
+//=============================================
+function checkMargins(){
+    
+    let foundWorkingMargin = false;
+    let orderData = {
+        amountBetween: {
+            'buy': 0,
+            'sell': 0
+        },
+        count: {
+            'buy': 0,
+            'sell': 0
+        }
+    };
+    
+    orderBook['buy']
+    .sort((a, b) => {
+        return b.price - a.price;
+    });
+    orderBook['sell']
+    .sort((a, b) => {
+        return a.price - b.price;
+    });
+    
+    for (let i = 0; (i < orderBook['buy'].length && !foundWorkingMargin); i++){
+        orderData.count['buy']++;
+        if (orderBook['buy'][i].goodOrder) {
+            for (let z = 0; (z < orderBook['sell'].length && !foundWorkingMargin); z++){
+                orderData.count['sell']++;
+                if ((orderBook['sell'][z].goodOrder) && ((orderBook['sell'][z].price / orderBook['buy'][i].price) > realMargin)) {
+                    let totalCount = orderData.count['buy'] + orderData.count['sell'];
+                    let totalAmountInBetween = 0;
+                    let margin = (orderBook['sell'][z].price / orderBook['buy'][i].price);
+                    for (let x = 0; x < orderData.count['buy']; x++) {
+                        orderData.amountBetween['buy'] =+ Number(orderBook['buy'][x].price * orderBook['buy'][x].size);
+                    }
+                    for (let x = 0; x < orderData.count['sell']; x++) {
+                        orderData.amountBetween['sell'] =+ Number(orderBook['sell'][x].price * orderBook['sell'][x].size);
+                    }
+                    totalAmountInBetween = orderData.amountBetween['buy'] + orderData.amountBetween['sell'];
+                    console.log('Margin Data:');
+                    console.log(`Found good margin (${margin.toFixed(2).slice(2)}%) || These matched real orders have ${totalCount} fake orders filling their gap`);
+                    console.log(`$${orderData.amountBetween['buy'].toFixed(2)} amount of USD needs to fill for the fake order *buy* gap`);
+                    console.log(`$${orderData.amountBetween['sell'].toFixed(2)} amount of USD needs to fill for the fake order *sell* gap`);
+                    console.log(`$${totalAmountInBetween.toFixed(2)} *total* amount of USD needs to fill for the fake order gap`);
+                    console.log('=====================================================================================================');
+                    foundWorkingMargin = true;
+                }
+            }
+        }
+    }
+}
+//=============================================
+//END>> Margin Checks of Real Orders
+//=============================================
+//TODO SELL ORDER MARGIN / BUY ORDER MARGIN
+//TODO WOULD I PLACE AN ORDER? IF YES THEN FAKEPLACE IT TRACK WHEN SOMEONE SELLS TO ME THEN FAKESELL THEN TRACK FAKE PROFITS
