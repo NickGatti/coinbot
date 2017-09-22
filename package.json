@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "comp": "babel ./src/index.js --out-file ./public/bundle.js",
-    "runit": "node ./public/bundle.js"
+    "start": "node ./src/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,5 +14,6 @@
     "babel-cli": "^6.26.0",
     "coinbase": "^2.0.6",
     "gdax": "^0.4.2"
-  }
+  },
+  "dependencies": {}
 }
