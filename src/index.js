@@ -67,7 +67,7 @@ function downloadOrderBook(){
                 rawOrderBookData[objectSide].map((data, i) => {
                     orderBook[objectSide][i] = {
                         price: parseFloat(data[0]),
-                        size: Number(data[1]),
+                        size: data[1] % 2 == 0 ? Number(data[1]) : parseFloat(data[1]),
                         order_id: data[2]
                     };
                 });                
@@ -139,7 +139,7 @@ function catchWebSocketMessage(data, objectSide) {
                 sequence: data.sequence,
                 order_id: data.order_id,
                 price: parseFloat(data.price),
-                size: data.size ? Number(data.size) : Number(data.remaining_size),
+                size: data.remaining_size % 2 == 0 ? Number(data.remaining_size) : parseFloat(data.remaining_size),
                 side: data.side
             });
             if (!pauseOrderBook) downloadOrderBook();
@@ -221,7 +221,7 @@ function catchWebSocketMessage(data, objectSide) {
             */
             for (let i = 0; i < orderBook[objectSide.length]; i++) {
                 if (orderBook[objectSide].order_id == data.order_id) {
-                    orderBook[objectSide][i].size = Number(data.new_size);
+                    orderBook[objectSide][i].size = data.new_size % 2 == 0 ? Number(data.new_size) : parseFloat(data.new_size);
                     orderBook[objectSide][i].price = parseFloat(data.price);
                     break;
                 }
@@ -374,11 +374,11 @@ function findRealisticOrders() {
         
         let highestBuyPrice = orderBook['buy']
         .find((data) => {
-            if (data.price) return data.price;
+            if (data.price) return parseFloat(data.price);
         });    
         let lowestSellPrice = orderBook['sell']
         .find((data) => {
-            if (data.price) return data.price;
+            if (data.price) return parseFloat(data.price);
         });    
         
         highestBuyPrice = parseFloat(highestBuyPrice);
@@ -447,10 +447,10 @@ function checkMargins(){
                     let totalAmountInBetween = 0;
                     let margin = (orderBook['sell'][z].price / orderBook['buy'][i].price);
                     for (let x = 0; x < orderData.count['buy']; x++) {
-                        orderData.amountBetween['buy'] =+ parseFloat(orderBook['buy'][x].price * Number(orderBook['buy'][x].size));
+                        orderData.amountBetween['buy'] =+ parseFloat(orderBook['buy'][x].price * orderBook['buy'][x].size);
                     }
                     for (let x = 0; x < orderData.count['sell']; x++) {
-                        orderData.amountBetween['sell'] =+ parseFloat(orderBook['sell'][x].price * Number(orderBook['sell'][x].size));
+                        orderData.amountBetween['sell'] =+ parseFloat(orderBook['sell'][x].price * orderBook['sell'][x].size);
                     }
                     totalAmountInBetween = orderData.amountBetween['buy'] + orderData.amountBetween['sell'];
                     console.log('Margin Data:');
@@ -535,6 +535,7 @@ function placeSell(){
         fakeSellId = sellOrder;
         fakeSellId.price = parseFloat(fakeSellId.price);
         fakeSellId.price -= 0.01;
+        fakeSellId.price = parseFloat(fakeSellId.price);
         state.sell = 'waiting';
         console.log('PLACED SELL ORDER');        
     } else if (state.sell == 'waiting' && lowestSellPrice > (fakeSellId.price)) {
