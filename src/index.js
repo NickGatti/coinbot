@@ -371,9 +371,19 @@ function findRealisticOrders() {
         console.log(`Realistic sell orders: ${good['sell']} out of a total of ${orderBook['sell'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
         console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
         console.log('=====================================================================================================');
+        
+        let highestBuyPrice = orderBook['buy']
+        .find((data) => {
+            if (data.price) return data.price;
+        });    
+        let lowestSellPrice = orderBook['sell']
+        .find((data) => {
+            if (data.price) return data.price;
+        });    
+        
         if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
-        if (fakeBuyId.price) console.log('Buy Price amount: ' + fakeBuyId.price + ' has to be higher than current highest buy price: ' + orderBook['buy'][0].price + ' buy state is: ' + state.buy);
-        if (fakeSellId.price) console.log('Sell Price amount:' + fakeSellId.price + ' has to be lower than current lowest sell price: ' + orderBook['sell'][0].price + ' sell state is: ' + state.sell);
+        if (fakeBuyId.price) console.log('Buy Price amount: ' + fakeBuyId.price.toFixed(2) + ' has to be higher than current highest buy price: ' + highestBuyPrice.toFixed(2) + ' buy state is: ' + state.buy);
+        if (fakeSellId.price) console.log('Sell Price amount:' + fakeSellId.price.toFixed(2) + ' has to be lower than current lowest sell price: ' + lowestSellPrice.toFixed(2) + ' sell state is: ' + state.sell);
 
         placeBuy();
         placeSell();
@@ -478,7 +488,7 @@ function placeBuy(){
         .find((data) => {
             if (data.goodOrder) return data;
         });        
-        if (buyOrder.price >= fakeBuyId.price) {
+        if (buyOrder.price > fakeBuyId.price) {
             console.log('Updating buy price!');
             fakeBuyId.price = Number(fakeBuyId.price);
             fakeBuyId.price = Number(buyOrder.price) + 0.01;
@@ -522,7 +532,7 @@ function placeSell(){
         .find((data) => {
             if (data.goodOrder && (data.price / fakeBuyId.price) >= realMargin) return data;
         });
-        if (sellOrder.price >= fakeBuyId.price) {
+        if (sellOrder.price < fakeSellId.price) {
             console.log('Updating sell price!');
             fakeSellId.price = Number(fakeSellId.price);
             fakeSellId.price = Number(sellOrder.price) - 0.01;
