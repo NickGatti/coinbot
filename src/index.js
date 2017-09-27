@@ -421,8 +421,8 @@ function findRealisticOrders() {
             if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price + ' has to be lower than current lowest sell price: $' + lowestSellPrice.price + ' sell state is: ' + state.sell);            
         } else {
             if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
-            if (fakeBuyId.price) console.log('My buy price: $' + fakeBuyId.price.toFixed(2) + ' current market buy price : $' + highestBuyPrice.price.toFixed(2) + ' buy state is: \"' + state.buy + '\" | A gap of $' + (highestBuyPrice.price - fakeBuyId.price).toFixed(2) + ' total buys to go: ' + buyCount + ' total amount to be sold to: ' + buyTotal.toFixed(2));
-            if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price.toFixed(2) + ' current market sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: \"' + state.sell + '\" | A gap of $' + (fakeSellId.price - lowestSellPrice.price).toFixed(2) +' total sells to go: ' + sellCount + ' total amount to be bought: ' + sellTotal.toFixed(2));
+            if (fakeBuyId.price) console.log('My buy price: $' + fakeBuyId.price.toFixed(2) + ' current market buy price : $' + highestBuyPrice.price.toFixed(2) + ' buy state is: \"' + state.buy + '\" | A gap of $' + (fakeBuyId.price - highestBuyPrice.price).toFixed(2) + ' total buys to go: ' + buyCount + ' total amount to be sold to: ' + buyTotal.toFixed(2));
+            if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price.toFixed(2) + ' current market sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: \"' + state.sell + '\" | A gap of $' + (lowestSellPrice.price - fakeSellId.price).toFixed(2) +' total sells to go: ' + sellCount + ' total amount to be bought: ' + sellTotal.toFixed(2));
         }
         console.log('=====================================================================================================');
 
@@ -522,7 +522,7 @@ function placeBuy(){
         state.buy = 'waiting';
         console.log('Place buy order! Good order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price);
         return;
-    } else if (state.buy == 'waiting' && highestBuyPrice.price > (fakeBuyId.price) ) {
+    } else if (state.buy == 'waiting' && highestBuyPrice.price < (fakeBuyId.price) ) {
         console.log('Purchased!');
         state.buy = 'paused';
         state.sell = 'selling';
@@ -571,7 +571,7 @@ function placeSell(){
         state.sell = 'waiting';
         console.log('Placed sell order! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price); 
         return;
-    } else if (state.sell == 'waiting' && lowestSellPrice.price < (fakeSellId.price)) {
+    } else if (state.sell == 'waiting' && lowestSellPrice.price > (fakeSellId.price)) {
         console.log('Sold!');
         let buyAmount = fakeBuyId.price * 1.04;
         fakeAmountMade = (fakeSellId.price * 20) - (buyAmount * 20);
