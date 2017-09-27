@@ -462,7 +462,7 @@ function placeBuy(){
         state.buy = 'waiting';
         console.log('PLACED BUY ORDER');
     
-    } else if (state.buy == 'waiting' && orderBook['buy'][0].price > (fakeBuyId.price + 0.01) ) {
+    } else if (state.buy == 'waiting' && orderBook['buy'][0].price < (fakeBuyId.price + 0.01) ) {
         console.log('Purchased!');
         state.buy = 'paused';
         state.sell = 'selling';
@@ -487,7 +487,7 @@ function placeSell(){
         fakeSellId = sellOrder;
         state.sell = 'waiting';
         console.log('PLACED SELL ORDER');        
-    } else if (state.sell == 'waiting' && orderBook['sell'][0].price < (fakeSellId.price - 0.01)) {
+    } else if (state.sell == 'waiting' && orderBook['sell'][0].price > (fakeSellId.price - 0.01)) {
         console.log('Sold!');
         let buyAmount = fakeBuyId.price * 1.04;
         fakeAmountMade = (fakeSellId.price * 20) - (buyAmount * 20);
@@ -498,6 +498,3 @@ function placeSell(){
 //=============================================
 //END>> Place sell order
 //=============================================
-//TODO PLACE BUY ORDER AT PRICE UNDERCUTTING FIRST REALISTIC BUY ORDER
-//TODO WHEN BUYMIN PRICE GOES 0.01 BELOW THEN IT HAS SOLD
-//TODO THEN FIGURE OUT FROM THAT BUY PRICE A PROFIT MARGIN TO SELL BY BETWEEN ORDERS
