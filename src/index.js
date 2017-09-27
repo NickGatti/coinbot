@@ -387,6 +387,30 @@ function findRealisticOrders() {
         if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
         if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
         
+        let buyCount = 0;
+        let buyTotal = 0;
+        
+        let sellCount = 0;
+        let sellTotal = 0;
+        
+        for (let i = 0; i < orderBook['buy'].length; i++) {
+            if (orderBook['buy'][i].price <= fakeBuyId.price) {
+                break;
+            } else {
+                buyCount++;
+                buyTotal += orderBook['buy'][i].price;
+            }
+        }
+        
+        for (let i = 0; i < orderBook['sell'].length; i++) {
+            if (orderBook['sell'][i].price >= fakeBuyId.price) {
+                break;
+            } else {
+                sellCount++;
+                sellTotal += orderBook['sell'][i].price;
+            }
+        }
+        
         console.log('My market order data:');
         if (isNaN(highestBuyPrice.price)|| isNaN(fakeBuyId.price) || isNaN(lowestSellPrice.price)) {
             console.log("ERROR CURRENT BUY PRICE: " + highestBuyPrice.price + " TYPE: " + typeof highestBuyPrice.price);
@@ -397,8 +421,8 @@ function findRealisticOrders() {
             if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price + ' has to be lower than current lowest sell price: $' + lowestSellPrice.price + ' sell state is: ' + state.sell);            
         } else {
             if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
-            if (fakeBuyId.price) console.log('My buy price: $' + fakeBuyId.price.toFixed(2) + ' has to be higher than current highest buy price: $' + highestBuyPrice.price.toFixed(2) + ' buy state is: ' + state.buy);
-            if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price.toFixed(2) + ' has to be lower than current lowest sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: ' + state.sell);
+            if (fakeBuyId.price) console.log('My buy price: $' + fakeBuyId.price.toFixed(2) + ' current market buy price : $' + highestBuyPrice.price.toFixed(2) + ' buy state is: ' + state.buy + ' a gap of $' + (highestBuyPrice.price - fakeBuyId.price).toFixed(2) + ' total buys to go: ' + buyCount + ' total amount to be sold to: ' + buyTotal);
+            if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price.toFixed(2) + ' current market sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: ' + state.sell + ' a gap of $' + (fakeSellId.price - lowestSellPrice.price).toFixed(2) +' total sells to go: ' + sellCount + ' total amount to be bought: ' + sellTotal);
         }
         console.log('=====================================================================================================');
 
