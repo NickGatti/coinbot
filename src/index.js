@@ -422,10 +422,10 @@ function findRealisticOrders() {
         } else {
             if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
             let buyOutput = 'My buy price: $' + fakeBuyId.price.toFixed(2) + ' current market buy price : $' + highestBuyPrice.price.toFixed(2) + ' buy state is: \"' + state.buy + '\"';
-            if (state.buy != 'paused') buyOutput += ' || A gap of $' + (highestBuyPrice.price - fakeBuyId.price).toFixed(2) + ' total buys to go: ' + buyCount + ' total amount to be sold to: ' + buyTotal.toFixed(2);
+            if (state.buy != 'paused') buyOutput += ' || A gap of $' + (highestBuyPrice.price - fakeBuyId.price).toFixed(2) + ' total buys to go: ' + buyCount + ' total amount to be sold to: $' + buyTotal.toFixed(2);
             if (fakeBuyId.price) console.log(buyOutput);
             let sellOutput = 'My sell price: $' + fakeSellId.price.toFixed(2) + ' current market sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: \"' + state.sell + '\"';
-            if (state.sell != 'paused') sellOutput += ' || A gap of $' + (fakeSellId.price - lowestSellPrice.price).toFixed(2) +' total sells to go: ' + sellCount + ' total amount to be bought: ' + sellTotal.toFixed(2);
+            if (state.sell != 'paused') sellOutput += ' || A gap of $' + (fakeSellId.price - lowestSellPrice.price).toFixed(2) +' total sells to go: ' + sellCount + ' total amount to be bought: $' + sellTotal.toFixed(2);
             if (fakeSellId.price) console.log(sellOutput);
         }
         console.log('=====================================================================================================');
