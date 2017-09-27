@@ -383,6 +383,8 @@ function findRealisticOrders() {
         
         highestBuyPrice = parseFloat(highestBuyPrice);
         lowestSellPrice = parseFloat(lowestSellPrice);
+        fakeBuyId.price = parseFloat(fakeBuyId.price);
+        fakeSellId.price = parseFloat(fakeSellId.price);
         
         if (isNaN(highestBuyPrice)|| isNaN(fakeBuyId.price) || isNaN(lowestSellPrice)) {
             console.log("ERROR CURRENT BUY PRICE: " + highestBuyPrice + " TYPE: " + typeof highestBuyPrice);
