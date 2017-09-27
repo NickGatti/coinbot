@@ -450,7 +450,7 @@ function placeBuy(){
     
     let highestBuyPrice = orderBook['buy']
     .find((data) => {
-        if (data.price) return data.price
+        if (data.price) return data.price;
     });    
     
     if (state.buy == 'buying') {
@@ -463,7 +463,7 @@ function placeBuy(){
         });
         
         fakeBuyId = buyOrder;
-        fakeBuyId.price = Number(fakeBuyId.price.toFixed(2));
+        fakeBuyId.price = Number(fakeBuyId.price);
         fakeBuyId.price += 0.01;
         state.buy = 'waiting';
         console.log('PLACED BUY ORDER');
@@ -480,7 +480,7 @@ function placeBuy(){
         });        
         if (buyOrder.price >= fakeBuyId.price) {
             console.log('Updating buy price!');
-            fakeBuyId.price = Number(fakeBuyId.price.toFixed(2));
+            fakeBuyId.price = Number(fakeBuyId.price);
             fakeBuyId.price = Number(buyOrder.price) + 0.01;
         }
     }
@@ -494,7 +494,7 @@ function placeSell(){
     
     let lowestSellPrice = orderBook['sell']
     .find((data) => {
-        if (data.price) return data.price
+        if (data.price) return data.price;
     });
     
     if (state.sell == 'selling') {
@@ -507,7 +507,7 @@ function placeSell(){
         });
         
         fakeSellId = sellOrder;
-        fakeSellId.price = Number(fakeSellId.price.toFixed(2));
+        fakeSellId.price = Number(fakeSellId.price);
         fakeSellId.price -= 0.01;
         state.sell = 'waiting';
         console.log('PLACED SELL ORDER');        
@@ -524,7 +524,7 @@ function placeSell(){
         });
         if (sellOrder.price >= fakeBuyId.price) {
             console.log('Updating sell price!');
-            fakeSellId.price = Number(fakeSellId.price.toFixed(2));
+            fakeSellId.price = Number(fakeSellId.price);
             fakeSellId.price = Number(sellOrder.price) - 0.01;
         }
     }
