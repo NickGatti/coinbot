@@ -19,6 +19,14 @@ var orderBook = {
     'sell': []
     };
 //=============================================
+var fakeBuyId = 0;
+var fakeSellId = 0;
+var state = {
+    buy: 'buying',
+    sell: 'paused'
+}
+var fakeAmountMade = 0;
+//=============================================
 //END>> Global Var Dec's
 //=============================================
 //START>> Run Our Program
@@ -326,6 +334,15 @@ function deDupe() {
 function findRealisticOrders() {
     if (runBenchmark) {
         
+        orderBook['buy']
+        .sort((a, b) => {
+            return b.price - a.price;
+        });
+        orderBook['sell']
+        .sort((a, b) => {
+            return a.price - b.price;
+        });
+        
         let good = {
             'buy': 0,
             'sell': 0
@@ -336,6 +353,8 @@ function findRealisticOrders() {
                 if ((obj.price * obj.size) > realityCriteria) {
                     orderBook[objectSide][index].goodOrder = true;
                     good[objectSide]++;
+                } else {
+                    orderBook[objectSide][index].goodOrder = false;
                 }
             });            
         };
@@ -351,7 +370,14 @@ function findRealisticOrders() {
         console.log(`Realistic sell orders: ${good['sell']} out of a total of ${orderBook['sell'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
         console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
         console.log('=====================================================================================================');
-        checkMargins();
+        if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
+        if (fakeBuyId.price) console.log('Buy Price amount:', fakeBuyId.price);
+        console.log('Current highest buy price:', orderBook['buy'][0].price);
+        if (fakeSellId.price) console.log('Sell Price amount:', fakeSellId.price);
+        console.log('Current lowest sell price:', orderBook['sell'][0].price);
+
+        placeBuy();
+        placeSell();
     }
 }
 //=============================================
@@ -360,6 +386,12 @@ function findRealisticOrders() {
 //START>> Margin Checks of Real Orders
 //=============================================
 function checkMargins(){
+    
+    /*
+        From the cheapest Buy order going through sell orders to find a margin
+        
+        Its finding a suitable sell order price
+    */
     
     let foundWorkingMargin = false;
     let orderData = {
@@ -413,5 +445,59 @@ function checkMargins(){
 //=============================================
 //END>> Margin Checks of Real Orders
 //=============================================
-//TODO SELL ORDER MARGIN / BUY ORDER MARGIN
-//TODO WOULD I PLACE AN ORDER? IF YES THEN FAKEPLACE IT TRACK WHEN SOMEONE SELLS TO ME THEN FAKESELL THEN TRACK FAKE PROFITS
+//START>> Place buy order
+//=============================================
+function placeBuy(){
+    
+    if (state.buy == 'buying') {
+    
+        // FAKE BUY
+        
+        let buyOrder = orderBook['buy']
+        .find((data) => {
+            if (data.goodOrder) return data;
+        });
+        
+        fakeBuyId = buyOrder;
+        state.buy = 'waiting';
+        console.log('PLACED BUY ORDER');
+    
+    } else if (state.buy == 'waiting' && orderBook['buy'][0].price > (fakeBuyId.price + 0.01) ) {
+        console.log('Purchased!');
+        state.buy = 'paused';
+        state.sell = 'selling';
+    }
+    
+}
+//=============================================
+//END>> Place buy order
+//=============================================
+//START>> Place sell order
+//=============================================
+function placeSell(){   
+    if (state.sell == 'selling') {
+        
+        // FAKE SELL
+        
+        let sellOrder = orderBook['sell']
+        .find((data) => {
+            if (data.goodOrder && (data.price / fakeBuyId.price) >= 1.06) return data;
+        });
+        
+        fakeSellId = sellOrder;
+        state.sell = 'waiting';
+        console.log('PLACED SELL ORDER');        
+    } else if (state.sell == 'waiting' && orderBook['sell'][0].price < (fakeSellId.price - 0.01)) {
+        console.log('Sold!');
+        let buyAmount = fakeBuyId.price * 1.04;
+        fakeAmountMade = (fakeSellId.price * 20) - (buyAmount * 20);
+        state.sell = 'paused';
+        state.buy = 'buying';
+    }
+}
+//=============================================
+//END>> Place sell order
+//=============================================
+//TODO PLACE BUY ORDER AT PRICE UNDERCUTTING FIRST REALISTIC BUY ORDER
+//TODO WHEN BUYMIN PRICE GOES 0.01 BELOW THEN IT HAS SOLD
+//TODO THEN FIGURE OUT FROM THAT BUY PRICE A PROFIT MARGIN TO SELL BY BETWEEN ORDERS
