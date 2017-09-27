@@ -10,7 +10,7 @@ const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind
 //==============REALITY CRITERIA===============
 //=============================================
 const realityCriteria = 10000;
-const realMargin = 1.04;
+const realMargin = 1.03;
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
@@ -24,7 +24,7 @@ var fakeSellId = {};
 var state = {
     buy: 'buying',
     sell: 'paused'
-}
+};
 var fakeAmountMade = 0;
 //=============================================
 //END>> Global Var Dec's
@@ -74,7 +74,7 @@ function downloadOrderBook(){
             };
             
             funt('buy');
-            funt('sell')
+            funt('sell');
             
             deDupe();
             setInterval(findRealisticOrders, 2000);
@@ -506,43 +506,41 @@ function placeBuy(){
     let highestBuyPrice = orderBook['buy']
     .find((data) => {
         if (data.price) return data;
-    });    
-    
-    if (!Number(highestBuyPrice.price)) highestBuyPrice.price = parseFloat(highestBuyPrice.price);
+    }); 
+
+    let buyOrder = orderBook['buy']
+    .find((data) => {
+        if (data.goodOrder && (highestBuyPrice.price / data.price) >= realMargin) return data;
+    });   
     
     if (state.buy == 'buying') {
-    
-        // FAKE BUY
         
-        let buyOrder = orderBook['buy']
-        .find((data) => {
-            if (data.goodOrder) return data;
-        });
+        console.log('Place buy order! Good order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price);
         
         fakeBuyId = buyOrder;
-        if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
         fakeBuyId.price = parseFloat(fakeBuyId.price) + 0.01;
-        if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
         state.buy = 'waiting';
-        console.log('Place buy order! Good order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price);
+        
         return;
+        
     } else if (state.buy == 'waiting' && highestBuyPrice.price < (fakeBuyId.price) ) {
+        
         console.log('Purchased!');
+        
         state.buy = 'paused';
         state.sell = 'selling';
+        
         return;
-    } else if (state.buy == 'waiting') {
-        let buyOrder = orderBook['buy']
-        .find((data) => {
-            if (data.goodOrder) return data;
-        });        
-        if (buyOrder.price > fakeBuyId.price) {
-            console.log('Updating buy price! Good Order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price);
-            fakeBuyId = buyOrder;
-            if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
-            fakeBuyId.price = parseFloat(fakeBuyId.price) + 0.01;
-            if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
-        }
+        
+    } else if (state.buy == 'waiting' && buyOrder.price > fakeBuyId.price) {
+
+        console.log('Updating buy price! Good Order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price);
+
+        fakeBuyId = buyOrder;
+        fakeBuyId.price = parseFloat(fakeBuyId.price) + 0.01;
+        
+        return;
+        
     }
 }
 //=============================================
@@ -557,43 +555,41 @@ function placeSell(){
         if (data.price) return data;
     });
     
-    if (!Number(lowestSellPrice.price)) lowestSellPrice.price = parseFloat(lowestSellPrice.price);
+    let sellOrder = orderBook['sell']
+    .find((data) => {
+        if (data.goodOrder && (data.price / fakeBuyId.price) >= realMargin) return data;
+    });
     
     if (state.sell == 'selling') {
         
-        // FAKE SELL
-        
-        let sellOrder = orderBook['sell']
-        .find((data) => {
-            if (data.goodOrder && (data.price / fakeBuyId.price) >= realMargin) return data;
-        });
+        console.log('Placed sell order! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price); 
         
         fakeSellId = sellOrder;
-        if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
         fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
-        if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
         state.sell = 'waiting';
-        console.log('Placed sell order! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price); 
+        
         return;
+        
     } else if (state.sell == 'waiting' && lowestSellPrice.price > (fakeSellId.price)) {
+        
         console.log('Sold!');
+        
         let buyAmount = fakeBuyId.price * 1.04;
         fakeAmountMade = (fakeSellId.price * 20) - (buyAmount * 20);
         state.sell = 'paused';
         state.buy = 'buying';
+        
         return;
-    } else if (state.sell == 'waiting'){
-        let sellOrder = orderBook['sell']
-        .find((data) => {
-            if (data.goodOrder && (data.price / fakeBuyId.price) >= realMargin) return data;
-        });
-        if (sellOrder.price < fakeSellId.price) {
-            console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price); 
-            fakeSellId = sellOrder;
-            if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
-            fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
-            if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
-        }
+        
+    } else if (state.sell == 'waiting' && sellOrder.price < fakeSellId.price){
+        
+        console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price); 
+        
+        fakeSellId = sellOrder;
+        fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
+        
+        return;
+        
     }
 }
 //=============================================
