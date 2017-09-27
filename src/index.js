@@ -520,7 +520,7 @@ function placeBuy(){
         fakeBuyId.price += 0.01;
         if (!Number(fakeBuyId.price)) fakeBuyId = parseFloat(fakeBuyId.price);
         state.buy = 'waiting';
-        console.log('PLACED BUY ORDER');
+        console.log('Place buy order! Good order?', buyOrder.goodOrder);
         return;
     } else if (state.buy == 'waiting' && highestBuyPrice.price > (fakeBuyId.price) ) {
         console.log('Purchased!');
@@ -533,7 +533,7 @@ function placeBuy(){
             if (data.goodOrder) return data;
         });        
         if (buyOrder.price > fakeBuyId.price) {
-            console.log('Updating buy price!', buyOrder.goodOrder);
+            console.log('Updating buy price! Good Order?', buyOrder.goodOrder);
             fakeBuyId.order_id = buyOrder.order_id;
             if (!Number(fakeBuyId.price)) fakeBuyId = parseFloat(fakeBuyId.price);
             fakeBuyId.price = buyOrder.price + 0.01;
@@ -569,20 +569,22 @@ function placeSell(){
         fakeSellId.price -= 0.01;
         if (!Number(fakeSellId)) fakeSellId = parseFloat(fakeSellId.price);
         state.sell = 'waiting';
-        console.log('PLACED SELL ORDER');        
+        console.log('Placed sell order! Good order?', sellOrder.goodOrder);        
+        return;
     } else if (state.sell == 'waiting' && lowestSellPrice.price < (fakeSellId.price)) {
         console.log('Sold!');
         let buyAmount = fakeBuyId.price * 1.04;
         fakeAmountMade = (fakeSellId.price * 20) - (buyAmount * 20);
         state.sell = 'paused';
         state.buy = 'buying';
+        return;
     } else if (state.sell == 'waiting'){
         let sellOrder = orderBook['sell']
         .find((data) => {
             if (data.goodOrder && (data.price / fakeBuyId.price) >= realMargin) return data;
         });
         if (sellOrder.price < fakeSellId.price) {
-            console.log('Updating sell price!', sellOrder.goodOrder);
+            console.log('Updating sell price! Good order?', sellOrder.goodOrder);
             fakeSellId.order_id = sellOrder.order_id;
             if (!Number(fakeSellId)) fakeSellId = parseFloat(fakeSellId.price);
             fakeSellId.price = parseFloat(sellOrder.price) - 0.01;
