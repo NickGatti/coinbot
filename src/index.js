@@ -421,8 +421,8 @@ function findRealisticOrders() {
             if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price + ' has to be lower than current lowest sell price: $' + lowestSellPrice.price + ' sell state is: ' + state.sell);            
         } else {
             if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
-            if (fakeBuyId.price) console.log('My buy price: $' + fakeBuyId.price.toFixed(2) + ' current market buy price : $' + highestBuyPrice.price.toFixed(2) + ' buy state is: \"' + state.buy + '\" | A gap of $' + (highestBuyPrice.price - fakeBuyId.price).toFixed(2) + ' total buys to go: ' + buyCount + ' total amount to be sold to: ' + buyTotal);
-            if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price.toFixed(2) + ' current market sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: \"' + state.sell + '\" | A gap of $' + (fakeSellId.price - lowestSellPrice.price).toFixed(2) +' total sells to go: ' + sellCount + ' total amount to be bought: ' + sellTotal);
+            if (fakeBuyId.price) console.log('My buy price: $' + fakeBuyId.price.toFixed(2) + ' current market buy price : $' + highestBuyPrice.price.toFixed(2) + ' buy state is: \"' + state.buy + '\" | A gap of $' + (highestBuyPrice.price - fakeBuyId.price).toFixed(2) + ' total buys to go: ' + buyCount + ' total amount to be sold to: ' + buyTotal.toFixed(2));
+            if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price.toFixed(2) + ' current market sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: \"' + state.sell + '\" | A gap of $' + (fakeSellId.price - lowestSellPrice.price).toFixed(2) +' total sells to go: ' + sellCount + ' total amount to be bought: ' + sellTotal.toFixed(2));
         }
         console.log('=====================================================================================================');
 
@@ -516,11 +516,11 @@ function placeBuy(){
         });
         
         fakeBuyId = buyOrder;
-        if (!Number(fakeBuyId.price)) fakeBuyId = parseFloat(fakeBuyId.price);
-        fakeBuyId.price += 0.01;
-        if (!Number(fakeBuyId.price)) fakeBuyId = parseFloat(fakeBuyId.price);
+        if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
+        fakeBuyId.price = parseFloat(fakeBuyId.price) + 0.01;
+        if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
         state.buy = 'waiting';
-        console.log('Place buy order! Good order?', buyOrder.goodOrder);
+        console.log('Place buy order! Good order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price);
         return;
     } else if (state.buy == 'waiting' && highestBuyPrice.price > (fakeBuyId.price) ) {
         console.log('Purchased!');
@@ -533,11 +533,11 @@ function placeBuy(){
             if (data.goodOrder) return data;
         });        
         if (buyOrder.price > fakeBuyId.price) {
-            console.log('Updating buy price! Good Order?', buyOrder.goodOrder);
-            fakeBuyId.order_id = buyOrder.order_id;
-            if (!Number(fakeBuyId.price)) fakeBuyId = parseFloat(fakeBuyId.price);
-            fakeBuyId.price = buyOrder.price + 0.01;
-            if (!Number(fakeBuyId.price)) fakeBuyId = parseFloat(fakeBuyId.price);
+            console.log('Updating buy price! Good Order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price);
+            fakeBuyId = buyOrder;
+            if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
+            fakeBuyId.price = parseFloat(fakeBuyId.price) + 0.01;
+            if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
         }
     }
 }
@@ -565,11 +565,11 @@ function placeSell(){
         });
         
         fakeSellId = sellOrder;
-        if (!Number(fakeSellId)) fakeSellId = parseFloat(fakeSellId.price);
-        fakeSellId.price -= 0.01;
-        if (!Number(fakeSellId)) fakeSellId = parseFloat(fakeSellId.price);
+        if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
+        fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
+        if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
         state.sell = 'waiting';
-        console.log('Placed sell order! Good order?', sellOrder.goodOrder);        
+        console.log('Placed sell order! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price); 
         return;
     } else if (state.sell == 'waiting' && lowestSellPrice.price < (fakeSellId.price)) {
         console.log('Sold!');
@@ -584,11 +584,11 @@ function placeSell(){
             if (data.goodOrder && (data.price / fakeBuyId.price) >= realMargin) return data;
         });
         if (sellOrder.price < fakeSellId.price) {
-            console.log('Updating sell price! Good order?', sellOrder.goodOrder);
-            fakeSellId.order_id = sellOrder.order_id;
-            if (!Number(fakeSellId)) fakeSellId = parseFloat(fakeSellId.price);
-            fakeSellId.price = parseFloat(sellOrder.price) - 0.01;
-            if (!Number(fakeSellId)) fakeSellId = parseFloat(fakeSellId.price);
+            console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price); 
+            fakeSellId = sellOrder;
+            if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
+            fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
+            if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
         }
     }
 }
