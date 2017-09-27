@@ -67,7 +67,7 @@ function downloadOrderBook(){
                 rawOrderBookData[objectSide].map((data, i) => {
                     orderBook[objectSide][i] = {
                         price: parseFloat(data[0]),
-                        size: data[1] % 2 == 0 ? Number(data[1]) : parseFloat(data[1]),
+                        size: Number(data[1]) ? Number(data[1]) : parseFloat(data[1]),
                         order_id: data[2]
                     };
                 });                
@@ -139,7 +139,7 @@ function catchWebSocketMessage(data, objectSide) {
                 sequence: data.sequence,
                 order_id: data.order_id,
                 price: parseFloat(data.price),
-                size: data.remaining_size % 2 == 0 ? Number(data.remaining_size) : parseFloat(data.remaining_size),
+                size: Number(data.remaining_size) ? Number(data.remaining_size) : parseFloat(data.remaining_size),
                 side: data.side
             });
             if (!pauseOrderBook) downloadOrderBook();
@@ -221,7 +221,7 @@ function catchWebSocketMessage(data, objectSide) {
             */
             for (let i = 0; i < orderBook[objectSide.length]; i++) {
                 if (orderBook[objectSide].order_id == data.order_id) {
-                    orderBook[objectSide][i].size = data.new_size % 2 == 0 ? Number(data.new_size) : parseFloat(data.new_size);
+                    orderBook[objectSide][i].size = Number(data.new_size) ? Number(data.new_size) : parseFloat(data.new_size);
                     orderBook[objectSide][i].price = parseFloat(data.price);
                     break;
                 }
@@ -337,11 +337,11 @@ function findRealisticOrders() {
         
         orderBook['buy']
         .sort((a, b) => {
-            return parseFloat(b.price) - parseFloat(a.price);
+            return b.price - a.price;
         });
         orderBook['sell']
         .sort((a, b) => {
-            return parseFloat(a.price) - parseFloat(b.price);
+            return a.price - b.price;
         });
         
         let good = {
@@ -374,30 +374,33 @@ function findRealisticOrders() {
         
         let highestBuyPrice = orderBook['buy']
         .find((data) => {
-            if (data.price) return parseFloat(data.price);
+            if (data.price) return data;
         });    
         let lowestSellPrice = orderBook['sell']
         .find((data) => {
-            if (data.price) return parseFloat(data.price);
+            if (data.price) return data;
         });    
         
-        highestBuyPrice = parseFloat(highestBuyPrice);
-        lowestSellPrice = parseFloat(lowestSellPrice);
-        fakeBuyId.price = parseFloat(fakeBuyId.price);
-        fakeSellId.price = parseFloat(fakeSellId.price);
+        if (!Number(highestBuyPrice.price)) highestBuyPrice.price = parseFloat(highestBuyPrice.price);
+        if (!Number(lowestSellPrice.price)) lowestSellPrice.price = parseFloat(lowestSellPrice.price);
         
-        if (isNaN(highestBuyPrice)|| isNaN(fakeBuyId.price) || isNaN(lowestSellPrice)) {
-            console.log("ERROR CURRENT BUY PRICE: " + highestBuyPrice + " TYPE: " + typeof highestBuyPrice);
-            console.log("ERROR CURRENT SELL PRICE: " + lowestSellPrice + " TYPE: " + typeof lowestSellPrice);
+        if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
+        if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
+        
+        console.log('My market order data:');
+        if (isNaN(highestBuyPrice.price)|| isNaN(fakeBuyId.price) || isNaN(lowestSellPrice.price)) {
+            console.log("ERROR CURRENT BUY PRICE: " + highestBuyPrice.price + " TYPE: " + typeof highestBuyPrice.price);
+            console.log("ERROR CURRENT SELL PRICE: " + lowestSellPrice.price + " TYPE: " + typeof lowestSellPrice.price);
             console.log("ERROR SAVED BUY PRICE: " + fakeBuyId.price + " TYPE: " + typeof fakeBuyId.price);
             if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
-            if (fakeBuyId.price) console.log('My buy price: ' + fakeBuyId.price + ' has to be higher than current highest buy price: ' + highestBuyPrice + ' buy state is: ' + state.buy);
-            if (fakeSellId.price) console.log('My sell price:' + fakeSellId.price + ' has to be lower than current lowest sell price: ' + lowestSellPrice + ' sell state is: ' + state.sell);            
+            if (fakeBuyId.price) console.log('My buy price: $' + fakeBuyId.price + ' has to be higher than current highest buy price: $' + highestBuyPrice.price + ' buy state is: ' + state.buy);
+            if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price + ' has to be lower than current lowest sell price: $' + lowestSellPrice.price + ' sell state is: ' + state.sell);            
         } else {
             if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
-            if (fakeBuyId.price) console.log('My buy price: ' + fakeBuyId.price.toFixed(2) + ' has to be higher than current highest buy price: ' + highestBuyPrice.toFixed(2) + ' buy state is: ' + state.buy);
-            if (fakeSellId.price) console.log('My sell price:' + fakeSellId.price.toFixed(2) + ' has to be lower than current lowest sell price: ' + lowestSellPrice.toFixed(2) + ' sell state is: ' + state.sell);
+            if (fakeBuyId.price) console.log('My buy price: $' + fakeBuyId.price.toFixed(2) + ' has to be higher than current highest buy price: $' + highestBuyPrice.price.toFixed(2) + ' buy state is: ' + state.buy);
+            if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price.toFixed(2) + ' has to be lower than current lowest sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: ' + state.sell);
         }
+        console.log('=====================================================================================================');
 
         placeBuy();
         placeSell();
@@ -430,11 +433,11 @@ function checkMargins(){
     
     orderBook['buy']
     .sort((a, b) => {
-        return parseFloat(b.price) - parseFloat(a.price);
+        return b.price - a.price;
     });
     orderBook['sell']
     .sort((a, b) => {
-        return parseFloat(a.price) - parseFloat(b.price);
+        return a.price - b.price;
     });
     
     for (let i = 0; (i < orderBook['buy'].length && !foundWorkingMargin); i++){
@@ -447,10 +450,10 @@ function checkMargins(){
                     let totalAmountInBetween = 0;
                     let margin = (orderBook['sell'][z].price / orderBook['buy'][i].price);
                     for (let x = 0; x < orderData.count['buy']; x++) {
-                        orderData.amountBetween['buy'] =+ parseFloat(orderBook['buy'][x].price * orderBook['buy'][x].size);
+                        orderData.amountBetween['buy'] =+ (orderBook['buy'][x].price * orderBook['buy'][x].size);
                     }
                     for (let x = 0; x < orderData.count['sell']; x++) {
-                        orderData.amountBetween['sell'] =+ parseFloat(orderBook['sell'][x].price * orderBook['sell'][x].size);
+                        orderData.amountBetween['sell'] =+ (orderBook['sell'][x].price * orderBook['sell'][x].size);
                     }
                     totalAmountInBetween = orderData.amountBetween['buy'] + orderData.amountBetween['sell'];
                     console.log('Margin Data:');
@@ -474,7 +477,7 @@ function placeBuy(){
     
     let highestBuyPrice = orderBook['buy']
     .find((data) => {
-        if (data.price) return parseFloat(data.price);
+        if (data.price) return data.price;
     });    
     
     if (state.buy == 'buying') {
@@ -487,9 +490,9 @@ function placeBuy(){
         });
         
         fakeBuyId = buyOrder;
-        fakeBuyId.price = parseFloat(fakeBuyId.price);
+        if (!Number(fakeBuyId.price)) fakeBuyId = parseFloat(fakeBuyId.price);
         fakeBuyId.price += 0.01;
-        fakeBuyId.price = parseFloat(fakeBuyId.price);
+        if (!Number(fakeBuyId.price)) fakeBuyId = parseFloat(fakeBuyId.price);
         state.buy = 'waiting';
         console.log('PLACED BUY ORDER');
         return;
@@ -505,9 +508,9 @@ function placeBuy(){
         });        
         if (buyOrder.price > fakeBuyId.price) {
             console.log('Updating buy price!');
-            fakeBuyId.price = parseFloat(fakeBuyId.price);
-            fakeBuyId.price = parseFloat(buyOrder.price) + 0.01;
-            fakeBuyId.price = parseFloat(fakeBuyId.price);
+            if (!Number(fakeBuyId.price)) fakeBuyId = parseFloat(fakeBuyId.price);
+            fakeBuyId.price = buyOrder.price + 0.01;
+            if (!Number(fakeBuyId.price)) fakeBuyId = parseFloat(fakeBuyId.price);
         }
     }
 }
@@ -520,7 +523,7 @@ function placeSell(){
     
     let lowestSellPrice = orderBook['sell']
     .find((data) => {
-        if (data.price) return parseFloat(data.price);
+        if (data.price) return data.price;
     });
     
     if (state.sell == 'selling') {
@@ -533,9 +536,9 @@ function placeSell(){
         });
         
         fakeSellId = sellOrder;
-        fakeSellId.price = parseFloat(fakeSellId.price);
+        if (!Number(fakeSellId)) fakeSellId = parseFloat(fakeSellId.price);
         fakeSellId.price -= 0.01;
-        fakeSellId.price = parseFloat(fakeSellId.price);
+        if (!Number(fakeSellId)) fakeSellId = parseFloat(fakeSellId.price);
         state.sell = 'waiting';
         console.log('PLACED SELL ORDER');        
     } else if (state.sell == 'waiting' && lowestSellPrice > (fakeSellId.price)) {
@@ -551,12 +554,14 @@ function placeSell(){
         });
         if (sellOrder.price < fakeSellId.price) {
             console.log('Updating sell price!');
-            fakeSellId.price = parseFloat(fakeSellId.price);
+            if (!Number(fakeSellId)) fakeSellId = parseFloat(fakeSellId.price);
             fakeSellId.price = parseFloat(sellOrder.price) - 0.01;
-            fakeSellId.price = parseFloat(fakeSellId.price);
+            if (!Number(fakeSellId)) fakeSellId = parseFloat(fakeSellId.price);
         }
     }
 }
 //=============================================
 //END>> Place sell order
 //=============================================
+
+//TODO WRITE IS NUMBER INT OR FLOAT OR NAN THEN CONVERT FUNCTION
