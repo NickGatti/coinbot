@@ -374,16 +374,28 @@ function findRealisticOrders() {
         
         let highestBuyPrice = orderBook['buy']
         .find((data) => {
-            if (data.price) return parseFloat(data.price);
+            if (data.price) return data.price;
         });    
         let lowestSellPrice = orderBook['sell']
         .find((data) => {
-            if (data.price) return parseFloat(data.price);
+            if (data.price) return data.price;
         });    
         
-        if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
-        if (fakeBuyId.price) console.log('Buy Price amount: ' + fakeBuyId.price.toFixed(2) + ' has to be higher than current highest buy price: ' + highestBuyPrice.toFixed(2) + ' buy state is: ' + state.buy);
-        if (fakeSellId.price) console.log('Sell Price amount:' + fakeSellId.price.toFixed(2) + ' has to be lower than current lowest sell price: ' + lowestSellPrice.toFixed(2) + ' sell state is: ' + state.sell);
+        highestBuyPrice = parseFloat(highestBuyPrice);
+        lowestSellPrice = parseFloat(lowestSellPrice);
+        
+        if (isNaN(highestBuyPrice)|| isNaN(fakeBuyId.price) || isNaN(lowestSellPrice)) {
+            console.log("ERROR CURRENT BUY PRICE: " + highestBuyPrice + " TYPE: " + typeof highestBuyPrice);
+            console.log("ERROR CURRENT SELL PRICE: " + lowestSellPrice + " TYPE: " + typeof lowestSellPrice);
+            console.log("ERROR SAVED BUY PRICE: " + fakeBuyId.price + " TYPE: " + typeof fakeBuyId.price);
+            if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
+            if (fakeBuyId.price) console.log('My buy price: ' + fakeBuyId.price + ' has to be higher than current highest buy price: ' + highestBuyPrice + ' buy state is: ' + state.buy);
+            if (fakeSellId.price) console.log('My sell price:' + fakeSellId.price + ' has to be lower than current lowest sell price: ' + lowestSellPrice + ' sell state is: ' + state.sell);            
+        } else {
+            if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
+            if (fakeBuyId.price) console.log('My buy price: ' + fakeBuyId.price.toFixed(2) + ' has to be higher than current highest buy price: ' + highestBuyPrice.toFixed(2) + ' buy state is: ' + state.buy);
+            if (fakeSellId.price) console.log('My sell price:' + fakeSellId.price.toFixed(2) + ' has to be lower than current lowest sell price: ' + lowestSellPrice.toFixed(2) + ' sell state is: ' + state.sell);
+        }
 
         placeBuy();
         placeSell();
