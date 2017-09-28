@@ -128,6 +128,10 @@ function getWebSocketData() {
 function catchWebSocketMessage(data, objectSide) {
     if (resetFlag && !resetPause) {
         resetPause = true;
+        orderBook = {
+            'buy': [],
+            'sell': []
+            };
         downloadOrderBook();
     }
     if (data.type == 'open') {
