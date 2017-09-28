@@ -534,10 +534,10 @@ function placeBuy(){
         
     } else if (state.buy == 'waiting' && buyOrder.price > fakeBuyId.price) {
 
-        console.log('Updating buy price! Good Order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price);
+        //console.log('Updating buy price! Good Order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price.toFixed(2));
 
-        fakeBuyId = buyOrder;
-        fakeBuyId.price = parseFloat(fakeBuyId.price) + 0.01;
+        //fakeBuyId = buyOrder;
+        //fakeBuyId.price = parseFloat(fakeBuyId.price) + 0.01;
         
         return;
         
@@ -557,12 +557,17 @@ function placeSell(){
     
     let sellOrder = orderBook['sell']
     .find((data) => {
-        if (data.goodOrder && (data.price / fakeBuyId.price) >= realMargin) return data;
+        if (data.goodOrder && ((data.price / fakeBuyId.price) >= realMargin) && lowestSellPrice.price >= fakeBuyId.price) return data;
     });
+    
+    if (!sellOrder) {
+        console.log('Bubble?');
+        return;
+    }
     
     if (state.sell == 'selling') {
         
-        console.log('Placed sell order! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price); 
+        console.log('Placed sell order! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price.toFixed(2)); 
         
         fakeSellId = sellOrder;
         fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
@@ -583,10 +588,10 @@ function placeSell(){
         
     } else if (state.sell == 'waiting' && sellOrder.price < fakeSellId.price){
         
-        console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price); 
+        //console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price);
         
-        fakeSellId = sellOrder;
-        fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
+        //fakeSellId = sellOrder;
+        //fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
         
         return;
         
@@ -596,4 +601,8 @@ function placeSell(){
 //END>> Place sell order
 //=============================================
 
-//TODO WRITE IS NUMBER INT OR FLOAT OR NAN THEN CONVERT FUNCTION
+//TODO SELL ORDER HAS TO BE AT LEAST MARGIN HIGHER THAN BUY ORDER AND SHOULDNT BE CHEAPER THAN CURRENT PRICE
+
+//TODO BUY ORDER HAS TO BE AT LEAST MARGIN FROM TOP BUY ORDER AND CANT EQUAL ITSELF
+
+//TODO 299.65
