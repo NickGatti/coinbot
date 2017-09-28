@@ -10,7 +10,7 @@ const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind
 //==============REALITY CRITERIA===============
 //=============================================
 const realityCriteria = 10000;
-const realMargin = 1.03;
+const realMargin = 1.0225;
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
@@ -33,7 +33,12 @@ var fakeAmountMade = 0;
 //=============================================
 console.log('Conneting WebSocket...');
 var pauseOrderBook = false;
+var resetFlag = false;
 var runBenchmark = false;
+var resetPause = false;
+setInterval(() => {
+    resetFlag = true;
+}, 1800000);
 getWebSocketData();
 //=============================================
 //END>> Run Our Program
@@ -54,7 +59,7 @@ function downloadOrderBook(){
     if (orderBook['buy'][0] && orderBook['sell'][0]) {
         
         pauseOrderBook = true;
-        console.log('WebSocket Connected! Downloading OrderBook...');
+        resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
         
         getOrderBook(3).then(function(value) {
             
@@ -77,7 +82,14 @@ function downloadOrderBook(){
             funt('sell');
             
             deDupe();
-            setInterval(findRealisticOrders, 2000);
+            
+            if (resetFlag) {
+                resetFlag = !resetFlag;
+                resetPause = false;
+                return;
+            } else {
+                setInterval(findRealisticOrders, 2000);
+            }
 
         }).catch(function (err) {
             console.log(err);
@@ -114,6 +126,10 @@ function getWebSocketData() {
 //START>> WebSocket Message Filter
 //=============================================
 function catchWebSocketMessage(data, objectSide) {
+    if (resetFlag && !resetPause) {
+        resetPause = true;
+        downloadOrderBook();
+    }
     if (data.type == 'open') {
         //sideIndex is not true here so orders are not found in the orderBook
             /*
@@ -308,6 +324,7 @@ function catchWebSocketMessage(data, objectSide) {
 //START>> DeDupe OrderBook
 //=============================================
 function deDupe() {
+    if (resetFlag) return;
     console.log('OrderBook Downloaded! de-Duping OrderBook!');
     
     let funt = (objectSide) => {
@@ -333,7 +350,10 @@ function deDupe() {
 //START>> Market Order Reality Checks
 //=============================================
 function findRealisticOrders() {
-    if (runBenchmark) {
+    if (resetFlag) return;
+    if (runBenchmark && !resetFlag) {
+        
+        if (resetFlag) return;
         
         orderBook['buy']
         .sort((a, b) => {
@@ -605,4 +625,4 @@ function placeSell(){
 
 //TODO BUY ORDER HAS TO BE AT LEAST MARGIN FROM TOP BUY ORDER AND CANT EQUAL ITSELF
 
-//TODO 299.65
+//TODO 295.80 3:51pm
