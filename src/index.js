@@ -871,6 +871,6 @@ function filterSellOrder(myBuyOrder) {
 //TODO TEST
 
 
-// 1 MINE: 287.58 CURRENT: 294.93
+// 1 MINE: 290.73 CURRENT: 297.97
 
 // 1 MINE: CURRENT:
