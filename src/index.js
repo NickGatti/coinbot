@@ -55,8 +55,10 @@ function getOrderBook(level) {
 //=============================================
 //START>> Call GDAX function for ASYNC variable
 //=============================================
-function downloadOrderBook(){
-    if (orderBook['buy'][0] && orderBook['sell'][0]) {
+function downloadOrderBook(flag){
+    if (orderBook['buy'][0] && orderBook['sell'][0] || flag) {
+        
+        if (flag) resetPause = true;
         
         pauseOrderBook = true;
         resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
@@ -84,7 +86,7 @@ function downloadOrderBook(){
             deDupe();
             
             if (resetFlag) {
-                resetFlag = !resetFlag;
+                resetFlag = false;
                 resetPause = false;
                 return;
             } else {
@@ -127,12 +129,8 @@ function getWebSocketData() {
 //=============================================
 function catchWebSocketMessage(data, objectSide) {
     if (resetFlag && !resetPause) {
-        resetPause = true;
-        orderBook = {
-            'buy': [],
-            'sell': []
-            };
-        downloadOrderBook();
+        console.log('Stopping to download orderbook again...');
+        downloadOrderBook(true);
     }
     if (data.type == 'open') {
         //sideIndex is not true here so orders are not found in the orderBook
@@ -162,7 +160,7 @@ function catchWebSocketMessage(data, objectSide) {
                 size: Number(data.remaining_size) ? Number(data.remaining_size) : parseFloat(data.remaining_size),
                 side: data.side
             });
-            if (!pauseOrderBook) downloadOrderBook();
+            if (!pauseOrderBook) downloadOrderBook(false);
         } else if (data.type == 'match') {
             /*
             A trade occurred between two orders. 
@@ -629,4 +627,4 @@ function placeSell(){
 
 //TODO BUY ORDER HAS TO BE AT LEAST MARGIN FROM TOP BUY ORDER AND CANT EQUAL ITSELF
 
-//TODO 295.80 3:51pm
+//TODO $ - Comback at: 
