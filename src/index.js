@@ -617,6 +617,7 @@ function checkMargins(){
 function placeBuy(){
 
     let myBuyOrder = myOrders.buy[myOrderIterator];
+    let buyInfo = buyGapInfo();
     
     let highestBuyPrice = orderBook['buy']
     .find((data) => {
@@ -640,6 +641,11 @@ function placeBuy(){
         myBuyOrder = buyOrder;
         myBuyOrder.price = parseFloat(myBuyOrder.price) + 0.01;
         myOrders.buy[myOrderIterator] = myBuyOrder;
+        
+        myOrders.buy[myOrderIterator].oldOrdersToGo = buyInfo[0];
+        myOrders.buy[myOrderIterator].oldAmountToGo = buyInfo[1];
+        myOrders.buy[myOrderIterator].oldMargin = (highestBuyPrice.price / buyOrder.price);
+        
         state.buy[myOrderIterator] = 'waiting';
         
         return;
@@ -653,15 +659,13 @@ function placeBuy(){
         
         return;
         
-    } else if (state.buy[myOrderIterator] == 'waiting' && buyOrder.price > myBuyOrder.price) {
-
-        //console.log('Updating buy price! Good Order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price.toFixed(2));
-
-        //fakeBuyId = buyOrder;
-        //fakeBuyId.price = parseFloat(fakeBuyId.price) + 0.01;
-        
-        return;
-        
+    } else if (state.buy[myOrderIterator] == 'waiting') {
+        if (myBuyOrder) {
+            if (buyInfo[0] > myBuyOrder.oldOrdersToGo && buyInfo[1] > myBuyOrder.oldAmountToGo && (highestBuyPrice.price / buyOrder.price) > myBuyOrder.oldMargin) {
+                console.log('Updating order!');
+                myOrders.buy[myOrderIterator].price = buyOrder.price;
+            }
+        }
     }
 }
 //=============================================
@@ -725,6 +729,17 @@ function placeSell(){
 //=============================================
 //END>> Place sell order
 //=============================================
-
-//TODO if gap buy margin got too big remove order / replace order
-//TODO create an array for more settings and more orders on one coinbot
+function buyGapInfo(){
+    let myBuyOrder = myOrders.buy[myOrderIterator];
+    let buyCount = 0;
+    let buyTotal = 0;
+    for (let i = 0; i < orderBook['buy'].length && myBuyOrder; i++) {
+        if (orderBook['buy'][i].order_id == myBuyOrder.order_id) {
+            break;
+        } else {
+            buyCount++;
+            buyTotal += orderBook['buy'][i].price;
+        }
+    }        
+    return [buyCount, buyTotal];
+}
