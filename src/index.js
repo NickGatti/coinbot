@@ -582,7 +582,7 @@ function placeSell(){
     
     let sellOrder = orderBook['sell']
     .find((data) => {
-        if (data.goodOrder && (data.price / fakeBuyId.price) >= realMargin) return data;
+        if (data.goodOrder && data.price >= (fakeBuyId.price * realMargin)) return data;
     });
     
     if (!sellOrder) {
@@ -626,8 +626,4 @@ function placeSell(){
 //END>> Place sell order
 //=============================================
 
-//TODO SELL ORDER HAS TO BE AT LEAST MARGIN HIGHER THAN BUY ORDER AND SHOULDNT BE CHEAPER THAN CURRENT PRICE
-
-//TODO BUY ORDER HAS TO BE AT LEAST MARGIN FROM TOP BUY ORDER AND CANT EQUAL ITSELF
-
-//TODO $292.11 - Comback at: 7:25pm
+//TODO $276.70

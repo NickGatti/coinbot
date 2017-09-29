@@ -11,9 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "coinbase": "^2.0.6",
-    "gdax": "^0.4.2"
-  },
-  "dependencies": {}
+    "gdax": "^0.4.2",
+    "util": "^0.10.3"
+  }
 }
