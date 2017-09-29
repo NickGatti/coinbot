@@ -537,30 +537,27 @@ function placeBuy(){
         state.buy[myOrderIterator] = 'waiting';
         
         return;
-        
-    } else if (state.buy[myOrderIterator] == 'waiting' && 
-    highestBuyPrice.price < (myBuyOrder.price) ) {
-        
-        console.log('Purchased!');
-        
-        state.buy[myOrderIterator] = 'paused';
-        state.sell[myOrderIterator] = 'selling';
-        
-        return;
-        
     } else if (state.buy[myOrderIterator] == 'waiting') {
-        if (myBuyOrder) {
-            if (buyInfo[0] > myBuyOrder.oldOrdersToGo && 
-            buyInfo[1] > myBuyOrder.oldAmountToGo && 
-            (highestBuyPrice.price / myBuyOrder.oldPrice) > myBuyOrder.oldMargin && 
-            buyOrder.price > myBuyOrder.oldPrice)  {
+        if (highestBuyPrice.price < myBuyOrder.price) {
+            
+                console.log('Purchased!');
                 
-                talkAboutUpdating[0] = true;
-                talkAboutUpdating[1] = parseFloat(buyOrder.price + 0.01);
+                state.buy[myOrderIterator] = 'paused';
+                state.sell[myOrderIterator] = 'selling';
                 
-                myOrders.buy[myOrderIterator].price = parseFloat(buyOrder.price + 0.01);
-                myOrders.buy[myOrderIterator].oldPrice = parseFloat(buyOrder.price) + 0.01;
-            }
+                return;
+            } else if (myBuyOrder) {
+                    if (buyInfo[0] > myBuyOrder.oldOrdersToGo && 
+                        buyInfo[1] > myBuyOrder.oldAmountToGo && 
+                        (highestBuyPrice.price / myBuyOrder.oldPrice) > myBuyOrder.oldMargin && 
+                        buyOrder.price > myBuyOrder.oldPrice)  {
+                            
+                            talkAboutUpdating[0] = true;
+                            talkAboutUpdating[1] = parseFloat(buyOrder.price + 0.01);
+                            
+                            myOrders.buy[myOrderIterator].price = parseFloat(buyOrder.price + 0.01);
+                            myOrders.buy[myOrderIterator].oldPrice = parseFloat(buyOrder.price) + 0.01;
+                }
         }
     }
 }
@@ -581,6 +578,9 @@ function placeSell(){
     let mySellOrder = myOrders.sell[myOrderIterator];
     let lowestSellPrice = findLowestSellPrice();
     let sellOrder = filterSellOrder(myBuyOrder);
+    let haveSell = ((sellOrder) => {
+        return sellOrder ? true : false;
+    });
     
     if (!sellOrder) {
         console.log('Bubble?');
@@ -598,25 +598,28 @@ function placeSell(){
         
         return;
         
-    } else if (state.sell[myOrderIterator] == 'waiting' && lowestSellPrice.price > (mySellOrder.price)) {
+    } else if (haveSell && state.sell[myOrderIterator] == 'waiting') {
         
-        console.log('Sold!');
+        if (lowestSellPrice.price > (mySellOrder.price)) {
         
-        let buyAmount = myBuyOrder.price * 1.04;
-        amountMade[myOrderIterator] = (mySellOrder.price * 20) - (buyAmount * 20);
-        state.sell[myOrderIterator] = 'paused';
-        state.buy[myOrderIterator] = 'buying';
+            console.log('Sold!');
+            
+            let buyAmount = myBuyOrder.price * 1.04;
+            amountMade[myOrderIterator] = (mySellOrder.price * 20) - (buyAmount * 20);
+            state.sell[myOrderIterator] = 'paused';
+            state.buy[myOrderIterator] = 'buying';
+            
+            return;
         
-        return;
-        
-    } else if (state.sell[myOrderIterator] == 'waiting' && sellOrder.price < mySellOrder.price){
-        
-        //console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price);
-        
-        //fakeSellId = sellOrder;
-        //fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
-        
-        return;
+        }  else if (sellOrder.price < mySellOrder.price) {
+
+            //console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price);
+            
+            //fakeSellId = sellOrder;
+            //fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
+            
+            return;
+        }
         
     }
 }
@@ -871,4 +874,6 @@ function filterSellOrder(myBuyOrder) {
 //TODO TEST
 
 
-// 1 MINE: 282.02 CURRENT: 288.99
+// 1 MINE: 287.58 CURRENT: 294.93
+
+// 1 MINE: CURRENT:
