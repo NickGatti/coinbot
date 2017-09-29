@@ -578,9 +578,6 @@ function placeSell(){
     let mySellOrder = myOrders.sell[myOrderIterator];
     let lowestSellPrice = findLowestSellPrice();
     let sellOrder = filterSellOrder(myBuyOrder);
-    let haveSell = ((sellOrder) => {
-        return sellOrder ? true : false;
-    });
     
     if (!sellOrder) {
         console.log('Bubble?');
@@ -598,29 +595,29 @@ function placeSell(){
         
         return;
         
-    } else if (haveSell && state.sell[myOrderIterator] == 'waiting') {
-        
-        if (lowestSellPrice.price > (mySellOrder.price)) {
-        
-            console.log('Sold!');
+    } else if (sellOrder) {
+        if (state.sell[myOrderIterator] == 'waiting') {
+            if (lowestSellPrice.price > mySellOrder.price) {
             
-            let buyAmount = myBuyOrder.price * 1.04;
-            amountMade[myOrderIterator] = (mySellOrder.price * 20) - (buyAmount * 20);
-            state.sell[myOrderIterator] = 'paused';
-            state.buy[myOrderIterator] = 'buying';
+                console.log('Sold!');
+                
+                let buyAmount = myBuyOrder.price * 1.04;
+                amountMade[myOrderIterator] = (mySellOrder.price * 20) - (buyAmount * 20);
+                state.sell[myOrderIterator] = 'paused';
+                state.buy[myOrderIterator] = 'buying';
+                
+                return;
             
-            return;
-        
-        }  else if (sellOrder.price < mySellOrder.price) {
-
-            //console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price);
-            
-            //fakeSellId = sellOrder;
-            //fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
-            
-            return;
+            }  else if (sellOrder.price < mySellOrder.price) {
+    
+                //console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price);
+                
+                //fakeSellId = sellOrder;
+                //fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
+                
+                return;
+            }
         }
-        
     }
 }
 //=============================================
