@@ -9,7 +9,7 @@ const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
-const realityCriteria = 10000;
+const realityCriteria = 5000;
 const realMargin = 1.0225;
 //=============================================
 //==============REALITY CRITERIA===============
@@ -130,6 +130,10 @@ function getWebSocketData() {
 function catchWebSocketMessage(data, objectSide) {
     if (resetFlag && !resetPause) {
         console.log('Stopping to download orderbook again...');
+            orderBook = {
+        'buy': [],
+        'sell': []
+        };
         downloadOrderBook(true);
     }
     if (data.type == 'open') {
@@ -627,4 +631,4 @@ function placeSell(){
 
 //TODO BUY ORDER HAS TO BE AT LEAST MARGIN FROM TOP BUY ORDER AND CANT EQUAL ITSELF
 
-//TODO $ - Comback at: 
+//TODO $ - Comback at: 6:00pm
