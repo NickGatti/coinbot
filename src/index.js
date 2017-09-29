@@ -9,8 +9,8 @@ const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
-const realityCriteria = 10000;
-const realMargin = 1.03;
+const realityCriteria = 5000;
+const realMargin = 1.0225;
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
@@ -33,7 +33,12 @@ var fakeAmountMade = 0;
 //=============================================
 console.log('Conneting WebSocket...');
 var pauseOrderBook = false;
+var resetFlag = false;
 var runBenchmark = false;
+var resetPause = false;
+setInterval(() => {
+    resetFlag = true;
+}, 900000);
 getWebSocketData();
 //=============================================
 //END>> Run Our Program
@@ -50,11 +55,13 @@ function getOrderBook(level) {
 //=============================================
 //START>> Call GDAX function for ASYNC variable
 //=============================================
-function downloadOrderBook(){
-    if (orderBook['buy'][0] && orderBook['sell'][0]) {
+function downloadOrderBook(flag){
+    if (orderBook['buy'][0] && orderBook['sell'][0] || flag) {
+        
+        if (flag) resetPause = true;
         
         pauseOrderBook = true;
-        console.log('WebSocket Connected! Downloading OrderBook...');
+        resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
         
         getOrderBook(3).then(function(value) {
             
@@ -77,7 +84,14 @@ function downloadOrderBook(){
             funt('sell');
             
             deDupe();
-            setInterval(findRealisticOrders, 2000);
+            
+            if (resetFlag) {
+                resetFlag = false;
+                resetPause = false;
+                return;
+            } else {
+                setInterval(findRealisticOrders, 2000);
+            }
 
         }).catch(function (err) {
             console.log(err);
@@ -114,6 +128,14 @@ function getWebSocketData() {
 //START>> WebSocket Message Filter
 //=============================================
 function catchWebSocketMessage(data, objectSide) {
+    if (resetFlag && !resetPause) {
+        console.log('Stopping to download orderbook again...');
+            orderBook = {
+        'buy': [],
+        'sell': []
+        };
+        downloadOrderBook(true);
+    }
     if (data.type == 'open') {
         //sideIndex is not true here so orders are not found in the orderBook
             /*
@@ -142,7 +164,7 @@ function catchWebSocketMessage(data, objectSide) {
                 size: Number(data.remaining_size) ? Number(data.remaining_size) : parseFloat(data.remaining_size),
                 side: data.side
             });
-            if (!pauseOrderBook) downloadOrderBook();
+            if (!pauseOrderBook) downloadOrderBook(false);
         } else if (data.type == 'match') {
             /*
             A trade occurred between two orders. 
@@ -333,7 +355,10 @@ function deDupe() {
 //START>> Market Order Reality Checks
 //=============================================
 function findRealisticOrders() {
-    if (runBenchmark) {
+    if (resetFlag) return;
+    if (runBenchmark && !resetFlag) {
+        
+        if (resetFlag) return;
         
         orderBook['buy']
         .sort((a, b) => {
@@ -557,7 +582,7 @@ function placeSell(){
     
     let sellOrder = orderBook['sell']
     .find((data) => {
-        if (data.goodOrder && ((data.price / fakeBuyId.price) >= realMargin) && lowestSellPrice.price >= fakeBuyId.price) return data;
+        if (data.goodOrder && data.price >= (fakeBuyId.price * realMargin)) return data;
     });
     
     if (!sellOrder) {
@@ -601,8 +626,4 @@ function placeSell(){
 //END>> Place sell order
 //=============================================
 
-//TODO SELL ORDER HAS TO BE AT LEAST MARGIN HIGHER THAN BUY ORDER AND SHOULDNT BE CHEAPER THAN CURRENT PRICE
-
-//TODO BUY ORDER HAS TO BE AT LEAST MARGIN FROM TOP BUY ORDER AND CANT EQUAL ITSELF
-
-//TODO 299.65
+//TODO $276.70
