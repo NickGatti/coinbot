@@ -1,5 +1,9 @@
 //=============================================
+//=============================================
+//=============================================
 //START>> Global Var Dec's
+//=============================================
+//=============================================
 //=============================================
 const Gdax = require('gdax');
 const util = require('util');
@@ -10,33 +14,35 @@ const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind
 //==============REALITY CRITERIA===============
 //=============================================
 const mySettings = {
-    realityCriteria: [
-            5000,
-            10000,
-            5000,
-            10000,
-            5000,
-            10000,
-            5000,
-            10000,
-            5000,
-            10000
-        ],
+    realityCriteria: [],
     realMargin: [
-            1.025,
-            1.025,
-            1.0275,
-            1.0275,
-            1.03,
-            1.03,
-            1.04,
-            1.04,
-            1.05,
-            1.05
+            1.025,      // 1
+            1.025,      // 2
+            1.0275,     // 3
+            1.0275,     // 4
+            1.03,       // 5
+            1.03,       // 6
+            1.04,       // 7
+            1.04,       // 8
+            1.05,       // 9
+            1.05,       // 10
+            1.07,       // 11
+            1.07,       // 12
+            1.10,       // 13
+            1.10,       // 14
+            1.13,       // 15
+            1.13,       // 16
+            1.17,       // 17
+            1.17,       // 18
+            1.23,       // 19
+            1.23        // 20
         ]
 };
-var myOrderIterator = 0;
-var talkAboutUpdating = [false, 0];
+var state = {
+    buy: [],
+    sell: []
+};
+populateMySettings(20);
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
@@ -44,42 +50,25 @@ var orderBook = {
     'buy': [],
     'sell': []
     };
-//=============================================
+
+var myOrderIterator = 0;
+var talkAboutUpdating = [false, 0];
+
 var myOrders = {
     buy: [],
     sell: []
 };
-var state = {
-    buy: [
-            'buying',
-            'buying',
-            'buying',
-            'buying',
-            'buying',
-            'buying',
-            'buying',
-            'buying',
-            'buying',
-            'buying'
-        ],
-    sell: [
-            'paused',
-            'paused',
-            'paused',
-            'paused',
-            'paused',
-            'paused',
-            'paused',
-            'paused',
-            'paused',
-            'paused'
-        ]
-};
 var amountMade = [];
+//=============================================
+//=============================================
 //=============================================
 //END>> Global Var Dec's
 //=============================================
+//=============================================
+//=============================================
 //START>> Run Our Program
+//=============================================
+//=============================================
 //=============================================
 console.log('Conneting WebSocket...');
 var pauseOrderBook = false;
@@ -92,9 +81,15 @@ setInterval(() => {
 }, 900000);
 getWebSocketData();
 //=============================================
+//=============================================
+//=============================================
 //END>> Run Our Program
 //=============================================
+//=============================================
+//=============================================
 //START>> GDAX Module REST API OrderBook Fetch
+//=============================================
+//=============================================
 //=============================================
 function getOrderBook(level) {
     return getProductOrderBook({'level': level}).then(function(data) {
@@ -102,9 +97,15 @@ function getOrderBook(level) {
     }); 
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> GDAX Module REST API OrderBook Fetch
 //=============================================
+//=============================================
+//=============================================
 //START>> Call GDAX function for ASYNC variable
+//=============================================
+//=============================================
 //=============================================
 function downloadOrderBook(flag){
     if (orderBook['buy'][0] && orderBook['sell'][0] || flag) {
@@ -150,9 +151,15 @@ function downloadOrderBook(flag){
     }
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Call GDAX function for ASYNC variable
 //=============================================
+//=============================================
+//=============================================
 //START>> Websocket Change Detections
+//=============================================
+//=============================================
 //=============================================
 function getWebSocketData() { 
     websocket.on('message', function(data) { 
@@ -174,9 +181,15 @@ function getWebSocketData() {
         
     })}
 //=============================================
+//=============================================
+//=============================================
 //END>> Websocket Change Detections
 //=============================================
+//=============================================
+//=============================================
 //START>> WebSocket Message Filter
+//=============================================
+//=============================================
 //=============================================
 function catchWebSocketMessage(data, objectSide) {
     if (resetFlag && !resetPause) {
@@ -383,9 +396,15 @@ function catchWebSocketMessage(data, objectSide) {
         }
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> WebSocket Message Filter
 //=============================================
+//=============================================
+//=============================================
 //START>> DeDupe OrderBook
+//=============================================
+//=============================================
 //=============================================
 function deDupe() {
     dataIntegrityTest = true;
@@ -480,86 +499,22 @@ function findRealisticOrders() {
     }
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Market Order Reality Checks
 //=============================================
-//START>> Margin Checks of Real Orders
 //=============================================
-function checkMargins(){
-    
-    /*
-        From the cheapest Buy order going through sell orders to find a margin
-        
-        Its finding a suitable sell order price
-    */
-    
-    let foundWorkingMargin = false;
-    let orderData = {
-        amountBetween: {
-            'buy': 0,
-            'sell': 0
-        },
-        count: {
-            'buy': 0,
-            'sell': 0
-        }
-    };
-    
-    orderBook['buy']
-    .sort((a, b) => {
-        return b.price - a.price;
-    });
-    orderBook['sell']
-    .sort((a, b) => {
-        return a.price - b.price;
-    });
-    
-    for (let i = 0; (i < orderBook['buy'].length && !foundWorkingMargin); i++){
-        orderData.count['buy']++;
-        if (orderBook['buy'][i].goodOrder) {
-            for (let z = 0; (z < orderBook['sell'].length && !foundWorkingMargin); z++){
-                orderData.count['sell']++;
-                if ((orderBook['sell'][z].goodOrder) && ((orderBook['sell'][z].price / orderBook['buy'][i].price) > realMargin)) {
-                    let totalCount = orderData.count['buy'] + orderData.count['sell'];
-                    let totalAmountInBetween = 0;
-                    let margin = (orderBook['sell'][z].price / orderBook['buy'][i].price);
-                    for (let x = 0; x < orderData.count['buy']; x++) {
-                        orderData.amountBetween['buy'] =+ (orderBook['buy'][x].price * orderBook['buy'][x].size);
-                    }
-                    for (let x = 0; x < orderData.count['sell']; x++) {
-                        orderData.amountBetween['sell'] =+ (orderBook['sell'][x].price * orderBook['sell'][x].size);
-                    }
-                    totalAmountInBetween = orderData.amountBetween['buy'] + orderData.amountBetween['sell'];
-                    console.log('Margin Data:');
-                    console.log(`Found good margin (${margin.toFixed(2).slice(2)}%) || These matched real orders have ${totalCount} fake orders filling their gap`);
-                    console.log(`$${orderData.amountBetween['buy'].toFixed(2)} amount of USD needs to fill for the fake order *buy* gap`);
-                    console.log(`$${orderData.amountBetween['sell'].toFixed(2)} amount of USD needs to fill for the fake order *sell* gap`);
-                    console.log(`$${totalAmountInBetween.toFixed(2)} *total* amount of USD needs to fill for the fake order gap`);
-                    console.log('=====================================================================================================');
-                    foundWorkingMargin = true;
-                }
-            }
-        }
-    }
-}
-//=============================================
-//END>> Margin Checks of Real Orders
 //=============================================
 //START>> Place buy order
+//=============================================
+//=============================================
 //=============================================
 function placeBuy(){
 
     let myBuyOrder = myOrders.buy[myOrderIterator];
     let buyInfo = buyGapInfo();
-    
-    let highestBuyPrice = orderBook['buy']
-    .find((data) => {
-        if (data.price) return data;
-    }); 
-
-    let buyOrder = orderBook['buy']
-    .find((data) => {
-        if (data.goodOrder && (highestBuyPrice.price / data.price) >= mySettings.realMargin[myOrderIterator]) return data;
-    });   
+    let highestBuyPrice = findHighestBuyPrice();
+    let buyOrder = filterBuyOrder(highestBuyPrice);
     
     if (!buyOrder) {
         console.log('Wait what? This should\'t happen!');
@@ -601,7 +556,7 @@ function placeBuy(){
             buyOrder.price > myBuyOrder.oldPrice)  {
                 
                 talkAboutUpdating[0] = true;
-                talkAboutUpdating[1] = buyOrder.price + 0.01;
+                talkAboutUpdating[1] = parseFloat(buyOrder.price + 0.01);
                 
                 myOrders.buy[myOrderIterator].price = parseFloat(buyOrder.price + 0.01);
                 myOrders.buy[myOrderIterator].oldPrice = parseFloat(buyOrder.price) + 0.01;
@@ -610,24 +565,22 @@ function placeBuy(){
     }
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Place buy order
 //=============================================
+//=============================================
+//=============================================
 //START>> Place sell order
+//=============================================
+//=============================================
 //=============================================
 function placeSell(){   
     
     let myBuyOrder = myOrders.buy[myOrderIterator];
     let mySellOrder = myOrders.sell[myOrderIterator];
-    
-    let lowestSellPrice = orderBook['sell']
-    .find((data) => {
-        if (data.price) return data;
-    });
-    
-    let sellOrder = orderBook['sell']
-    .find((data) => {
-        if (data.goodOrder && data.price >= (myBuyOrder.price * mySettings.realMargin[myOrderIterator])) return data;
-    });
+    let lowestSellPrice = findLowestSellPrice();
+    let sellOrder = filterSellOrder(myBuyOrder);
     
     if (!sellOrder) {
         console.log('Bubble?');
@@ -668,9 +621,15 @@ function placeSell(){
     }
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Place sell order
 //=============================================
+//=============================================
+//=============================================
 //START>> Buy gap info
+//=============================================
+//=============================================
 //=============================================
 function buyGapInfo(){
     let myBuyOrder = myOrders.buy[myOrderIterator];
@@ -687,9 +646,15 @@ function buyGapInfo(){
     return [buyCount, buyTotal];
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Buy gap info
 //=============================================
+//=============================================
+//=============================================
 //START>> Sell gap info
+//=============================================
+//=============================================
 //=============================================
 function sellGapInfo(){
         let mySellOrder = myOrders.sell[myOrderIterator];
@@ -706,9 +671,15 @@ function sellGapInfo(){
         return [sellCount, sellTotal];
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Sell Gap info
 //=============================================
+//=============================================
+//=============================================
 //START>> Sort both buy and sell
+//=============================================
+//=============================================
 //=============================================
 function sortBothSides(){
         orderBook['buy']
@@ -721,9 +692,15 @@ function sortBothSides(){
         });
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Sort both buy and sell
 //=============================================
+//=============================================
+//=============================================
 //START>> Sort through orders and label them good or bad
+//=============================================
+//=============================================
 //=============================================
 function findGoodOrders(){
     let good = {
@@ -747,9 +724,15 @@ function findGoodOrders(){
     return good;
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Sort through orders and labem them good or bad
 //=============================================
+//=============================================
+//=============================================
 //START>> Find the highest buy price in the order book
+//=============================================
+//=============================================
 //=============================================
 function findHighestBuyPrice(){
     let highestBuyPrice = orderBook['buy']
@@ -759,9 +742,15 @@ function findHighestBuyPrice(){
     return highestBuyPrice;
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Find the highest buy price in the order book
 //=============================================
+//=============================================
+//=============================================
 //START>> Find the loweset sell price in the order book
+//=============================================
+//=============================================
 //=============================================
 function findLowestSellPrice(){
     let lowestSellPrice = orderBook['sell']
@@ -771,9 +760,15 @@ function findLowestSellPrice(){
     return lowestSellPrice;
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Find the lowest sell price in the order book
 //=============================================
+//=============================================
+//=============================================
 //START>> Check variables
+//=============================================
+//=============================================
 //=============================================
 function checkVars(){
     let highestBuyPrice = findHighestBuyPrice();
@@ -806,6 +801,74 @@ function checkVars(){
     }
 }
 //=============================================
+//=============================================
+//=============================================
 //END>> Check variables
+//=============================================
+//=============================================
+//=============================================
+//START>> Populate my settings
+//=============================================
+//=============================================
+//=============================================
+function populateMySettings(num){
+    for (let i = 0; i < num; i++ ) {
+        mySettings.realMargin.push(5000);
+        mySettings.realityCriteria.push(10000);
+        state.buy.push('buying');
+        state.sell.push('waiting');
+    }
+}
+//=============================================
+//=============================================
+//=============================================
+//END>> Populate my settings
+//=============================================
+//=============================================
+//=============================================
+//START>> Filter buy orders for a margin
+//=============================================
+//=============================================
+//=============================================
+function filterBuyOrder(highestBuyPrice){
+    let buyOrder = orderBook['buy']
+    .find((data) => {
+        if (data.goodOrder && (highestBuyPrice.price / data.price) >= mySettings.realMargin[myOrderIterator]) return data;
+    });
+    return buyOrder;
+}
+//=============================================
+//=============================================
+//=============================================
+//END>> Filter buy orders for a margin
+//=============================================
+//=============================================
+//=============================================
+//START>> Filter sell orders for a margin
+//=============================================
+//=============================================
+//=============================================
+function filterSellOrder(myBuyOrder) {
+    let sellOrder = orderBook['sell']
+    .find((data) => {
+        if (data.goodOrder && data.price >= (myBuyOrder.price * mySettings.realMargin[myOrderIterator])) return data;
+    });
+    return sellOrder;
+}
+//=============================================
+//=============================================
+//=============================================
+//END>> Filter sell orders for a margin
+//=============================================
+//=============================================
+//=============================================
 
-//TODO Track amount made
+
+
+
+
+
+//TODO TEST
+
+
+// 1 MINE: 282.02 CURRENT: 288.99
