@@ -36,6 +36,7 @@ const mySettings = {
         ]
 };
 var myOrderIterator = 0;
+var talkAboutUpdating = [false, 0];
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
@@ -74,7 +75,7 @@ var state = {
             'paused'
         ]
 };
-var fakeAmountMade = 0;
+var amountMade = [];
 //=============================================
 //END>> Global Var Dec's
 //=============================================
@@ -416,35 +417,13 @@ function deDupe() {
 function findRealisticOrders() {
     if (resetFlag) return;
     if (runBenchmark && !resetFlag) {
-        if (resetFlag) return;
         
-        orderBook['buy']
-        .sort((a, b) => {
-            return b.price - a.price;
-        });
-        orderBook['sell']
-        .sort((a, b) => {
-            return a.price - b.price;
-        });
+        sortBothSides();
         
-        let good = {
-            'buy': 0,
-            'sell': 0
-        };
+        let good = findGoodOrders();
         
-        let funt = (objectSide) => {
-            orderBook[objectSide].map((obj, index) => {
-                if ((obj.price * obj.size) > mySettings.realityCriteria[myOrderIterator]) {
-                    orderBook[objectSide][index].goodOrder = true;
-                    good[objectSide]++;
-                } else {
-                    orderBook[objectSide][index].goodOrder = false;
-                }
-            });            
-        };
-        
-        funt('buy');
-        funt('sell');
+        let buyInfo = buyGapInfo();
+        let sellInfo = sellGapInfo();
         
         let goodBuyPercent = parseFloat(good['buy'] / orderBook['buy'].length);
         let goodSellPercent = parseFloat(good['sell'] / orderBook['sell'].length);
@@ -456,82 +435,35 @@ function findRealisticOrders() {
         console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
         console.log('=====================================================================================================');
         
-        let highestBuyPrice = orderBook['buy']
-        .find((data) => {
-            if (data.price) return data;
-        });    
-        let lowestSellPrice = orderBook['sell']
-        .find((data) => {
-            if (data.price) return data;
-        });    
+        let highestBuyPrice = findHighestBuyPrice();
+        let lowestSellPrice = findLowestSellPrice();
         
-        let myBuyOrder = myOrders.buy[myOrderIterator];
+        let myBuyOrder = myOrders.buy[myOrderIterator];        
         let mySellOrder = myOrders.sell[myOrderIterator];
         
-        if (Number(highestBuyPrice.price)) highestBuyPrice.price = parseFloat(highestBuyPrice.price);
-        if (Number(lowestSellPrice.price)) lowestSellPrice.price = parseFloat(lowestSellPrice.price);
-        
-        if (!myBuyOrder) {
-            placeBuy();
-            myBuyOrder = myOrders.buy[myOrderIterator];
-        }
-        if (!mySellOrder){
-            placeSell();
-            mySellOrder = myOrders.sell[myOrderIterator];
-        }
-        
-        if (myBuyOrder) {
-            if (Number(myBuyOrder.price)) myBuyOrder.price = parseFloat(myBuyOrder.price);
-        }
-        if (mySellOrder) {
-            if (Number(mySellOrder.price)) mySellOrder.price = parseFloat(mySellOrder.price);
-        }
-        
-        if (Number(fakeAmountMade)) fakeAmountMade = parseFloat(fakeAmountMade);
-        
-        
-        
-        let buyCount = 0;
-        let buyTotal = 0;
-        
-        let sellCount = 0;
-        let sellTotal = 0;
-        
-        for (let i = 0; i < orderBook['buy'].length && myBuyOrder; i++) {
-            if (orderBook['buy'][i].order_id == myBuyOrder.order_id) {
-                break;
-            } else {
-                buyCount++;
-                buyTotal += orderBook['buy'][i].price;
-            }
-        }
-        
-        for (let i = 0; i < orderBook['sell'].length && mySellOrder; i++) {
-            if (orderBook['sell'][i].order_id == mySellOrder.order_id) {
-                break;
-            } else {
-                sellCount++;
-                sellTotal += orderBook['sell'][i].price;
-            }
-        }
+        checkVars();
         
         let readableOrderIteration = myOrderIterator + 1;
         
         console.log('My market order data:');
         console.log('We are currently looking at order number: ', readableOrderIteration);
-        if (fakeAmountMade && !isNaN(fakeAmountMade)) {
-            console.log('Fake amount made:', fakeAmountMade.toFixed(2));
-        } else if (fakeAmountMade && isNaN(fakeAmountMade)) {
-            console.log('Fake amount made:', fakeAmountMade);
+        
+        if (amountMade[myOrderIterator]) {
+            isNaN(amountMade[myOrderIterator]) ? console.log('Fake amount made:', amountMade[myOrderIterator]) : console.log('Fake amount made:', amountMade[myOrderIterator].toFixed(2));
         }
+        
         if (myBuyOrder) {
+            if (talkAboutUpdating[0]) {
+                console.log('Updating order: Old Price $: ' + myOrders.buy[myOrderIterator].oldPrice.toFixed(2) + ' || New Price: $' + talkAboutUpdating[1].toFixed(2) + ' || A difference of: $' + (talkAboutUpdating[1] - myOrders.buy[myOrderIterator].oldPrice).toFixed(2));
+                talkAboutUpdating[0] = false;
+            }
             let buyOutput = 'My buy price: $' + myBuyOrder.price.toFixed(2) + ' current market buy price : $' + highestBuyPrice.price.toFixed(2) + ' buy state is: \"' + state.buy[myOrderIterator] + '\"';
-            if (state.buy[myOrderIterator] != 'paused') buyOutput += ' || A gap of $' + (highestBuyPrice.price - myBuyOrder.price).toFixed(2) + ' total buys to go: ' + buyCount + ' total amount to be sold to: $' + buyTotal.toFixed(2);
+            if (state.buy[myOrderIterator] != 'paused') buyOutput += ' || A gap of $' + (highestBuyPrice.price - myBuyOrder.price).toFixed(2) + ' total buys to go: ' + buyInfo[0] + ' total amount to be sold to: $' + buyInfo[1].toFixed(2);
             if (myBuyOrder.price) console.log(buyOutput);
         }
         if (mySellOrder) {
             let sellOutput = 'My sell price: $' + mySellOrder.price.toFixed(2) + ' current market sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: \"' + state.sell[myOrderIterator] + '\"';
-            if (state.sell[myOrderIterator] != 'paused') sellOutput += ' || A gap of $' + (mySellOrder.price - lowestSellPrice.price).toFixed(2) +' total sells to go: ' + sellCount + ' total amount to be bought: $' + sellTotal.toFixed(2);
+            if (state.sell[myOrderIterator] != 'paused') sellOutput += ' || A gap of $' + (mySellOrder.price - lowestSellPrice.price).toFixed(2) +' total sells to go: ' + sellInfo[0] + ' total amount to be bought: $' + sellInfo[1].toFixed(2);
             if (mySellOrder.price) console.log(sellOutput);
         }
         console.log('=====================================================================================================');
@@ -645,12 +577,14 @@ function placeBuy(){
         myOrders.buy[myOrderIterator].oldOrdersToGo = buyInfo[0];
         myOrders.buy[myOrderIterator].oldAmountToGo = buyInfo[1];
         myOrders.buy[myOrderIterator].oldMargin = (highestBuyPrice.price / buyOrder.price);
+        myOrders.buy[myOrderIterator].oldPrice = parseFloat(buyOrder.price);
         
         state.buy[myOrderIterator] = 'waiting';
         
         return;
         
-    } else if (state.buy[myOrderIterator] == 'waiting' && highestBuyPrice.price < (myBuyOrder.price) ) {
+    } else if (state.buy[myOrderIterator] == 'waiting' && 
+    highestBuyPrice.price < (myBuyOrder.price) ) {
         
         console.log('Purchased!');
         
@@ -661,9 +595,16 @@ function placeBuy(){
         
     } else if (state.buy[myOrderIterator] == 'waiting') {
         if (myBuyOrder) {
-            if (buyInfo[0] > myBuyOrder.oldOrdersToGo && buyInfo[1] > myBuyOrder.oldAmountToGo && (highestBuyPrice.price / buyOrder.price) > myBuyOrder.oldMargin) {
-                console.log('Updating order!');
-                myOrders.buy[myOrderIterator].price = buyOrder.price;
+            if (buyInfo[0] > myBuyOrder.oldOrdersToGo && 
+            buyInfo[1] > myBuyOrder.oldAmountToGo && 
+            (highestBuyPrice.price / buyOrder.price) > myBuyOrder.oldMargin && 
+            buyOrder.price > myBuyOrder.oldPrice)  {
+                
+                talkAboutUpdating[0] = true;
+                talkAboutUpdating[1] = buyOrder.price + 0.01;
+                
+                myOrders.buy[myOrderIterator].price = parseFloat(buyOrder.price + 0.01);
+                myOrders.buy[myOrderIterator].oldPrice = parseFloat(buyOrder.price) + 0.01;
             }
         }
     }
@@ -709,7 +650,7 @@ function placeSell(){
         console.log('Sold!');
         
         let buyAmount = myBuyOrder.price * 1.04;
-        fakeAmountMade = (mySellOrder.price * 20) - (buyAmount * 20);
+        amountMade[myOrderIterator] = (mySellOrder.price * 20) - (buyAmount * 20);
         state.sell[myOrderIterator] = 'paused';
         state.buy[myOrderIterator] = 'buying';
         
@@ -729,6 +670,8 @@ function placeSell(){
 //=============================================
 //END>> Place sell order
 //=============================================
+//START>> Buy gap info
+//=============================================
 function buyGapInfo(){
     let myBuyOrder = myOrders.buy[myOrderIterator];
     let buyCount = 0;
@@ -743,3 +686,126 @@ function buyGapInfo(){
     }        
     return [buyCount, buyTotal];
 }
+//=============================================
+//END>> Buy gap info
+//=============================================
+//START>> Sell gap info
+//=============================================
+function sellGapInfo(){
+        let mySellOrder = myOrders.sell[myOrderIterator];
+        let sellCount = 0;
+        let sellTotal = 0;
+        for (let i = 0; i < orderBook['buy'].length && mySellOrder; i++) {
+            if (orderBook['buy'][i].order_id == mySellOrder.order_id) {
+                break;
+            } else {
+                sellCount++;
+                sellTotal += orderBook['buy'][i].price;
+            }
+        }
+        return [sellCount, sellTotal];
+}
+//=============================================
+//END>> Sell Gap info
+//=============================================
+//START>> Sort both buy and sell
+//=============================================
+function sortBothSides(){
+        orderBook['buy']
+        .sort((a, b) => {
+            return b.price - a.price;
+        });
+        orderBook['sell']
+        .sort((a, b) => {
+            return a.price - b.price;
+        });
+}
+//=============================================
+//END>> Sort both buy and sell
+//=============================================
+//START>> Sort through orders and label them good or bad
+//=============================================
+function findGoodOrders(){
+    let good = {
+        'buy': 0,
+        'sell': 0
+    };
+    
+    let funt = (objectSide) => {
+        orderBook[objectSide].map((obj, index) => {
+            if ((obj.price * obj.size) > mySettings.realityCriteria[myOrderIterator]) {
+                orderBook[objectSide][index].goodOrder = true;
+                good[objectSide]++;
+            } else {
+                orderBook[objectSide][index].goodOrder = false;
+            }
+        });            
+    };
+    
+    funt('buy');
+    funt('sell');
+    return good;
+}
+//=============================================
+//END>> Sort through orders and labem them good or bad
+//=============================================
+//START>> Find the highest buy price in the order book
+//=============================================
+function findHighestBuyPrice(){
+    let highestBuyPrice = orderBook['buy']
+        .find((data) => {
+            if (data.price) return data;
+        });    
+    return highestBuyPrice;
+}
+//=============================================
+//END>> Find the highest buy price in the order book
+//=============================================
+//START>> Find the loweset sell price in the order book
+//=============================================
+function findLowestSellPrice(){
+    let lowestSellPrice = orderBook['sell']
+        .find((data) => {
+            if (data.price) return data;
+        });    
+    return lowestSellPrice;
+}
+//=============================================
+//END>> Find the lowest sell price in the order book
+//=============================================
+//START>> Check variables
+//=============================================
+function checkVars(){
+    let highestBuyPrice = findHighestBuyPrice();
+    let lowestSellPrice = findLowestSellPrice();
+    
+    let myBuyOrder = myOrders.buy[myOrderIterator];        
+    let mySellOrder = myOrders.sell[myOrderIterator];
+    
+    if (Number(highestBuyPrice.price)) highestBuyPrice.price = parseFloat(highestBuyPrice.price);
+    if (Number(lowestSellPrice.price)) lowestSellPrice.price = parseFloat(lowestSellPrice.price);
+    
+    if (!myBuyOrder) {
+        placeBuy();
+        myBuyOrder = myOrders.buy[myOrderIterator];
+    }
+    if (!mySellOrder){
+        placeSell();
+        mySellOrder = myOrders.sell[myOrderIterator];
+    }
+    
+    if (myBuyOrder) {
+        if (Number(myBuyOrder.price)) myBuyOrder.price = parseFloat(myBuyOrder.price);
+    }
+    if (mySellOrder) {
+        if (Number(mySellOrder.price)) mySellOrder.price = parseFloat(mySellOrder.price);
+    }
+    
+    if (amountMade[myOrderIterator]) {
+        if (Number(amountMade[myOrderIterator])) amountMade[myOrderIterator] = parseFloat(amountMade[myOrderIterator]);
+    }
+}
+//=============================================
+//END>> Check variables
+
+//TODO Track amount made
