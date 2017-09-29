@@ -12,7 +12,7 @@ sudo chmod u+x ./update.sh
 ./update.sh
 nvm install 8
 nvm use 8
-sudo npm install
+npm install
 npm update
 npm start
 ```

@@ -9,8 +9,33 @@ const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
-const realityCriteria = 5000;
-const realMargin = 1.0225;
+const mySettings = {
+    realityCriteria: [
+            5000,
+            10000,
+            5000,
+            10000,
+            5000,
+            10000,
+            5000,
+            10000,
+            5000,
+            10000
+        ],
+    realMargin: [
+            1.025,
+            1.025,
+            1.0275,
+            1.0275,
+            1.03,
+            1.03,
+            1.04,
+            1.04,
+            1.05,
+            1.05
+        ]
+};
+var myOrderIterator = 0;
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
@@ -19,11 +44,35 @@ var orderBook = {
     'sell': []
     };
 //=============================================
-var fakeBuyId = {};
-var fakeSellId = {};
+var myOrders = {
+    buy: [],
+    sell: []
+};
 var state = {
-    buy: 'buying',
-    sell: 'paused'
+    buy: [
+            'buying',
+            'buying',
+            'buying',
+            'buying',
+            'buying',
+            'buying',
+            'buying',
+            'buying',
+            'buying',
+            'buying'
+        ],
+    sell: [
+            'paused',
+            'paused',
+            'paused',
+            'paused',
+            'paused',
+            'paused',
+            'paused',
+            'paused',
+            'paused',
+            'paused'
+        ]
 };
 var fakeAmountMade = 0;
 //=============================================
@@ -36,6 +85,7 @@ var pauseOrderBook = false;
 var resetFlag = false;
 var runBenchmark = false;
 var resetPause = false;
+var dataIntegrityTest = false;
 setInterval(() => {
     resetFlag = true;
 }, 900000);
@@ -83,7 +133,7 @@ function downloadOrderBook(flag){
             funt('buy');
             funt('sell');
             
-            deDupe();
+            deDupe(); //how do i run dedupe while the rest of it runs?
             
             if (resetFlag) {
                 resetFlag = false;
@@ -137,6 +187,7 @@ function catchWebSocketMessage(data, objectSide) {
         downloadOrderBook(true);
     }
     if (data.type == 'open') {
+        if (dataIntegrityTest) console.log('DataIntegrityTesting: New open order!');
         //sideIndex is not true here so orders are not found in the orderBook
             /*
             The order is now open on the order book. 
@@ -166,6 +217,7 @@ function catchWebSocketMessage(data, objectSide) {
             });
             if (!pauseOrderBook) downloadOrderBook(false);
         } else if (data.type == 'match') {
+            if (dataIntegrityTest) console.log('DataIntegrityTesting: Trade Match!');
             /*
             A trade occurred between two orders. 
             The aggressor or taker order is the one executing immediately after being received and the maker order is a resting order on the book. 
@@ -192,6 +244,7 @@ function catchWebSocketMessage(data, objectSide) {
                 return data.taker_order_id != item.order_id;
             });                    
         } else if (data.type == 'received') {
+            if (dataIntegrityTest) console.log('DataIntegrityTesting: Received Order!');
             /*
             A valid order has been received and is now active. 
             This message is emitted for every single valid order as soon as the matching engine receives it whether it fills immediately or not.
@@ -218,6 +271,7 @@ function catchWebSocketMessage(data, objectSide) {
             }
             */
         } else if (data.type == 'change') {
+            if (dataIntegrityTest) console.log('DataIntegrityTesting: Changed Order!');
             /*
                 An order has changed. 
                 This is the result of self-trade prevention adjusting the order size or available funds. 
@@ -249,6 +303,7 @@ function catchWebSocketMessage(data, objectSide) {
                 }
             }
         } else if (data.type == 'done') {
+            if (dataIntegrityTest) console.log('DataIntegrityTesting: Done Order!');
             /*
             The order is no longer on the order book. 
             Sent for all orders for which there was a received message. 
@@ -271,6 +326,7 @@ function catchWebSocketMessage(data, objectSide) {
                 return data.order_id != item.order_id;
             });
         } else if (data.type == 'activate') {
+            if (dataIntegrityTest) console.log('DataIntegrityTesting: Activated Order!');
             /*
             An activate message is sent when a stop order is placed. 
             When the stop is triggered the order will be placed and go through the order lifecycle.
@@ -291,6 +347,7 @@ function catchWebSocketMessage(data, objectSide) {
             }
             */
         } else if (data.type == 'margin_profile_update') {
+            if (dataIntegrityTest) console.log('DataIntegrityTesting: Margin Profile Update!');
             /*
             This feed message will only be received if you are authenticated with a margin profile.
             {
@@ -330,23 +387,25 @@ function catchWebSocketMessage(data, objectSide) {
 //START>> DeDupe OrderBook
 //=============================================
 function deDupe() {
+    dataIntegrityTest = true;
     console.log('OrderBook Downloaded! de-Duping OrderBook!');
     
-    let funt = (objectSide) => {
-        for (let i = 0; i < orderBook[objectSide].length; i++) {
-            for(let z = i+1; z < orderBook[objectSide].length; z++) {
-                if (orderBook[objectSide][i].order_id == orderBook[objectSide][z].order_id) {
-                    console.log('Duped Order Found! You should probably never really see this message!');
-                    orderBook[objectSide].splice(z, 1);
-                }
-            }
-        }
-    };
+    // let funt = (objectSide) => {
+    //     for (let i = 0; i < orderBook[objectSide].length; i++) {
+    //         for(let z = i+1; z < orderBook[objectSide].length; z++) {
+    //             if (orderBook[objectSide][i].order_id == orderBook[objectSide][z].order_id) {
+    //                 console.log('Duped Order Found! You should probably never really see this message!');
+    //                 orderBook[objectSide].splice(z, 1);
+    //             }
+    //         }
+    //     }
+    // };
 
-    funt('buy');
-    funt('sell');
+    // funt('buy');
+    // funt('sell');
     
     console.log('OrderBook De-duped! Running program...');
+    dataIntegrityTest = false;
     runBenchmark = true;
 }
 //=============================================
@@ -357,7 +416,6 @@ function deDupe() {
 function findRealisticOrders() {
     if (resetFlag) return;
     if (runBenchmark && !resetFlag) {
-        
         if (resetFlag) return;
         
         orderBook['buy']
@@ -376,7 +434,7 @@ function findRealisticOrders() {
         
         let funt = (objectSide) => {
             orderBook[objectSide].map((obj, index) => {
-                if ((obj.price * obj.size) > realityCriteria) {
+                if ((obj.price * obj.size) > mySettings.realityCriteria[myOrderIterator]) {
                     orderBook[objectSide][index].goodOrder = true;
                     good[objectSide]++;
                 } else {
@@ -391,6 +449,7 @@ function findRealisticOrders() {
         let goodBuyPercent = parseFloat(good['buy'] / orderBook['buy'].length);
         let goodSellPercent = parseFloat(good['sell'] / orderBook['sell'].length);
         let totalBadPercent = parseFloat(100 - (goodBuyPercent + goodSellPercent));
+        
         console.log('Market Order Benchmark:');
         console.log(`Realistic buy  orders: ${good['buy']} out of a total of ${orderBook['buy'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
         console.log(`Realistic sell orders: ${good['sell']} out of a total of ${orderBook['sell'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
@@ -406,11 +465,31 @@ function findRealisticOrders() {
             if (data.price) return data;
         });    
         
-        if (!Number(highestBuyPrice.price)) highestBuyPrice.price = parseFloat(highestBuyPrice.price);
-        if (!Number(lowestSellPrice.price)) lowestSellPrice.price = parseFloat(lowestSellPrice.price);
+        let myBuyOrder = myOrders.buy[myOrderIterator];
+        let mySellOrder = myOrders.sell[myOrderIterator];
         
-        if (!Number(fakeBuyId.price)) fakeBuyId.price = parseFloat(fakeBuyId.price);
-        if (!Number(fakeSellId.price)) fakeSellId.price = parseFloat(fakeSellId.price);
+        if (Number(highestBuyPrice.price)) highestBuyPrice.price = parseFloat(highestBuyPrice.price);
+        if (Number(lowestSellPrice.price)) lowestSellPrice.price = parseFloat(lowestSellPrice.price);
+        
+        if (!myBuyOrder) {
+            placeBuy();
+            myBuyOrder = myOrders.buy[myOrderIterator];
+        }
+        if (!mySellOrder){
+            placeSell();
+            mySellOrder = myOrders.sell[myOrderIterator];
+        }
+        
+        if (myBuyOrder) {
+            if (Number(myBuyOrder.price)) myBuyOrder.price = parseFloat(myBuyOrder.price);
+        }
+        if (mySellOrder) {
+            if (Number(mySellOrder.price)) mySellOrder.price = parseFloat(mySellOrder.price);
+        }
+        
+        if (Number(fakeAmountMade)) fakeAmountMade = parseFloat(fakeAmountMade);
+        
+        
         
         let buyCount = 0;
         let buyTotal = 0;
@@ -418,8 +497,8 @@ function findRealisticOrders() {
         let sellCount = 0;
         let sellTotal = 0;
         
-        for (let i = 0; i < orderBook['buy'].length; i++) {
-            if (orderBook['buy'][i].order_id == fakeBuyId.order_id) {
+        for (let i = 0; i < orderBook['buy'].length && myBuyOrder; i++) {
+            if (orderBook['buy'][i].order_id == myBuyOrder.order_id) {
                 break;
             } else {
                 buyCount++;
@@ -427,8 +506,8 @@ function findRealisticOrders() {
             }
         }
         
-        for (let i = 0; i < orderBook['sell'].length; i++) {
-            if (orderBook['sell'][i].order_id == fakeSellId.order_id) {
+        for (let i = 0; i < orderBook['sell'].length && mySellOrder; i++) {
+            if (orderBook['sell'][i].order_id == mySellOrder.order_id) {
                 break;
             } else {
                 sellCount++;
@@ -436,27 +515,36 @@ function findRealisticOrders() {
             }
         }
         
+        let readableOrderIteration = myOrderIterator + 1;
+        
         console.log('My market order data:');
-        if (isNaN(highestBuyPrice.price)|| isNaN(fakeBuyId.price) || isNaN(lowestSellPrice.price)) {
-            console.log("ERROR CURRENT BUY PRICE: " + highestBuyPrice.price + " TYPE: " + typeof highestBuyPrice.price);
-            console.log("ERROR CURRENT SELL PRICE: " + lowestSellPrice.price + " TYPE: " + typeof lowestSellPrice.price);
-            console.log("ERROR SAVED BUY PRICE: " + fakeBuyId.price + " TYPE: " + typeof fakeBuyId.price);
-            if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
-            if (fakeBuyId.price) console.log('My buy price: $' + fakeBuyId.price + ' has to be higher than current highest buy price: $' + highestBuyPrice.price + ' buy state is: ' + state.buy);
-            if (fakeSellId.price) console.log('My sell price: $' + fakeSellId.price + ' has to be lower than current lowest sell price: $' + lowestSellPrice.price + ' sell state is: ' + state.sell);            
-        } else {
-            if (fakeAmountMade) console.log('Fake amount made:', fakeAmountMade);
-            let buyOutput = 'My buy price: $' + fakeBuyId.price.toFixed(2) + ' current market buy price : $' + highestBuyPrice.price.toFixed(2) + ' buy state is: \"' + state.buy + '\"';
-            if (state.buy != 'paused') buyOutput += ' || A gap of $' + (highestBuyPrice.price - fakeBuyId.price).toFixed(2) + ' total buys to go: ' + buyCount + ' total amount to be sold to: $' + buyTotal.toFixed(2);
-            if (fakeBuyId.price) console.log(buyOutput);
-            let sellOutput = 'My sell price: $' + fakeSellId.price.toFixed(2) + ' current market sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: \"' + state.sell + '\"';
-            if (state.sell != 'paused') sellOutput += ' || A gap of $' + (fakeSellId.price - lowestSellPrice.price).toFixed(2) +' total sells to go: ' + sellCount + ' total amount to be bought: $' + sellTotal.toFixed(2);
-            if (fakeSellId.price) console.log(sellOutput);
+        console.log('We are currently looking at order number: ', readableOrderIteration);
+        if (fakeAmountMade && !isNaN(fakeAmountMade)) {
+            console.log('Fake amount made:', fakeAmountMade.toFixed(2));
+        } else if (fakeAmountMade && isNaN(fakeAmountMade)) {
+            console.log('Fake amount made:', fakeAmountMade);
+        }
+        if (myBuyOrder) {
+            let buyOutput = 'My buy price: $' + myBuyOrder.price.toFixed(2) + ' current market buy price : $' + highestBuyPrice.price.toFixed(2) + ' buy state is: \"' + state.buy[myOrderIterator] + '\"';
+            if (state.buy[myOrderIterator] != 'paused') buyOutput += ' || A gap of $' + (highestBuyPrice.price - myBuyOrder.price).toFixed(2) + ' total buys to go: ' + buyCount + ' total amount to be sold to: $' + buyTotal.toFixed(2);
+            if (myBuyOrder.price) console.log(buyOutput);
+        }
+        if (mySellOrder) {
+            let sellOutput = 'My sell price: $' + mySellOrder.price.toFixed(2) + ' current market sell price: $' + lowestSellPrice.price.toFixed(2) + ' sell state is: \"' + state.sell[myOrderIterator] + '\"';
+            if (state.sell[myOrderIterator] != 'paused') sellOutput += ' || A gap of $' + (mySellOrder.price - lowestSellPrice.price).toFixed(2) +' total sells to go: ' + sellCount + ' total amount to be bought: $' + sellTotal.toFixed(2);
+            if (mySellOrder.price) console.log(sellOutput);
         }
         console.log('=====================================================================================================');
 
         placeBuy();
         placeSell();
+        
+        if (myOrderIterator < ( mySettings.realityCriteria.length - 1) ) {
+            myOrderIterator++;
+        } else {
+            myOrderIterator = 0;
+        }
+        
     }
 }
 //=============================================
@@ -527,6 +615,8 @@ function checkMargins(){
 //START>> Place buy order
 //=============================================
 function placeBuy(){
+
+    let myBuyOrder = myOrders.buy[myOrderIterator];
     
     let highestBuyPrice = orderBook['buy']
     .find((data) => {
@@ -535,29 +625,35 @@ function placeBuy(){
 
     let buyOrder = orderBook['buy']
     .find((data) => {
-        if (data.goodOrder && (highestBuyPrice.price / data.price) >= realMargin) return data;
+        if (data.goodOrder && (highestBuyPrice.price / data.price) >= mySettings.realMargin[myOrderIterator]) return data;
     });   
     
-    if (state.buy == 'buying') {
+    if (!buyOrder) {
+        console.log('Wait what? This should\'t happen!');
+        return;
+    }   
+    
+    if (state.buy[myOrderIterator] == 'buying') {
         
-        console.log('Place buy order! Good order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price);
+        console.log('Place buy order! Good order? ' + buyOrder.goodOrder + ' Price: ' + buyOrder.price);
         
-        fakeBuyId = buyOrder;
-        fakeBuyId.price = parseFloat(fakeBuyId.price) + 0.01;
-        state.buy = 'waiting';
+        myBuyOrder = buyOrder;
+        myBuyOrder.price = parseFloat(myBuyOrder.price) + 0.01;
+        myOrders.buy[myOrderIterator] = myBuyOrder;
+        state.buy[myOrderIterator] = 'waiting';
         
         return;
         
-    } else if (state.buy == 'waiting' && highestBuyPrice.price < (fakeBuyId.price) ) {
+    } else if (state.buy[myOrderIterator] == 'waiting' && highestBuyPrice.price < (myBuyOrder.price) ) {
         
         console.log('Purchased!');
         
-        state.buy = 'paused';
-        state.sell = 'selling';
+        state.buy[myOrderIterator] = 'paused';
+        state.sell[myOrderIterator] = 'selling';
         
         return;
         
-    } else if (state.buy == 'waiting' && buyOrder.price > fakeBuyId.price) {
+    } else if (state.buy[myOrderIterator] == 'waiting' && buyOrder.price > myBuyOrder.price) {
 
         //console.log('Updating buy price! Good Order? ' + buyOrder.goodOrder + ' Price: ' + fakeBuyId.price.toFixed(2));
 
@@ -575,6 +671,9 @@ function placeBuy(){
 //=============================================
 function placeSell(){   
     
+    let myBuyOrder = myOrders.buy[myOrderIterator];
+    let mySellOrder = myOrders.sell[myOrderIterator];
+    
     let lowestSellPrice = orderBook['sell']
     .find((data) => {
         if (data.price) return data;
@@ -582,7 +681,7 @@ function placeSell(){
     
     let sellOrder = orderBook['sell']
     .find((data) => {
-        if (data.goodOrder && data.price >= (fakeBuyId.price * realMargin)) return data;
+        if (data.goodOrder && data.price >= (myBuyOrder.price * mySettings.realMargin[myOrderIterator])) return data;
     });
     
     if (!sellOrder) {
@@ -590,28 +689,29 @@ function placeSell(){
         return;
     }
     
-    if (state.sell == 'selling') {
+    if (state.sell[myOrderIterator] == 'selling') {
         
-        console.log('Placed sell order! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price.toFixed(2)); 
+        console.log('Placed sell order! Good order? ' + sellOrder.goodOrder + ' Price: ' + sellOrder.price.toFixed(2)); 
         
-        fakeSellId = sellOrder;
-        fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
-        state.sell = 'waiting';
+        mySellOrder = sellOrder;
+        mySellOrder.price = parseFloat(mySellOrder.price) - 0.01;
+        myOrders.sell[myOrderIterator] = mySellOrder;
+        state.sell[myOrderIterator] = 'waiting';
         
         return;
         
-    } else if (state.sell == 'waiting' && lowestSellPrice.price > (fakeSellId.price)) {
+    } else if (state.sell[myOrderIterator] == 'waiting' && lowestSellPrice.price > (mySellOrder.price)) {
         
         console.log('Sold!');
         
-        let buyAmount = fakeBuyId.price * 1.04;
-        fakeAmountMade = (fakeSellId.price * 20) - (buyAmount * 20);
-        state.sell = 'paused';
-        state.buy = 'buying';
+        let buyAmount = myBuyOrder.price * 1.04;
+        fakeAmountMade = (mySellOrder.price * 20) - (buyAmount * 20);
+        state.sell[myOrderIterator] = 'paused';
+        state.buy[myOrderIterator] = 'buying';
         
         return;
         
-    } else if (state.sell == 'waiting' && sellOrder.price < fakeSellId.price){
+    } else if (state.sell[myOrderIterator] == 'waiting' && sellOrder.price < mySellOrder.price){
         
         //console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price);
         
@@ -626,4 +726,5 @@ function placeSell(){
 //END>> Place sell order
 //=============================================
 
-//TODO
+//TODO if gap buy margin got too big remove order / replace order
+//TODO create an array for more settings and more orders on one coinbot
