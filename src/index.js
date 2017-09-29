@@ -595,7 +595,7 @@ function placeSell(){
         
         return;
         
-    } else if (sellOrder) {
+    } else if (sellOrder && mySellOrder) {
         if (state.sell[myOrderIterator] == 'waiting') {
             if (lowestSellPrice.price > mySellOrder.price) {
             
