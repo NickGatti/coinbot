@@ -38,7 +38,7 @@ var runBenchmark = false;
 var resetPause = false;
 setInterval(() => {
     resetFlag = true;
-}, 1800000);
+}, 900000);
 getWebSocketData();
 //=============================================
 //END>> Run Our Program
@@ -330,7 +330,6 @@ function catchWebSocketMessage(data, objectSide) {
 //START>> DeDupe OrderBook
 //=============================================
 function deDupe() {
-    if (resetFlag) return;
     console.log('OrderBook Downloaded! de-Duping OrderBook!');
     
     let funt = (objectSide) => {
@@ -583,7 +582,7 @@ function placeSell(){
     
     let sellOrder = orderBook['sell']
     .find((data) => {
-        if (data.goodOrder && ((data.price / fakeBuyId.price) >= realMargin) && lowestSellPrice.price >= fakeBuyId.price) return data;
+        if (data.goodOrder && (data.price / fakeBuyId.price) >= realMargin) return data;
     });
     
     if (!sellOrder) {
@@ -631,4 +630,4 @@ function placeSell(){
 
 //TODO BUY ORDER HAS TO BE AT LEAST MARGIN FROM TOP BUY ORDER AND CANT EQUAL ITSELF
 
-//TODO $ - Comback at: 6:00pm
+//TODO $292.11 - Comback at: 7:25pm
