@@ -9,7 +9,7 @@ Configured for [Coinbase](https://www.coinbase.com) and [ETH](https://ethereum.o
 
 ```
 sudo chmod u+x ./update.sh
-sudo ./update.sh
+./update.sh
 nvm install 8
 nvm use 8
 sudo npm install
@@ -21,10 +21,10 @@ npm start
 
 ```
 sudo rm -rf ./node_modules/
-sudo ./update.sh
+./update.sh
 nvm install 8
 nvm use 8
-sudo npm install
+npm install
 npm update
 npm start
 ``
