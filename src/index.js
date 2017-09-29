@@ -597,7 +597,7 @@ function placeBuy(){
         if (myBuyOrder) {
             if (buyInfo[0] > myBuyOrder.oldOrdersToGo && 
             buyInfo[1] > myBuyOrder.oldAmountToGo && 
-            (highestBuyPrice.price / buyOrder.price) > myBuyOrder.oldMargin && 
+            (highestBuyPrice.price / myBuyOrder.oldPrice) > myBuyOrder.oldMargin && 
             buyOrder.price > myBuyOrder.oldPrice)  {
                 
                 talkAboutUpdating[0] = true;
