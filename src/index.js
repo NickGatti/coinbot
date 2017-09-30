@@ -549,7 +549,7 @@ function placeBuy(){
             myBuyOrder.oldPrice = parseFloat(myBuyOrder.price);
         } else {
             myBuyOrder = currentBuyOrder;
-            myBuyOrder.oldPrice = parseFloat(currentBuyOrder.price);
+            myBuyOrder.oldPrice = parseFloat(currentBuyOrder.price + 0.01);
         }
 
         myBuyOrder = currentBuyOrder;
@@ -920,3 +920,6 @@ function filterSellOrder(myBuyOrder) {
 // 1 MINE: CURRENT:
 
 //UPDATE OUTPUT SEEMS BROKEN
+
+//3 295.70
+//4 295.02
