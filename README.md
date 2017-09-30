@@ -14,6 +14,7 @@ nvm install 8
 nvm use 8
 npm install
 npm update
+npm i -g npm
 npm start
 ```
 
@@ -26,5 +27,6 @@ nvm install 8
 nvm use 8
 npm install
 npm update
+npm i -g npm
 npm start
 ``
