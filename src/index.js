@@ -895,7 +895,7 @@ function filterBuyOrder(highestBuyPrice){
 function filterSellOrder(myBuyOrder) {
     let sellOrder = orderBook['sell']
     .find((data) => {
-        if (data.goodOrder && data.price >= (myBuyOrder.price * mySettings.realMargin[myOrderIterator])) return data;
+        if (data.goodOrder && (data.price / myBuyOrder.price) >= mySettings.realMargin[myOrderIterator]) return data;
     });
     return sellOrder;
 }
