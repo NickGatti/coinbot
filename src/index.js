@@ -42,7 +42,7 @@ var state = {
     buy: [],
     sell: []
 };
-populateMySettings(20);
+populateMySettings(10);
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
@@ -479,7 +479,7 @@ function findRealisticOrders() {
         
         if (myBuyOrder) {
             if (talkAboutUpdating[0]) {
-                console.log('Updating order: New Price $: ' + myOrders.buy[myOrderIterator].price.toFixed(2) + ' || New Price: $' + talkAboutUpdating[1].toFixed(2) + ' || A difference of: $' + (talkAboutUpdating[1] - myOrders.buy[myOrderIterator].oldPrice).toFixed(2));
+                console.log('Updating order: New Price $: ' + myOrders.buy[myOrderIterator].price.toFixed(2) + ' || Old Price: $' + talkAboutUpdating[1].toFixed(2) + ' || A difference of: $' + (talkAboutUpdating[1] - myOrders.buy[myOrderIterator].oldPrice).toFixed(2));
                 talkAboutUpdating[0] = false;
             }
             let buyOutput = [];
@@ -530,6 +530,11 @@ function placeBuy(){
     let currentBuyOrder = filterBuyOrder(highestBuyPrice);
     let buyInfo = buyGapInfo();
     
+    let currentOrdersToGo = buyInfo[0];
+    let currentAmountToGo = buyInfo[0];
+    
+    let currentMargin = (highestBuyPrice.price / currentBuyOrder.price);
+    
     if (!currentBuyOrder) {
         console.log('Wait what? This should\'t happen!');
         return;
@@ -548,10 +553,12 @@ function placeBuy(){
         }
 
         myBuyOrder = currentBuyOrder;
-        myBuyOrder.oldOrdersToGo = buyInfo[0];
-        myBuyOrder.oldAmountToGo = buyInfo[1];
-        myBuyOrder.oldMargin = (highestBuyPrice.price / currentBuyOrder.price);
+        myBuyOrder.oldOrdersToGo = currentOrdersToGo;
+        myBuyOrder.oldAmountToGo = currentAmountToGo;
         myBuyOrder.price = parseFloat(currentBuyOrder.price + 0.01);
+        
+        let myMargin = (highestBuyPrice.price / myBuyOrder.price);
+        myBuyOrder.oldMargin = myMargin;
         
         myOrders.buy[myOrderIterator] = myBuyOrder;
         
@@ -568,13 +575,20 @@ function placeBuy(){
                 
                 return;
             } else if (myBuyOrder) {
-                    if (buyInfo[0] > myBuyOrder.oldOrdersToGo && 
-                        buyInfo[1] > myBuyOrder.oldAmountToGo && 
-                        (highestBuyPrice.price / myBuyOrder.oldPrice) > myBuyOrder.oldMargin && 
+                    if (currentOrdersToGo > myBuyOrder.oldOrdersToGo && 
+                        currentAmountToGo > myBuyOrder.oldAmountToGo && 
+                        currentMargin > myBuyOrder.oldMargin && 
                         currentBuyOrder.price > myBuyOrder.oldPrice)  {
                             
                             talkAboutUpdating[0] = true;
                             talkAboutUpdating[1] = parseFloat(myBuyOrder.oldPrice);
+                            
+                            
+                            myBuyOrder.oldOrdersToGo = currentOrdersToGo;
+                            myBuyOrder.oldAmountToGo = currentAmountToGo;
+                            
+                            let myMargin = (highestBuyPrice.price / myBuyOrder.price);
+                            myBuyOrder.oldMargin = myMargin;                            
                             
                             myBuyOrder.oldPrice = parseFloat(myBuyOrder.price);
                             myBuyOrder.price = parseFloat(currentBuyOrder.price + 0.01);
@@ -841,9 +855,11 @@ function checkVars(){
 //=============================================
 function populateMySettings(num){
     for (let i = 0; i < num; i++ ) {
-        mySettings.realMargin.push(1000);
+        mySettings.realityCriteria.push(2000);
         mySettings.realityCriteria.push(10000);
         state.buy.push('buying');
+        state.buy.push('buying');
+        state.sell.push('waiting');
         state.sell.push('waiting');
     }
 }
@@ -899,7 +915,7 @@ function filterSellOrder(myBuyOrder) {
 //TODO TEST
 
 
-// 1 MINE: 292.52 CURRENT: 297.97
+// 1 MINE: 292.06 CURRENT: 297.97
 
 // 1 MINE: CURRENT:
 
