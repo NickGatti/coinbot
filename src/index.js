@@ -673,8 +673,8 @@ function outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo){
                 talkAboutUpdating[0] = false;
             }
             let buyOutput = [];
-            buyOutput.push('My buy price: $' + numberWithCommas( myBuyOrder.price.toFixed(2) ) + ' || My buy amount: 20 || My total USD: $' + numberWithCommas( (myBuyOrder.price * 20).toFixed(2) ) + ' || My buy state is: \"' + numberWithCommas( state.buy[myOrderIterator] ) + '\"' + ' || Current market buy price : $' + numberWithCommas( highestBuyPrice.price.toFixed(2) ) );            
-            if (myBuyOrder.price != myBuyOrder.oldPrice) buyOutput[0] += (' || My Old price: $' + myBuyOrder.oldPrice.toFixed(2) + ' || My margin: ' + myBuyOrder.oldMargin.toFixed(2).toString().slice(2) + '.' + myBuyOrder.oldMargin.toFixed(4).toString().slice(4) + '%');
+            buyOutput.push('My buy price: $' + numberWithCommas( myBuyOrder.price.toFixed(2) ) + ' || My buy amount: 20 || My total USD: $' + numberWithCommas( (myBuyOrder.price * 20).toFixed(2) ) + ' || My buy state is: \"' + numberWithCommas( state.buy[myOrderIterator] ) + '\"' + ' || Current market buy price : $' + numberWithCommas( highestBuyPrice.price.toFixed(2) ) + ' || My margin: ' + myBuyOrder.oldMargin.toFixed(2).toString().slice(2) + '.' + myBuyOrder.oldMargin.toFixed(4).toString().slice(4) + '%');            
+            if (myBuyOrder.price != myBuyOrder.oldPrice) buyOutput[0] = ('My Old price: $' + myBuyOrder.oldPrice.toFixed(2) + ' || ' + buyOutput[0]);
             if (state.buy[myOrderIterator] != 'paused') buyOutput.push('Gap of current market price and mine $' + numberWithCommas( (highestBuyPrice.price - myBuyOrder.price).toFixed(2) ) + ' || Total number of orders between highest and mine: ' + numberWithCommas( buyInfo[0] ) + ' || Total amount of USD to be filled before my order fills: $' + numberWithCommas( buyInfo[1].toFixed(2) ) );
             if (myBuyOrder.price){
               console.log(buyOutput[0]);  
