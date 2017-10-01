@@ -669,7 +669,7 @@ function outPutLoggingEtc(readableOrderIteration){
 function outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo){
         if (myBuyOrder) {
             if (talkAboutUpdating[0]) {
-                console.log( 'Updating order: New Price $: ' + numberWithCommas( myOrders.buy[myOrderIterator].price.toFixed(2) ) + ' || Old Price: $' + numberWithCommas( talkAboutUpdating[1].toFixed(2) ) + ' || A difference of: $' + numberWithCommas( ( (myOrders.buy[myOrderIterator].oldPrice - talkAboutUpdating[1]).toFixed(2) ) ) );
+                console.log( 'Updating order: New Price $: ' + numberWithCommas( myOrders.buy[myOrderIterator].price.toFixed(2) ) + ' || Old Price: $' + numberWithCommas( talkAboutUpdating[1].toFixed(2) ) + ' || A difference of: $' + numberWithCommas( ( (talkAboutUpdating[1] - myOrders.buy[myOrderIterator].oldPrice).toFixed(2) ) ) );
                 talkAboutUpdating[0] = false;
             }
             let buyOutput = [];
