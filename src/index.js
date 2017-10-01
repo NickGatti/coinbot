@@ -498,7 +498,7 @@ function placeBuy(){
     let buyInfo = buyGapInfo();
     
     let currentOrdersToGo = buyInfo[0];
-    let currentAmountToGo = buyInfo[0];
+    let currentAmountToGo = buyInfo[1];
     
     let currentMargin = (highestBuyPrice.price / currentBuyOrder.price);
     
