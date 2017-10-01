@@ -42,6 +42,7 @@ var state = {
     buy: [],
     sell: []
 };
+var amountMade = [];
 populateMySettings(10);
 //=============================================
 //==============REALITY CRITERIA===============
@@ -58,7 +59,6 @@ var myOrders = {
     buy: [],
     sell: []
 };
-var amountMade = [];
 //=============================================
 //=============================================
 //=============================================
@@ -442,14 +442,8 @@ function findRealisticOrders() {
         
         sortBothSides();
         
-        let good = findGoodOrders();
-        
         let buyInfo = buyGapInfo();
         let sellInfo = sellGapInfo();
-        
-        let goodBuyPercent = parseFloat(good['buy'] / orderBook['buy'].length);
-        let goodSellPercent = parseFloat(good['sell'] / orderBook['sell'].length);
-        let totalBadPercent = parseFloat(100 - (goodBuyPercent + goodSellPercent));
         
         let highestBuyPrice = findHighestBuyPrice();
         let lowestSellPrice = findLowestSellPrice();
@@ -464,7 +458,7 @@ function findRealisticOrders() {
         placeBuy();
         placeSell();
         
-        outPutLoggingGood(good, goodBuyPercent, goodSellPercent, totalBadPercent);
+        outPutLoggingGood();
         outPutLoggingEtc(readableOrderIteration);
         outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo);
         outPutLoggingSell(mySellOrder, lowestSellPrice, sellInfo);
@@ -640,7 +634,12 @@ function placeSell(){
 //=============================================
 //=============================================
 //=============================================
-function outPutLoggingGood(good, goodBuyPercent, goodSellPercent, totalBadPercent){
+function outPutLoggingGood(){
+        let good = findGoodOrders();
+        let goodBuyPercent = parseFloat(good['buy'] / orderBook['buy'].length);
+        let goodSellPercent = parseFloat(good['sell'] / orderBook['sell'].length);
+        let totalBadPercent = parseFloat(100 - (goodBuyPercent + goodSellPercent));
+        
         console.log('Market Order Benchmark:');
         console.log(`Realistic buy  orders: ${ numberWithCommas( good['buy'] ) } out of a total of ${ numberWithCommas(orderBook['buy'].length ) } buy  orders || ${ goodBuyPercent.toFixed(2) }% good buy orders`);
         console.log(`Realistic sell orders: ${ numberWithCommas( good['sell'] ) } out of a total of ${ numberWithCommas(orderBook['sell'].length ) } sell orders || ${ goodSellPercent.toFixed(2) }% good sell orders`);
@@ -650,6 +649,8 @@ function outPutLoggingGood(good, goodBuyPercent, goodSellPercent, totalBadPercen
 //=============================================
 //=============================================
 function outPutLoggingEtc(readableOrderIteration){
+        let totalAmountMade = totalAmountMade();
+        let totalAmountMade = parseFloat(totalAmountMade);
         console.log('My market order data:');
         
         console.log(' We are currently looking at order number: ', readableOrderIteration);
@@ -660,7 +661,7 @@ function outPutLoggingEtc(readableOrderIteration){
         }
         
         if (amountMade[myOrderIterator]) {
-            isNaN(amountMade[myOrderIterator]) ? console.log('Fake amount made:', numberWithCommas( (amountMade[myOrderIterator]) ) ) : console.log('Fake amount made:', numberWithCommas( (amountMade[myOrderIterator].toFixed(2) ) ) );
+            isNaN(amountMade[myOrderIterator]) ? console.log('Fake amount made: $', numberWithCommas( (amountMade[myOrderIterator]) ) + ' || or $' + amountMade[myOrderIterator] + ' || Total amount made is: $' + totalAmountMade) : console.log('Fake amount made:', numberWithCommas( (amountMade[myOrderIterator].toFixed(2) ) ) + ' || or $' + amountMade[myOrderIterator]  + ' || Total amount made is: $' + totalAmountMade.toFixed(2));
         }
 }
 //=============================================
@@ -669,7 +670,7 @@ function outPutLoggingEtc(readableOrderIteration){
 function outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo){
         if (myBuyOrder) {
             if (talkAboutUpdating[0]) {
-                console.log( 'Updating order: New Price $: ' + numberWithCommas( myOrders.buy[myOrderIterator].price.toFixed(2) ) + ' || Old Price: $' + numberWithCommas( talkAboutUpdating[1].toFixed(2) ) + ' || A difference of: $' + numberWithCommas( ( (talkAboutUpdating[1] - myOrders.buy[myOrderIterator].oldPrice).toFixed(2) ) ) );
+                console.log( 'Updating order: New Price $: ' + numberWithCommas( myOrders.buy[myOrderIterator].price.toFixed(2) ) + ' || Old Price: $' + numberWithCommas( talkAboutUpdating[1].toFixed(2) ) + ' || A difference of: $' + (talkAboutUpdating[1] - myOrders.buy[myOrderIterator].oldPrice).toFixed(2) ) ;
                 talkAboutUpdating[0] = false;
             }
             let buyOutput = [];
@@ -895,6 +896,8 @@ function populateMySettings(num){
         state.buy.push('buying');
         state.sell.push('waiting');
         state.sell.push('waiting');
+        amountMade.push(0);
+        amountMade.push(0);
     }
 }
 //=============================================
@@ -954,9 +957,23 @@ function numberWithCommas(x) {
 //=============================================
 //=============================================
 //=============================================
-
-
-
+//START>> Total amount made
+//=============================================
+//=============================================
+//=============================================
+function addTotalAmount(){
+    let totalAmountMade = amountMade.reduce((init, data) => {
+        return init + data;
+    });
+    return totalAmountMade;
+}
+//=============================================
+//=============================================
+//=============================================
+//END>> Total amount made
+//=============================================
+//=============================================
+//=============================================
 
 //TODO TEST
 
