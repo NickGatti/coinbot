@@ -427,6 +427,7 @@ function deDupe() {
     // funt('sell');
     
     console.log('OrderBook De-duped! Running program...');
+    console.log('==========================================================================================================================================================================================================================================');
     dataIntegrityTest = false;
     runBenchmark = true;
 }
@@ -461,50 +462,14 @@ function findRealisticOrders() {
         let readableOrderIteration = myOrderIterator + 1;
         
         placeBuy();
-        placeSell();        
+        placeSell();
         
-        console.log('Market Order Benchmark:');
-        console.log(`Realistic buy  orders: ${good['buy']} out of a total of ${orderBook['buy'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
-        console.log(`Realistic sell orders: ${good['sell']} out of a total of ${orderBook['sell'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
-        console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
+        outPutLoggingGood(good, goodBuyPercent, goodSellPercent, totalBadPercent);
+        outPutLoggingEtc(readableOrderIteration);
+        outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo);
+        outPutLoggingSell(mySellOrder, lowestSellPrice, sellInfo);
         
-        console.log('My market order data:');
-        
-        console.log(' We are currently looking at order number: ', readableOrderIteration);
-        
-        if (placeTalk[0]) {
-            console.log(placeTalk[1]);
-            placeTalk = [false, ''];
-        }
-        
-        if (amountMade[myOrderIterator]) {
-            isNaN(amountMade[myOrderIterator]) ? console.log('Fake amount made:', amountMade[myOrderIterator]) : console.log('Fake amount made:', amountMade[myOrderIterator].toFixed(2));
-        }
-        
-        if (myBuyOrder) {
-            if (talkAboutUpdating[0]) {
-                console.log('Updating order: New Price $: ' + myOrders.buy[myOrderIterator].price.toFixed(2) + ' || Old Price: $' + talkAboutUpdating[1].toFixed(2) + ' || A difference of: $' + (talkAboutUpdating[1] - myOrders.buy[myOrderIterator].oldPrice).toFixed(2));
-                talkAboutUpdating[0] = false;
-            }
-            let buyOutput = [];
-            buyOutput.push('My buy price: $' + myBuyOrder.price.toFixed(2) + ' || My buy amount: 20 || My total USD: $' + (myBuyOrder.price * 20).toFixed(2) + ' || My buy state is: \"' + state.buy[myOrderIterator] + '\"' + ' || Current market buy price : $' + highestBuyPrice.price.toFixed(2));
-            if (myBuyOrder.price != myBuyOrder.oldPrice) buyOutput[0] += (' || My Old price: $' + myBuyOrder.oldPrice.toFixed(2) + ' || My margin: ' + myBuyOrder.oldMargin.toFixed(2).toString().slice(2) + '.' + myBuyOrder.oldMargin.toFixed(4).toString().slice(4) + '%');
-            if (state.buy[myOrderIterator] != 'paused') buyOutput.push('Gap of current market price and mine $' + (highestBuyPrice.price - myBuyOrder.price).toFixed(2) + ' || Total number of orders between highest and mine: ' + buyInfo[0] + ' || Total amount of USD to be filled before my order fills: $' + buyInfo[1].toFixed(2));
-            if (myBuyOrder.price){
-              console.log(buyOutput[0]);  
-              console.log(buyOutput[1]);  
-            } 
-        }
-        if (mySellOrder) {
-            let sellOutput = [];
-            sellOutput.push('My sell price: $' + mySellOrder.price.toFixed(2) + ' || My sell amount: 20 || My total USD: $' + (mySellOrder.price * 20).toFixed(2) + ' || My sell state is: \"' + state.sell[myOrderIterator] + '\"' + ' || Current market sell price: $' + lowestSellPrice.price.toFixed(2));
-            if (state.sell[myOrderIterator] != 'paused') sellOutput.push('Gap of current market price and mine $' + (mySellOrder.price - lowestSellPrice.price).toFixed(2) +' || Total number of orders between lowest and mine: ' + sellInfo[0] + ' || Total amount of USD to be filled before my order fills: $' + sellInfo[1].toFixed(2));
-            if (mySellOrder.price) {
-                console.log(sellOutput[0]);
-                console.log(sellOutput[1]);
-            }
-        }
-        console.log('=====================================================================================================================================================');
+        console.log('==========================================================================================================================================================================================================================================');
         
         if (myOrderIterator < ( mySettings.realityCriteria.length - 1) ) {
             myOrderIterator++;
@@ -668,6 +633,64 @@ function placeSell(){
 //=============================================
 //=============================================
 //END>> Place sell order
+//=============================================
+//=============================================
+//=============================================
+//START>> Output logging
+//=============================================
+//=============================================
+//=============================================
+function outPutLoggingGood(good, goodBuyPercent, goodSellPercent, totalBadPercent){
+        console.log('Market Order Benchmark:');
+        console.log(`Realistic buy  orders: ${good['buy']} out of a total of ${orderBook['buy'].length} buy  orders || ${goodBuyPercent.toFixed(2)}% good buy orders`);
+        console.log(`Realistic sell orders: ${good['sell']} out of a total of ${orderBook['sell'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
+        console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
+}
+function outPutLoggingEtc(readableOrderIteration){
+        console.log('My market order data:');
+        
+        console.log(' We are currently looking at order number: ', readableOrderIteration);
+        
+        if (placeTalk[0]) {
+            console.log(placeTalk[1]);
+            placeTalk = [false, ''];
+        }
+        
+        if (amountMade[myOrderIterator]) {
+            isNaN(amountMade[myOrderIterator]) ? console.log('Fake amount made:', amountMade[myOrderIterator]) : console.log('Fake amount made:', amountMade[myOrderIterator].toFixed(2));
+        }
+}
+function outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo){
+        if (myBuyOrder) {
+            if (talkAboutUpdating[0]) {
+                console.log('Updating order: New Price $: ' + myOrders.buy[myOrderIterator].price.toFixed(2) + ' || Old Price: $' + talkAboutUpdating[1].toFixed(2) + ' || A difference of: $' + (talkAboutUpdating[1] - myOrders.buy[myOrderIterator].oldPrice).toFixed(2));
+                talkAboutUpdating[0] = false;
+            }
+            let buyOutput = [];
+            buyOutput.push('My buy price: $' + myBuyOrder.price.toFixed(2) + ' || My buy amount: 20 || My total USD: $' + (myBuyOrder.price * 20).toFixed(2) + ' || My buy state is: \"' + state.buy[myOrderIterator] + '\"' + ' || Current market buy price : $' + highestBuyPrice.price.toFixed(2));
+            if (myBuyOrder.price != myBuyOrder.oldPrice) buyOutput[0] += (' || My Old price: $' + myBuyOrder.oldPrice.toFixed(2) + ' || My margin: ' + myBuyOrder.oldMargin.toFixed(2).toString().slice(2) + '.' + myBuyOrder.oldMargin.toFixed(4).toString().slice(4) + '%');
+            if (state.buy[myOrderIterator] != 'paused') buyOutput.push('Gap of current market price and mine $' + (highestBuyPrice.price - myBuyOrder.price).toFixed(2) + ' || Total number of orders between highest and mine: ' + buyInfo[0] + ' || Total amount of USD to be filled before my order fills: $' + buyInfo[1].toFixed(2));
+            if (myBuyOrder.price){
+              console.log(buyOutput[0]);  
+              console.log(buyOutput[1]);  
+            } 
+        }
+}
+function outPutLoggingSell(mySellOrder, lowestSellPrice, sellInfo){
+        if (mySellOrder) {
+            let sellOutput = [];
+            sellOutput.push('My sell price: $' + mySellOrder.price.toFixed(2) + ' || My sell amount: 20 || My total USD: $' + (mySellOrder.price * 20).toFixed(2) + ' || My sell state is: \"' + state.sell[myOrderIterator] + '\"' + ' || Current market sell price: $' + lowestSellPrice.price.toFixed(2));
+            if (state.sell[myOrderIterator] != 'paused') sellOutput.push('Gap of current market price and mine $' + (mySellOrder.price - lowestSellPrice.price).toFixed(2) +' || Total number of orders between lowest and mine: ' + sellInfo[0] + ' || Total amount of USD to be filled before my order fills: $' + sellInfo[1].toFixed(2));
+            if (mySellOrder.price) {
+                console.log(sellOutput[0]);
+                console.log(sellOutput[1]);
+            }
+        }
+}
+//=============================================
+//=============================================
+//=============================================
+//END>> Output logging
 //=============================================
 //=============================================
 //=============================================
