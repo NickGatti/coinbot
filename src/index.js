@@ -442,6 +442,8 @@ function findRealisticOrders() {
         
         sortBothSides();
         
+        let good = findGoodOrders();        
+        
         let buyInfo = buyGapInfo();
         let sellInfo = sellGapInfo();
         
@@ -458,7 +460,7 @@ function findRealisticOrders() {
         placeBuy();
         placeSell();
         
-        outPutLoggingGood();
+        outPutLoggingGood(good);
         outPutLoggingEtc(readableOrderIteration);
         outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo);
         outPutLoggingSell(mySellOrder, lowestSellPrice, sellInfo);
@@ -634,8 +636,7 @@ function placeSell(){
 //=============================================
 //=============================================
 //=============================================
-function outPutLoggingGood(){
-        let good = findGoodOrders();
+function outPutLoggingGood(good){
         let goodBuyPercent = parseFloat(good['buy'] / orderBook['buy'].length);
         let goodSellPercent = parseFloat(good['sell'] / orderBook['sell'].length);
         let totalBadPercent = parseFloat(100 - (goodBuyPercent + goodSellPercent));
@@ -649,8 +650,8 @@ function outPutLoggingGood(){
 //=============================================
 //=============================================
 function outPutLoggingEtc(readableOrderIteration){
-        let totalAmountMade = totalAmountMade();
-        let totalAmountMade = parseFloat(totalAmountMade);
+        let totalAmountMade = addTotalAmount();
+        totalAmountMade = parseFloat(totalAmountMade);
         console.log('My market order data:');
         
         console.log(' We are currently looking at order number: ', readableOrderIteration);
