@@ -583,19 +583,19 @@ function placeSell(){
     let myBuyOrder = myOrders.buy[myOrderIterator];
     let mySellOrder = myOrders.sell[myOrderIterator];
     let lowestSellPrice = findLowestSellPrice();
-    let sellOrder = filterSellOrder(myBuyOrder);
+    let currentSellOrder = filterSellOrder(myBuyOrder);
     
-    if (!sellOrder) {
+    if (!currentSellOrder) {
         console.log('Bubble?');
         return;
     }
     
     if (state.sell[myOrderIterator] == 'selling') {
         
-        let talk = ('Placing new sell order: Price: $'  + sellOrder.price.toFixed(2) + ' || Size 20 || Total USD $' + (20 * sellOrder.price).toFixed(2) + ' || Current market price is: $' + lowestSellPrice.price.toFixed(2));
+        let talk = ('Placing new sell order: Price: $'  + currentSellOrder.price.toFixed(2) + ' || Size 20 || Total USD $' + (20 * currentSellOrder.price).toFixed(2) + ' || Current market price is: $' + lowestSellPrice.price.toFixed(2));
         placeTalk = [true, talk];        
         
-        mySellOrder = sellOrder;
+        mySellOrder = currentSellOrder;
         mySellOrder.price = parseFloat(mySellOrder.price - 0.01);
         
         myOrders.sell[myOrderIterator] = mySellOrder;
@@ -604,7 +604,7 @@ function placeSell(){
         
         return;
         
-    } else if (sellOrder && mySellOrder) {
+    } else if (mySellOrder) {
         if (state.sell[myOrderIterator] == 'waiting') {
             if (lowestSellPrice.price > mySellOrder.price) {
             
@@ -617,7 +617,7 @@ function placeSell(){
                 
                 return;
             
-            }  else if (sellOrder.price < mySellOrder.price) {
+            }  else if (currentSellOrder.price < mySellOrder.price) {
     
                 //console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price);
                 
@@ -646,6 +646,9 @@ function outPutLoggingGood(good, goodBuyPercent, goodSellPercent, totalBadPercen
         console.log(`Realistic sell orders: ${good['sell']} out of a total of ${orderBook['sell'].length} sell orders || ${goodSellPercent.toFixed(2)}% good sell orders`);
         console.log(`${totalBadPercent.toFixed(2)}% Total market orders do not meet criteria requirement`);
 }
+//=============================================
+//=============================================
+//=============================================
 function outPutLoggingEtc(readableOrderIteration){
         console.log('My market order data:');
         
@@ -660,6 +663,9 @@ function outPutLoggingEtc(readableOrderIteration){
             isNaN(amountMade[myOrderIterator]) ? console.log('Fake amount made:', amountMade[myOrderIterator]) : console.log('Fake amount made:', amountMade[myOrderIterator].toFixed(2));
         }
 }
+//=============================================
+//=============================================
+//=============================================
 function outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo){
         if (myBuyOrder) {
             if (talkAboutUpdating[0]) {
@@ -676,6 +682,9 @@ function outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo){
             } 
         }
 }
+//=============================================
+//=============================================
+//=============================================
 function outPutLoggingSell(mySellOrder, lowestSellPrice, sellInfo){
         if (mySellOrder) {
             let sellOutput = [];
@@ -703,7 +712,7 @@ function buyGapInfo(){
     let buyCount = 0;
     let buyTotal = 0;
     for (let i = 0; i < orderBook['buy'].length && myBuyOrder; i++) {
-        if (orderBook['buy'][i].price == myBuyOrder.price) {
+        if (orderBook['buy'][i].price <= myBuyOrder.price) {
             break;
         } else {
             buyCount++;
@@ -727,12 +736,12 @@ function sellGapInfo(){
         let mySellOrder = myOrders.sell[myOrderIterator];
         let sellCount = 0;
         let sellTotal = 0;
-        for (let i = 0; i < orderBook['buy'].length && mySellOrder; i++) {
-            if (orderBook['buy'][i].price == mySellOrder.price) {
+        for (let i = 0; i < orderBook['sell'].length && mySellOrder; i++) {
+            if (orderBook['sell'][i].price >= mySellOrder.price) {
                 break;
             } else {
                 sellCount++;
-                sellTotal += orderBook['buy'][i].price;
+                sellTotal += orderBook['sell'][i].price;
             }
         }
         return [sellCount, sellTotal];
