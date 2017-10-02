@@ -427,7 +427,7 @@ function deDupe() {
     // funt('sell');
     
     console.log('OrderBook De-duped! Running program...');
-    console.log('==========================================================================================================================================================================================================================================');
+    console.log('=============================================================================================================================================================================');
     dataIntegrityTest = false;
     runBenchmark = true;
 }
@@ -465,7 +465,7 @@ function findRealisticOrders() {
         outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo);
         outPutLoggingSell(mySellOrder, lowestSellPrice, sellInfo);
         
-        console.log('==========================================================================================================================================================================================================================================');
+        console.log('=============================================================================================================================================================================');
         
         if (myOrderIterator < ( mySettings.realityCriteria.length - 1) ) {
             myOrderIterator++;
@@ -671,7 +671,8 @@ function outPutLoggingEtc(readableOrderIteration){
 function outPutLoggingBuy(myBuyOrder, highestBuyPrice, buyInfo){
         if (myBuyOrder) {
             if (talkAboutUpdating[0]) {
-                console.log( 'Updating order: New Price $: ' + numberWithCommas( myOrders.buy[myOrderIterator].price.toFixed(2) ) + ' || Old Price: $' + numberWithCommas( talkAboutUpdating[1].toFixed(2) ) + ' || A difference of: $' + (talkAboutUpdating[1] - myOrders.buy[myOrderIterator].oldPrice).toFixed(2) ) ;
+                let dif = (talkAboutUpdating[1] - myOrders.buy[myOrderIterator].oldPrice)
+                console.log( 'Updating order: New Price $: ' + numberWithCommas( myOrders.buy[myOrderIterator].price.toFixed(2) ) + ' || Old Price: $' + numberWithCommas( talkAboutUpdating[1].toFixed(2) ) + ' || A difference of: $' + dif ) ;
                 talkAboutUpdating[0] = false;
             }
             let buyOutput = [];
