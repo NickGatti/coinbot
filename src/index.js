@@ -122,18 +122,19 @@ function downloadOrderBook(flag){
                 'sell': value.asks
             };
             
-            let funt = (objectSide) => {
-                rawOrderBookData[objectSide].map((data, i) => {
+            let populateOrders = (objectSide) => {
+                for (let i = 0; i < rawOrderBookData[objectSide].length; i++){
+                    let data = rawOrderBookData[objectSide][i];
                     orderBook[objectSide][i] = {
                         price: parseFloat(data[0]),
                         size: Number(data[1]) ? Number(data[1]) : parseFloat(data[1]),
                         order_id: data[2]
                     };
-                });                
+                }
             };
             
-            funt('buy');
-            funt('sell');
+            populateOrders('buy');
+            populateOrders('sell');
             
             deDupe(); //how do i run dedupe while the rest of it runs?
             
