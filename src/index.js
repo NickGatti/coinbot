@@ -78,7 +78,7 @@ var resetPause = false;
 var dataIntegrityTest = false;
 setInterval(() => {
     resetFlag = true;
-}, 900000);
+}, 2400000);
 getWebSocketData();
 //=============================================
 //=============================================
@@ -788,19 +788,21 @@ function findGoodOrders(){
         'sell': 0
     };
     
-    let funt = (objectSide) => {
-        orderBook[objectSide].map((obj, index) => {
+    let goodOrderOp = (objectSide) => {
+        for (let i = 0; i < orderBook[objectSide].length; i++){
+            let obj = orderBook[objectSide][i];
             if ((obj.price * obj.size) > mySettings.realityCriteria[myOrderIterator]) {
-                orderBook[objectSide][index].goodOrder = true;
+                obj.goodOrder = true;
                 good[objectSide]++;
             } else {
-                orderBook[objectSide][index].goodOrder = false;
+                obj.goodOrder = false;
             }
-        });            
+        }
     };
     
-    funt('buy');
-    funt('sell');
+    goodOrderOp('buy');
+    goodOrderOp('sell');
+    
     return good;
 }
 //=============================================
