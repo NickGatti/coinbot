@@ -7,6 +7,7 @@
 //=============================================
 const Gdax = require('gdax');
 const util = require('util');
+var express = require('express');
 const publicClient = new Gdax.PublicClient('ETH-USD');
 const websocket = new Gdax.WebsocketClient(['ETH-USD']);
 const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind(publicClient));
@@ -977,6 +978,30 @@ function addTotalAmount(){
 //=============================================
 //=============================================
 //=============================================
+//START>> Backend API
+//=============================================
+//=============================================
+//=============================================
+console.log('Starting server...');
+var app = express();
+app.get('/api', function(req, res) {
+    res.json({
+        highestBuyPrice: findHighestBuyPrice().price,
+        lowestSellPrice: findLowestSellPrice().price
+    });
+});
+
+app.listen(3000);
+//=============================================
+//=============================================
+//=============================================
+//END>> Backend API
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
 
 //TODO TEST
 
@@ -985,4 +1010,4 @@ function addTotalAmount(){
 
 // 1 MINE: CURRENT:
 
-//UPDATE OUTPUT SEEMS BROKEN
+// TODO fix websocket connection from the disconnect or the bug that makes it crash
