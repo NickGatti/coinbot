@@ -71,7 +71,7 @@ var myOrders = {
 //=============================================
 //=============================================
 //=============================================
-console.log('Conneting WebSocket...');
+//console.log('Conneting WebSocket...');
 var pauseOrderBook = false;
 var resetFlag = false;
 var runBenchmark = false;
@@ -114,7 +114,7 @@ function downloadOrderBook(flag){
         if (flag) resetPause = true;
 
         pauseOrderBook = true;
-        resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
+        //resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
 
         getOrderBook(3).then(function(value) {
 
@@ -197,7 +197,7 @@ function catchWebSocketMessage(data) {
     let objectSide = data.side;
 
     if (resetFlag && !resetPause && !dataIntegrityTest) {
-        console.log('Stopping to download orderbook again...');
+        //console.log('Stopping to download orderbook again...');
         orderBook = {
             'buy': [],
             'sell': []
@@ -412,7 +412,7 @@ function catchWebSocketMessage(data) {
 //=============================================
 function deDupe() {
     dataIntegrityTest = true;
-    console.log('OrderBook Downloaded! de-Duping OrderBook!');
+    //console.log('OrderBook Downloaded! de-Duping OrderBook!');
 
     // let funt = (objectSide) => {
     //     for (let i = 0; i < orderBook[objectSide].length; i++) {
@@ -428,7 +428,7 @@ function deDupe() {
     // funt('buy');
     // funt('sell');
 
-    console.log('OrderBook De-duped! Running program...');
+    //console.log('OrderBook De-duped! Running program...');
     //console.log('=============================================================================================================================================================================');
     dataIntegrityTest = false;
     runBenchmark = true;
@@ -443,14 +443,7 @@ function findRealisticOrders() {
     if (runBenchmark && !resetFlag) {
 
         sortBothSides();
-
         findGoodOrders();
-
-        findHighestBuyPrice();
-        findLowestSellPrice();
-
-        let myBuyOrder = myOrders.buy[myOrderIterator];
-        let mySellOrder = myOrders.sell[myOrderIterator];
 
         checkVars();
 
@@ -459,8 +452,8 @@ function findRealisticOrders() {
 
         outPutLoggingGood();
         outPutLoggingEtc();
-        outPutLoggingBuy(myBuyOrder);
-        outPutLoggingSell(mySellOrder);
+        outPutLoggingBuy();
+        outPutLoggingSell();
 
         if (myOrderIterator < ( mySettings.realityCriteria.length - 1) ) {
             myOrderIterator++;
@@ -525,7 +518,7 @@ function placeBuy(){
     } else if (state.buy[myOrderIterator] == 'waiting') {
         if (highestBuyPrice.price < myBuyOrder.price) {
 
-            console.log('Purchased!');
+            //console.log('Purchased!');
 
             state.buy[myOrderIterator] = 'paused';
             state.sell[myOrderIterator] = 'selling';
@@ -574,7 +567,7 @@ function placeSell(){
     let currentSellOrder = filterSellOrder(myBuyOrder);
 
     if (!currentSellOrder) {
-        console.log('Bubble?');
+        //console.log('Bubble?');
         return;
     }
 
@@ -595,7 +588,7 @@ function placeSell(){
         if (state.sell[myOrderIterator] == 'waiting') {
             if (lowestSellPrice.price > mySellOrder.price) {
 
-                console.log('Sold!');
+                //console.log('Sold!');
 
                 let buyAmount = myBuyOrder.price * 1.04;
                 amountMade[myOrderIterator] = parseFloat((mySellOrder.price * 20) - (buyAmount * 20));
@@ -660,7 +653,8 @@ function outPutLoggingEtc(){
 //=============================================
 //=============================================
 //=============================================
-function outPutLoggingBuy(myBuyOrder){
+function outPutLoggingBuy(){
+    let myBuyOrder = myOrders.buy[myOrderIterator];
     let buyInfo = buyGapInfo();
     if (!buyInfo) return 'noBuyInfo';
     if (!myBuyOrder) return 'noBuyOrder';
@@ -681,7 +675,8 @@ function outPutLoggingBuy(myBuyOrder){
 //=============================================
 //=============================================
 //=============================================
-function outPutLoggingSell(mySellOrder){
+function outPutLoggingSell(){
+    let mySellOrder = myOrders.sell[myOrderIterator];
     let sellInfo = sellGapInfo();
     if (!sellInfo) return 'noSellInfo';
     if (!mySellOrder) return 'noSellOrder';
