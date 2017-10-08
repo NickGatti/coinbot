@@ -1006,15 +1006,15 @@ console.log('Starting server...');
 var app = express();
 app.get('/api', function(req, res) {
     res.json({
-        highestBuyPrice: findHighestBuyPrice().price,
-        lowestSellPrice: findLowestSellPrice().price,
-        outPutLoggingGood: outPutLoggingGood(),
-        outPutLoggingEtc: outPutLoggingEtc(),
-        outPutLoggingBuy: outPutLoggingBuy(),
-        outPutLoggingSell: outPutLoggingSell(),
-        myOrderIterator: myOrderIterator,
-        buyState: state.buy[myOrderIterator],
-        sellState: state.sell[myOrderIterator]
+        highestBuyPrice: findHighestBuyPrice() ? findHighestBuyPrice().price : false,
+        lowestSellPrice: findLowestSellPrice() ? findLowestSellPrice().price : false,
+        outPutLoggingGood: outPutLoggingGood() ? outPutLoggingGood() : false,
+        outPutLoggingEtc: outPutLoggingEtc() ? outPutLoggingEtc() : false,
+        outPutLoggingBuy: outPutLoggingBuy() ? outPutLoggingBuy() : false,
+        outPutLoggingSell: outPutLoggingSell() ? outPutLoggingSell() : false,
+        myOrderIterator: myOrderIterator ? myOrderIterator : false,
+        buyState: state.buy[myOrderIterator] ? state.buy[myOrderIterator] : false,
+        sellState: state.sell[myOrderIterator] ? state.sell[myOrderIterator] : false
     });
 });
 
