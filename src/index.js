@@ -58,7 +58,7 @@ var talkAboutUpdating = false;
 var placeTalk = {
     placing: false,
     price: false,
-    size: false            
+    size: false
 };
 var myOrders = {
     buy: [],
@@ -524,13 +524,12 @@ function placeBuy(){
 
         return;
     } else if (state.buy[myOrderIterator] == 'waiting') {
+        placeTalk = {
+            placing: false,
+            price: false,
+            size: false
+        };
         if (highestBuyPrice.price < myBuyOrder.price) {
-
-            placeTalk = {
-                placing: false,
-                price: false,
-                size: false
-            };
 
             //console.log('Purchased!');
 
@@ -604,13 +603,12 @@ function placeSell(){
 
     } else if (mySellOrder) {
         if (state.sell[myOrderIterator] == 'waiting') {
+            placeTalk = {
+                placing: false,
+                price: false,
+                size: false
+            };
             if (lowestSellPrice.price > mySellOrder.price) {
-
-                placeTalk = {
-                    placing: false,
-                    price: false,
-                    size: false
-                };
 
                 //console.log('Sold!');
 
@@ -1014,7 +1012,9 @@ app.get('/api', function(req, res) {
         outPutLoggingEtc: outPutLoggingEtc(),
         outPutLoggingBuy: outPutLoggingBuy(),
         outPutLoggingSell: outPutLoggingSell(),
-        myOrderIterator: myOrderIterator
+        myOrderIterator: myOrderIterator,
+        buyState: state.buy[myOrderIterator],
+        sellState: state.sell[myOrderIterator]
     });
 });
 
