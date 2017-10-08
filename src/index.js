@@ -55,7 +55,11 @@ var orderBook = {
 
 var myOrderIterator = 0;
 var talkAboutUpdating = false;
-var placeTalk = false;
+var placeTalk = {
+    placing: false,
+    price: false,
+    size: false            
+};
 var myOrders = {
     buy: [],
     sell: []
@@ -443,7 +447,7 @@ function findRealisticOrders() {
     if (runBenchmark && !resetFlag) {
 
         sortBothSides();
-        findGoodOrders();
+        filterGoodOrders();
 
         checkVars();
 
@@ -493,7 +497,11 @@ function placeBuy(){
 
     if (state.buy[myOrderIterator] == 'buying') {
 
-        placeTalk = ('Placing new buy order: Price: $'  + currentBuyOrder.price.toFixed(2) + ' || Size 20 || Total USD $' + (20 * currentBuyOrder.price).toFixed(2) + ' || Current market price is: $' + highestBuyPrice.price.toFixed(2));
+        placeTalk = {
+            placing: true,
+            price: currentBuyOrder.price,
+            size: 20
+        };
 
         if (myBuyOrder) {
             myBuyOrder.oldPrice = parseFloat(myBuyOrder.price);
@@ -517,6 +525,12 @@ function placeBuy(){
         return;
     } else if (state.buy[myOrderIterator] == 'waiting') {
         if (highestBuyPrice.price < myBuyOrder.price) {
+
+            placeTalk = {
+                placing: false,
+                price: false,
+                size: false
+            };
 
             //console.log('Purchased!');
 
@@ -573,7 +587,11 @@ function placeSell(){
 
     if (state.sell[myOrderIterator] == 'selling') {
 
-        placeTalk = ('Placing new sell order: Price: $'  + currentSellOrder.price.toFixed(2) + ' || Size 20 || Total USD $' + (20 * currentSellOrder.price).toFixed(2) + ' || Current market price is: $' + lowestSellPrice.price.toFixed(2));
+        placeTalk = {
+            placing: true,
+            price: currentSellOrder.price,
+            size: 20
+        };
 
         mySellOrder = currentSellOrder;
         mySellOrder.price = parseFloat(mySellOrder.price - 0.01);
@@ -587,6 +605,12 @@ function placeSell(){
     } else if (mySellOrder) {
         if (state.sell[myOrderIterator] == 'waiting') {
             if (lowestSellPrice.price > mySellOrder.price) {
+
+                placeTalk = {
+                    placing: false,
+                    price: false,
+                    size: false
+                };
 
                 //console.log('Sold!');
 
@@ -772,6 +796,20 @@ function sortBothSides(){
 //=============================================
 //=============================================
 //=============================================
+function filterGoodOrders(){
+    let goodOrderOp = (objectSide) => {
+        for (let i = 0; i < orderBook[objectSide].length; i++){
+            let obj = orderBook[objectSide][i];
+            if ((obj.price * obj.size) > mySettings.realityCriteria[myOrderIterator]) {
+                obj.goodOrder = true;
+            } else {
+                obj.goodOrder = false;
+            }
+        }
+    };
+    goodOrderOp('buy');
+    goodOrderOp('sell');
+}
 function findGoodOrders(){
     let good = {
         'buy': 0,
@@ -781,12 +819,7 @@ function findGoodOrders(){
     let goodOrderOp = (objectSide) => {
         for (let i = 0; i < orderBook[objectSide].length; i++){
             let obj = orderBook[objectSide][i];
-            if ((obj.price * obj.size) > mySettings.realityCriteria[myOrderIterator]) {
-                obj.goodOrder = true;
-                good[objectSide]++;
-            } else {
-                obj.goodOrder = false;
-            }
+            if ((obj.price * obj.size) > mySettings.realityCriteria[myOrderIterator]) good[objectSide]++;
         }
     };
 
@@ -996,12 +1029,3 @@ app.listen(3000);
 //=============================================
 //=============================================
 //=============================================
-
-//TODO TEST
-
-
-// 1 MINE: 295.21 CURRENT: 301.40
-
-// 1 MINE: CURRENT:
-
-// TODO fix websocket connection from the disconnect or the bug that makes it crash
