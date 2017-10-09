@@ -678,6 +678,11 @@ function outPutLoggingBuy(){
     if (!myBuyOrder) return 'noBuyOrder';
     let output = false;
     if (myBuyOrder && buyInfo) {
+        if (state.buy[myOrderIterator] != 'buying') placeTalk.buy = {
+            placing: false,
+            price: false,
+            size: false
+        };
         output = {
             talkAboutUpdating: talkAboutUpdating ? talkAboutUpdating : false,
             newPriceUpdate: talkAboutUpdating ? myOrders.buy[myOrderIterator].price : false,
@@ -700,6 +705,11 @@ function outPutLoggingSell(){
     if (!mySellOrder) return 'noSellOrder';
     let output = false;
     if (mySellOrder && sellInfo) {
+        if (state.sell[myOrderIterator] != 'selling') placeTalk.sell = {
+            placing: false,
+            price: false,
+            size: false
+        };
         output = {
             mySellOrder: mySellOrder ? mySellOrder : false,
             sellCount: sellInfo[0] ? sellInfo[0] : false,
