@@ -465,7 +465,7 @@ function findRealisticOrders() {
         outPutLoggingEtc();
         outPutLoggingBuy();
         outPutLoggingSell();
-        
+
         resetPlaceTalk();
 
         if (myOrderIterator < ( mySettings.realityCriteria.length - 1) ) {
@@ -1029,15 +1029,15 @@ app.listen(3000);
 //=============================================
 //=============================================
 function resetPlaceTalk() {
-    if (placeTalk.buy.placing) placeTalk.buy = {
+    if (placeTalk.buy.placing && myOrders.buy[myOrderIterator] && state.buy != 'buying' && outPutLoggingBuy()) placeTalk.buy = {
         placing: false,
         price: false,
-        size: false
+        size: 'fucked'
     };
-    if (placeTalk.sell.placing) placeTalk.sell = {
+    if (placeTalk.sell.placing && myOrders.sell[myOrderIterator] && state.sell != 'selling' && outPutLoggingSell()) placeTalk.sell = {
         placing: false,
         price: false,
-        size: false
+        size: 'fucked'
     };
 }
 //=============================================

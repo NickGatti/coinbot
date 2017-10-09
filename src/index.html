@@ -1,27 +1,144 @@
 <html>
 <head>
-
+<style>
+body {
+  text-decoration: none;
+  color: #BDBDBD;
+  background: #424242;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+#generalInfo {
+  float: left;
+  border: 3px solid #BDBDBD;
+  overflow: auto;
+  padding: 0.5em;
+  margin: 1em;
+  border-radius: 25px;
+}
+#buyOrderInfo {
+  float: left;
+  border: 3px solid #BDBDBD;
+  overflow: auto;
+  padding: 0.5em;
+  margin: 1em;
+  border-radius: 25px;
+}
+#sellOrderInfo {
+  float: left;
+  border: 3px solid #BDBDBD;
+  overflow: auto;
+  padding: 0.5em;
+  margin: 1em;
+  border-radius: 25px;
+}
+#amountMadeInfo {
+  float: left;
+  border: 3px solid #BDBDBD;
+  overflow: auto;
+  padding: 1em;
+  margin: 1em;
+  border-radius: 25px;
+}
+p, ul, li {
+  font-weight: 200;
+}
+h1 {
+  text-align: center;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+</style>
 </<head>
 <body>
   <h1>EthBot</h1>
-  <h4>Current Lowest Sell Price</h4>
-  <p id='printSell'>?</p>
-  <h4>Current Highest Buy Price</h4>
-  <p id='printBuy'>?</p>
-  <h4>Total Number of Sell Orders</h4>
-  <p id='totalSells'></p>
-  <h4>Total Number of Buy Orders</h4>
-  <p id='totalBuys'></p>
-  <h4>Number of Sell Orders considered real</h4>
-  <p id='realSells'></p>
-  <h4>Number of Buy Orders considered real</h4>
-  <p id='realBuys'></p>
-  <h4>Percent of Sell Orders considered good</h4>
-  <p id='realSellPercent'></p>
-  <h4>Percent of Buy Orders considered good</h4>
-  <p id='realBuyPercent'></p>
-  <h4>Total Number of Orders considered bad</h4>
-  <p id='realTotalPercent'></p>
+    <div id='generalInfo'>
+      <h2>Market Info</h2>
+      <h3>Current Lowest Sell Price</h3>
+      <p id='printSell'></p>
+      <h3>Current Highest Buy Price</h3>
+      <p id='printBuy'></p>
+      <h3>Total Number of Sell Orders</h3>
+      <p id='totalSells'></p>
+      <h3>Total Number of Buy Orders</h3>
+      <p id='totalBuys'></p>
+      <h3>Number of Sell Orders considered real</h3>
+      <p id='realSells'></p>
+      <h3>Number of Buy Orders considered real</h3>
+      <p id='realBuys'></p>
+      <h3>Percent of Sell Orders considered good</h3>
+      <p id='realSellPercent'></p>
+      <h3>Percent of Buy Orders considered good</h3>
+      <p id='realBuyPercent'></p>
+      <h3>Total Number of Orders considered bad</h3>
+      <p id='realTotalPercent'></p>
+    </div>
+    <div id='buyOrderInfo'>
+      <h2>Current Buy Order Info<h2>
+      <p id='currentOrder'></p>
+      <h3>Placed new order at:<h3>
+        <ul>
+          <li>Currently Placing?: <div id='placingBuy'></div></li>
+          <li>Price: <div id='placingPriceBuy'></div></li>
+          <li>Size: <div id='placingSizeBuy'></div></li>
+        </ul>
+      <h3>Updating Order<h3>
+      <ul>
+        <li>Currently Updating?: <div id='talkAboutUpdatingBuy'></div></li>
+        <li>New Price: <div id='newPriceUpdateBuy'></div></li>
+        <li>Old Price: <div id='oldPriceUpdateBuy'></div></li>
+        <li>Difference: <div id='differenceBuy'></div></li>
+      </ul>
+      <h3>My Buy Order Info<h3>
+      <h3>ID<h3>
+      <p id='myBuyID'></p>
+      <h3>Current Price<h3>
+      <p id='myBuyPrice'></p>
+      <h3>Old Price<h3>
+      <p id='myOldBuyPrice'></p>
+      <h3>Margin<h3>
+      <p id='buyMargin'></p>
+      <h3>Number of orders between me and current top<h3>
+      <p id=''></p>
+      <h3>Total USD to go between me and current top<h3>
+      <p id=''></p>
+    </div>
+    <div id='sellOrderInfo'>
+      <h2>Current Sell Order Info<h2>
+      <p id='currentOrder'></p>
+      <h3>Placed new order at:<h3>
+        <ul>
+          <li>Currently Placing?: <div id='placingSell'></div></li>
+          <li>Price: <div id='placingPriceSell'></div></li>
+          <li>Size: <div id='placingSizeSell'></div></li>
+        </ul>
+      <h3>Updating Order<h3>
+      <ul>
+        <li>Currently Updating?: <div id='talkAboutUpdatingSell'></div></li>
+        <li>New Price: <div id='newPriceUpdateSell'></div></li>
+        <li>Old Price: <div id='oldPriceUpdateSell'></div></li>
+        <li>Difference: <div id='differenceSell'></div></li>
+      </ul>
+      <h3>My Buy Order Info<h3>
+      <h3>ID<h3>
+      <p id='mySellID'></p>
+      <h3>Current Price<h3>
+      <p id='mySellPrice'></p>
+      <h3>Old Price<h3>
+      <p id='myOldSellPrice'></p>
+      <h3>Margin<h3>
+      <p id='sellMargin'></p>
+      <h3>Number of orders between me and current top<h3>
+      <p id=''></p>
+      <h3>Total USD to go between me and current top<h3>
+      <p id=''></p>
+    </div>
+    <div id='amountMadeInfo'>
+      <h2>Amount Made Info</h2>
+      <h3>Total Amount Made</h3>
+      <p id='totalAmountMade'></p>
+      <h3>Current Order Amount Made</h3>
+      <p id='amountMade'></p>
+    </div>
   <script src='front.js'></script>
 </body>
 </html>
