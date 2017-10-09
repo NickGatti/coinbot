@@ -7,51 +7,20 @@ body {
   background: #424242;
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
-#generalInfo {
+.infoBox {
   float: left;
   border: 3px solid #BDBDBD;
   overflow: auto;
-  padding: 0.5rem;
-  margin: 1rem;
+  padding: 10px;
+  margin: 10px;
   border-radius: 25px;
-}
-#buyOrderInfo {
-  float: left;
-  border: 3px solid #BDBDBD;
-  overflow: auto;
-  padding: 0.5rem;
-  margin: 1rem;
-  border-radius: 25px;
-}
-#sellOrderInfo {
-  float: left;
-  border: 3px solid #BDBDBD;
-  overflow: auto;
-  padding: 0.5em;
-  margin: 1rem;
-  border-radius: 25px;
-}
-#amountMadeInfo {
-  float: left;
-  border: 3px solid #BDBDBD;
-  overflow: auto;
-  padding: 1rem;
-  margin: 1rem;
-  border-radius: 25px;
-}
-.fr {
-  float: right;
-  text-align: left;
+  height: inherit;
+  min-height: 50%;
+  min-width: 20%;
 }
 .fl {
   float: left;
   text-align: left;
-}
-.fn {
-  float: none;
-}
-p, ul, li {
-  font-weight: 200;
 }
 h1 {
   text-align: center;
@@ -59,12 +28,9 @@ h1 {
   margin-bottom: 1em;
 }
 .fontStand {
-  font-weight: 400;
+  font-weight: normal;
   font-size: 14px;
   text-decoration: none;
-}
-.bottomMargin {
-  margin-bottom: 20px;
 }
 .miniID {
   font-size: 60%;
@@ -75,54 +41,83 @@ h1 {
 }
 .statement {
   font-weight: bold;
+  overflow: auto;
+  font-stretch: condensed;
+  font-size: 95%;
+}
+.fr {
+  float: right;
+  text-align: left;
+}
+.wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.bottom {
+  margin-bottom: 26px;
 }
 </style>
 </<head>
 <body>
   <h1>EthBot</h1>
-    <div id='generalInfo'>
+  <div class="wrapper">
+
+    <div class="infoBox">
+
       <h2>Market Info</h2>
-      <div>
+
+      <div class="bottom">
         <div id='printSell' class="fr"></div>
-        <p class="statement">Current Lowest Sell Price</p>
+        <p class="statement">Current Lowest Sell Price:</p>
       </div>
-      <div>
+
+      <div class="bottom">
         <div id='printBuy' class="fr"></div>
-        <p class="statement">Current Highest Buy Price</p>
+        <p class="statement">Current Highest Buy Price:</p>
       </div>
-      <div>
+
+      <div class="bottom">
         <div id='totalSells' class="fr"></div>
-        <p class="statement">Total Number of Sell Orders</p>
+        <p class="statement">Total Number of Sell Orders:</p>
       </div>
-      <div>
+
+      <div class="bottom">
         <div id='totalBuys' class="fr"></div>
-        <p class="statement">Total Number of Buy Orders</p>
+        <p class="statement">Total Number of Buy Orders:</p>
       </div>
-      <div>
+
+      <div class="bottom">
         <div id='realSells' class="fr"></div>
-        <p class="statement">Real Sell Orders</p>
+        <p class="statement">Real Sell Orders:</p>
       </div>
-      <div>
+
+      <div class="bottom">
         <div id='realBuys' class="fr"></div>
-        <p class="statement">Real Buy Orders</p>
+        <p class="statement">Real Buy Orders:</p>
       </div>
-      <div>
+
+      <div class="bottom">
         <div id='realSellPercent' class="fr"></div>
-        <p class="statement">Percent Real Sells</p>
+        <p class="statement">Percent Real Sells:</p>
       </div>
-      <div>
+
+      <div class="bottom">
         <div id='realBuyPercent' class="fr"></div>
-        <p class="statement">Percent Real Buys</p>
+        <p class="statement">Percent Real Buys:</p>
       </div>
+
       <div>
         <div id='realTotalPercent' class="fr"></div>
-        <p class="statement">Total Percent Bad Orders</p>
+        <p class="statement">Total Percent Bad Orders:</p>
       </div>
+
     </div>
 
 
 
-    <div id='buyOrderInfo'>
+    <div class="infoBox">
 
       <h2>Current Buy Order Info</h2>
 
@@ -137,7 +132,7 @@ h1 {
         <li class="fontStand">Size: <div class="fr fontStand" id='placingSizeBuy'></div></li>
       </ul>
 
-      <h3>Updating Order</h3>
+      <h3>Updating Order:</h3>
 
       <ul>
         <li class="fontStand">New Price: <div class="fr fontStand" id='newPriceUpdateBuy'></div></li>
@@ -145,26 +140,26 @@ h1 {
         <li class="fontStand">Difference: <div class="fr fontStand" id='differenceBuy'></div></li>
       </ul>
 
-      <h3>My Buy Order Info</h3>
+      <h3>My Buy Order Info:</h3>
 
-      <div class='bottomMargin'>
+      <div>
         <div id='myBuyID' class="fr miniID"></div>
         <p class="fontStand">ID:</p>
       </div>
 
       <div>
         <div class="fr" id='myBuyPrice'></div>
-        <p class="fontStand">Current Price</p>
+        <p class="fontStand">Current Price:</p>
       </div>
 
       <div>
         <div class="fr" id='myOldBuyPrice'></div>
-        <p class="fontStand">Old Price</p>
+        <p class="fontStand">Old Price:</p>
       </div>
 
       <div>
         <div class="fr" id='buyMargin'></div>
-        <p class="fontStand">Margin</p>
+        <p class="fontStand">Margin:</p>
       </div>
 <!--
       <h3>Number of orders between me and current top</h3>
@@ -176,7 +171,7 @@ h1 {
 
 
 
-    <div id='sellOrderInfo'>
+    <div class="infoBox">
 
       <h2>Current Sell Order Info</h2>
 
@@ -191,7 +186,7 @@ h1 {
         <li class="fontStand">Size: <div class="fr fontStand" id='placingSizeSell'></div></li>
       </ul>
 
-      <h3>Updating Order</h3>
+      <h3>Updating Order:</h3>
 
       <ul>
         <li class="fontStand">New Price: <div class="fr fontStand" id='newPriceUpdateSell'></div></li>
@@ -199,11 +194,11 @@ h1 {
         <li class="fontStand">Difference: <div class="fr fontStand" id='differenceSell'></div></li>
       </ul>
 
-      <h3>My Sell Order Info</h3>
+      <h3>My Sell Order Info:</h3>
 
-      <div class='bottomMargin'>
+      <div>
         <p class="fontStand">ID:</p>
-        <div id='mySellID' class="fn miniID"></div>
+        <div id='mySellID' class="miniID"></div>
       </div>
 
       <div>
@@ -213,12 +208,12 @@ h1 {
 
       <div>
         <div class="fr" id='myOldSellPrice'></div>
-        <p class="fontStand">Old Price</p>
+        <p class="fontStand">Old Price:</p>
       </div>
 
       <div>
         <div class="fr" id='sellMargin'></div>
-        <p class="fontStand">Margin</p>
+        <p class="fontStand">Margin:</p>
       </div>
 <!--
       <h3>Number of orders between me and current top</h3>
@@ -229,13 +224,16 @@ h1 {
     </div>
 
 
-    <div id='amountMadeInfo'>
+    <div class="infoBox">
       <h2>Amount Made Info</h2>
       <h3>Total Amount Made</h3>
       <p id='totalAmountMade'></p>
       <h3>Current Order Amount Made</h3>
       <p id='amountMade'></p>
     </div>
+
+  </div>
+
   <script src='front.js'></script>
 </body>
 </html>
