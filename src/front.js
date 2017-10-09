@@ -33,33 +33,47 @@ var popData = (() => {
     //GOOD Info
 
     //ETC info
-    document.getElementById('totalAmountMade').innerHTML = pageData.outPutLoggingEtc.totalAmountMade ? '$' + pageData.outPutLoggingEtc.totalAmountMade.toFixed(2) : document.getElementById('totalAmountMade').innerHTML;
-    document.getElementById('amountMade').innerHTML = pageData.outPutLoggingEtc.amountMade ? '$' + pageData.outPutLoggingEtc.amountMade.toFixed(2) : document.getElementById('amountMade').innerHTML;
-    document.getElementById('printSell').innerHTML = pageData.lowestSellPrice ? '$' + pageData.lowestSellPrice.toFixed(2) : document.getElementById('printSell').innerHTML;
-    document.getElementById('printBuy').innerHTML = pageData.highestBuyPrice ? '$' + pageData.highestBuyPrice.toFixed(2) : document.getElementById('printBuy').innerHTML;
-    document.getElementsByClassName('currentOrder')[0].innerHTML = pageData.myOrderIterator ? pageData.myOrderIterator : document.getElementsByClassName('currentOrder')[0].innerHTML;
-    document.getElementsByClassName('currentOrder')[1].innerHTML = pageData.myOrderIterator ? pageData.myOrderIterator : document.getElementsByClassName('currentOrder')[1].innerHTML;
+    document.getElementById('totalAmountMade').innerHTML = pageData.outPutLoggingEtc.totalAmountMade ? '$' + pageData.outPutLoggingEtc.totalAmountMade.toFixed(2) : document.getElementById('totalAmountMade').innerHTML = 'N/A';
+    document.getElementById('amountMade').innerHTML = pageData.outPutLoggingEtc.amountMade ? '$' + pageData.outPutLoggingEtc.amountMade.toFixed(2) : document.getElementById('amountMade').innerHTML = 'N/A';
+    document.getElementById('printSell').innerHTML = pageData.lowestSellPrice ? '$' + pageData.lowestSellPrice.toFixed(2) : document.getElementById('printSell').innerHTML = 'N/A';
+    document.getElementById('printBuy').innerHTML = pageData.highestBuyPrice ? '$' + pageData.highestBuyPrice.toFixed(2) : document.getElementById('printBuy').innerHTML = 'N/A';
+    document.getElementsByClassName('currentOrder')[0].innerHTML = pageData.myOrderIterator ? pageData.myOrderIterator : document.getElementsByClassName('currentOrder')[0].innerHTML = 'Restarting...';
+    document.getElementsByClassName('currentOrder')[1].innerHTML = pageData.myOrderIterator ? pageData.myOrderIterator : document.getElementsByClassName('currentOrder')[1].innerHTML = 'Restarting...';
     //ETC Info
 
     //BUY ORDER
     //document.getElementById('talkAboutUpdatingBuy').innerHTML = pageData.outPutLoggingBuy.talkAboutUpdating ? pageData.outPutLoggingBuy.talkAboutUpdating : document.getElementById('talkAboutUpdatingBuy').innerHTML = 'Hasn\'t Changed Price Yet';
-    document.getElementById('newPriceUpdateBuy').innerHTML = pageData.outPutLoggingBuy.newPriceUpdate ? '$' + pageData.outPutLoggingBuy.newPriceUpdate.toFixed(2) : document.getElementById('newPriceUpdateBuy').innerHTML;
-    document.getElementById('oldPriceUpdateBuy').innerHTML = pageData.outPutLoggingBuy.oldPriceUpdate ? '$' + pageData.outPutLoggingBuy.oldPriceUpdate.toFixed(2) : document.getElementById('oldPriceUpdateBuy').innerHTML;
-    document.getElementById('differenceBuy').innerHTML = pageData.outPutLoggingBuy.difference ? '$' + pageData.outPutLoggingBuy.difference.toFixed(2) : document.getElementById('differenceBuy').innerHTML;
-    document.getElementById('myBuyID').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.order_id ? pageData.outPutLoggingBuy.myBuyOrder.order_id : document.getElementById('myBuyID').innerHTML;
-    document.getElementById('myBuyPrice').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.price ? '$' + pageData.outPutLoggingBuy.myBuyOrder.price.toFixed(2) : document.getElementById('myBuyPrice').innerHTML;
-    document.getElementById('myOldBuyPrice').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldPrice ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2) : document.getElementById('myOldBuyPrice').innerHTML;
-    document.getElementById('buyMargin').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldMargin ? pageData.outPutLoggingBuy.myBuyOrder.oldMargin.toFixed(4) + '%' : document.getElementById('buyMargin').innerHTML;
+    document.getElementById('newPriceUpdateBuy').innerHTML = pageData.outPutLoggingBuy.newPriceUpdate ? '$' + pageData.outPutLoggingBuy.newPriceUpdate.toFixed(2) : document.getElementById('newPriceUpdateBuy').innerHTML = 'No new update';
+    document.getElementById('oldPriceUpdateBuy').innerHTML = pageData.outPutLoggingBuy.oldPriceUpdate ? '$' + pageData.outPutLoggingBuy.oldPriceUpdate.toFixed(2) : document.getElementById('oldPriceUpdateBuy').innerHTML = 'N/A';
+    document.getElementById('differenceBuy').innerHTML = pageData.outPutLoggingBuy.difference ? '$' + pageData.outPutLoggingBuy.difference.toFixed(2) : document.getElementById('differenceBuy').innerHTML = 'N/A';
+    if (pageData.outPutLoggingBuy.myBuyOrder) {
+        document.getElementById('myBuyID').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.order_id ? pageData.outPutLoggingBuy.myBuyOrder.order_id : document.getElementById('myBuyID').innerHTML = 'N/A';
+        document.getElementById('myBuyPrice').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.price ? '$' + pageData.outPutLoggingBuy.myBuyOrder.price.toFixed(2) : document.getElementById('myBuyPrice').innerHTML = 'N/A';
+        document.getElementById('myOldBuyPrice').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldPrice ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2) : document.getElementById('myOldBuyPrice').innerHTML = 'N/A';
+        document.getElementById('buyMargin').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldMargin ? pageData.outPutLoggingBuy.myBuyOrder.oldMargin.toFixed(4) + '%' : document.getElementById('buyMargin').innerHTML = 'N/A';
+    } else {
+        document.getElementById('myBuyID').innerHTML = 'N/A';
+        document.getElementById('myBuyPrice').innerHTML = 'N/A';
+        document.getElementById('myOldBuyPrice').innerHTML = 'N/A';
+        document.getElementById('buyMargin').innerHTML = 'N/A';
+    }
     //BUY ORDER
 
     //SELL ORDER
     //document.getElementById('talkAboutUpdatingSell').innerHTML = pageData.outPutLoggingSell.talkAboutUpdating ? pageData.outPutLoggingSell.talkAboutUpdating : document.getElementById('talkAboutUpdatingSell').innerHTML;
-    document.getElementById('newPriceUpdateSell').innerHTML = pageData.outPutLoggingSell.newPriceUpdate ? '$' + pageData.outPutLoggingSell.newPriceUpdate.toFixed(2) : document.getElementById('newPriceUpdateSell').innerHTML;
-    document.getElementById('oldPriceUpdateSell').innerHTML = pageData.outPutLoggingSell.oldPriceUpdate ? '$' + pageData.outPutLoggingSell.oldPriceUpdate.toFixed(2) : document.getElementById('oldPriceUpdateSell').innerHTML;
-    document.getElementById('differenceSell').innerHTML = pageData.outPutLoggingSell.difference ? '$' + pageData.outPutLoggingSell.difference.toFixed(2) : document.getElementById('differenceSell').innerHTML;
-    document.getElementById('mySellID').innerHTML = pageData.outPutLoggingSell.mySellOrder.order_id ? pageData.outPutLoggingSell.mySellOrder.order_id : document.getElementById('mySellID').innerHTML;
-    document.getElementById('mySellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.price ? '$' + pageData.outPutLoggingSell.mySellOrder.price.toFixed(2) :   document.getElementById('mySellPrice').innerHTML;
-    document.getElementById('myOldSellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldPrice ? '$' + pageData.outPutLoggingSell.mySellOrder.oldPrice.toFixed(2) :   document.getElementById('myOldSellPrice').innerHTML;
-    document.getElementById('sellMargin').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldMargin ? pageData.outPutLoggingSell.mySellOrder.oldMargin.toFixed(4) + '%' : document.getElementById('sellMargin').innerHTML;
+    document.getElementById('newPriceUpdateSell').innerHTML = pageData.outPutLoggingSell.newPriceUpdate ? '$' + pageData.outPutLoggingSell.newPriceUpdate.toFixed(2) : document.getElementById('newPriceUpdateSell').innerHTML = 'No new update';
+    document.getElementById('oldPriceUpdateSell').innerHTML = pageData.outPutLoggingSell.oldPriceUpdate ? '$' + pageData.outPutLoggingSell.oldPriceUpdate.toFixed(2) : document.getElementById('oldPriceUpdateSell').innerHTML = 'N/A';
+    document.getElementById('differenceSell').innerHTML = pageData.outPutLoggingSell.difference ? '$' + pageData.outPutLoggingSell.difference.toFixed(2) : document.getElementById('differenceSell').innerHTML = 'N/A';
+    if (pageData.outPutLoggingSell.mySellOrder) {
+        document.getElementById('mySellID').innerHTML = pageData.outPutLoggingSell.mySellOrder.order_id ? pageData.outPutLoggingSell.mySellOrder.order_id : document.getElementById('mySellID').innerHTML = 'N/A';
+        document.getElementById('mySellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.price ? '$' + pageData.outPutLoggingSell.mySellOrder.price.toFixed(2) : document.getElementById('mySellPrice').innerHTML = 'N/A';
+        document.getElementById('myOldSellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldPrice ? '$' + pageData.outPutLoggingSell.mySellOrder.oldPrice.toFixed(2) : document.getElementById('myOldSellPrice').innerHTML = 'N/A';
+        document.getElementById('sellMargin').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldMargin ? pageData.outPutLoggingSell.mySellOrder.oldMargin.toFixed(4) + '%' : document.getElementById('sellMargin').innerHTML = 'N/A';
+    } else {
+        document.getElementById('mySellID').innerHTML = 'N/A';
+        document.getElementById('mySellPrice').innerHTML = 'N/A';
+        document.getElementById('myOldSellPrice').innerHTML = 'N/A';
+        document.getElementById('sellMargin').innerHTML = 'N/A';
+    }
     //SELL ORDER
 });
