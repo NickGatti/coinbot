@@ -22,11 +22,6 @@ body {
   float: left;
   text-align: left;
 }
-h1 {
-  text-align: center;
-  margin-top: 2em;
-  margin-bottom: 1em;
-}
 .fontStand {
   font-weight: normal;
   font-size: 14px;
@@ -58,10 +53,29 @@ h1 {
 .bottom {
   margin-bottom: 26px;
 }
+#title {
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 50px;
+  margin-top: 60px;
+  text-align: center;
+}
+#innerTitle {
+  margin-top: 2px;
+}
 </style>
 </<head>
 <body>
-  <h1>EthBot</h1>
+
+  <div id ='title'>
+    <h1>EthBot</h1>
+    <div>
+      <div class="fr currentOrder" id='innerTitle'></div>
+      <h3>Current Order #</h3>
+    </div>
+  </div>
+
   <div class="wrapper">
 
     <div class="infoBox">
@@ -121,11 +135,6 @@ h1 {
 
       <h2>Current Buy Order Info</h2>
 
-      <div>
-        <div class="fr currentOrder"></div>
-        <h3>Current Order #</h3>
-      </div>
-
       <ul>
         <li class="fontStand">State: <div class="fr fontStand" id='placingBuy'></div></li>
         <li class="fontStand">Price: <div class="fr fontStand" id='placingPriceBuy'></div></li>
@@ -175,23 +184,10 @@ h1 {
 
       <h2>Current Sell Order Info</h2>
 
-      <div>
-        <div class="fr currentOrder"></div>
-        <h3>Current Order #</h3>
-      </div>
-
       <ul>
         <li class="fontStand">State: <div class="fr fontStand" id='placingSell'></div></li>
         <li class="fontStand">Price: <div class="fr fontStand" id='placingPriceSell'></div></li>
         <li class="fontStand">Size: <div class="fr fontStand" id='placingSizeSell'></div></li>
-      </ul>
-
-      <h3>Updating Order:</h3>
-
-      <ul>
-        <li class="fontStand">New Price: <div class="fr fontStand" id='newPriceUpdateSell'></div></li>
-        <li class="fontStand">Old Price: <div class="fr fontStand" id='oldPriceUpdateSell'></div></li>
-        <li class="fontStand">Difference: <div class="fr fontStand" id='differenceSell'></div></li>
       </ul>
 
       <h3>My Sell Order Info:</h3>

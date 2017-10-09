@@ -37,8 +37,7 @@ var popData = (() => {
     document.getElementById('amountMade').innerHTML = pageData.outPutLoggingEtc.amountMade ? '$' + pageData.outPutLoggingEtc.amountMade.toFixed(2) : document.getElementById('amountMade').innerHTML = 'N/A';
     document.getElementById('printSell').innerHTML = pageData.lowestSellPrice ? '$' + pageData.lowestSellPrice.toFixed(2) : document.getElementById('printSell').innerHTML = 'N/A';
     document.getElementById('printBuy').innerHTML = pageData.highestBuyPrice ? '$' + pageData.highestBuyPrice.toFixed(2) : document.getElementById('printBuy').innerHTML = 'N/A';
-    document.getElementsByClassName('currentOrder')[0].innerHTML = pageData.myOrderIterator ? pageData.myOrderIterator : document.getElementsByClassName('currentOrder')[0].innerHTML = 'Restarting...';
-    document.getElementsByClassName('currentOrder')[1].innerHTML = pageData.myOrderIterator ? pageData.myOrderIterator : document.getElementsByClassName('currentOrder')[1].innerHTML = 'Restarting...';
+    document.getElementsByClassName('currentOrder')[0].innerHTML = pageData.myOrderIterator != undefined ? pageData.myOrderIterator + 1 : document.getElementsByClassName('currentOrder')[0].innerHTML = 'Restarting...';
     //ETC Info
 
     //BUY ORDER
@@ -60,10 +59,6 @@ var popData = (() => {
     //BUY ORDER
 
     //SELL ORDER
-    //document.getElementById('talkAboutUpdatingSell').innerHTML = pageData.outPutLoggingSell.talkAboutUpdating ? pageData.outPutLoggingSell.talkAboutUpdating : document.getElementById('talkAboutUpdatingSell').innerHTML;
-    document.getElementById('newPriceUpdateSell').innerHTML = pageData.outPutLoggingSell.newPriceUpdate ? '$' + pageData.outPutLoggingSell.newPriceUpdate.toFixed(2) : document.getElementById('newPriceUpdateSell').innerHTML = 'No new update';
-    document.getElementById('oldPriceUpdateSell').innerHTML = pageData.outPutLoggingSell.oldPriceUpdate ? '$' + pageData.outPutLoggingSell.oldPriceUpdate.toFixed(2) : document.getElementById('oldPriceUpdateSell').innerHTML = 'N/A';
-    document.getElementById('differenceSell').innerHTML = pageData.outPutLoggingSell.difference ? '$' + pageData.outPutLoggingSell.difference.toFixed(2) : document.getElementById('differenceSell').innerHTML = 'N/A';
     if (pageData.outPutLoggingSell.mySellOrder) {
         document.getElementById('mySellID').innerHTML = pageData.outPutLoggingSell.mySellOrder.order_id ? pageData.outPutLoggingSell.mySellOrder.order_id : document.getElementById('mySellID').innerHTML = 'N/A';
         document.getElementById('mySellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.price ? '$' + pageData.outPutLoggingSell.mySellOrder.price.toFixed(2) : document.getElementById('mySellPrice').innerHTML = 'N/A';
