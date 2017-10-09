@@ -678,7 +678,7 @@ function outPutLoggingBuy(){
             talkAboutUpdating: talkAboutUpdating ? talkAboutUpdating : false,
             newPriceUpdate: talkAboutUpdating ? myOrders.buy[myOrderIterator].price : false,
             oldPriceUpdate: talkAboutUpdating ? talkAboutUpdating : false,
-            difference: talkAboutUpdating ? talkAboutUpdating - myOrders.buy[myOrderIterator].price : false,
+            difference: talkAboutUpdating ? myOrders.buy[myOrderIterator].price - talkAboutUpdating : false,
             myBuyOrder: myBuyOrder ? myBuyOrder : false,
             buyCount: buyInfo[0] ? buyInfo[0] : false,
             buyTotal: buyInfo[1] ? buyInfo[1] : false

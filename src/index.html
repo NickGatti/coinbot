@@ -73,30 +73,51 @@ h1 {
   text-indent: 0;
   margin-top: .2rem;
 }
+.statement {
+  font-weight: bold;
+}
 </style>
 </<head>
 <body>
   <h1>EthBot</h1>
     <div id='generalInfo'>
       <h2>Market Info</h2>
-      <h3>Current Lowest Sell Price</h3>
-      <p id='printSell'></p>
-      <h3>Current Highest Buy Price</h3>
-      <p id='printBuy'></p>
-      <h3>Total Number of Sell Orders</h3>
-      <p id='totalSells'></p>
-      <h3>Total Number of Buy Orders</h3>
-      <p id='totalBuys'></p>
-      <h3>Number of Sell Orders considered real</h3>
-      <p id='realSells'></p>
-      <h3>Number of Buy Orders considered real</h3>
-      <p id='realBuys'></p>
-      <h3>Percent of Sell Orders considered good</h3>
-      <p id='realSellPercent'></p>
-      <h3>Percent of Buy Orders considered good</h3>
-      <p id='realBuyPercent'></p>
-      <h3>Total Number of Orders considered bad</h3>
-      <p id='realTotalPercent'></p>
+      <div>
+        <div id='printSell' class="fr"></div>
+        <p class="statement">Current Lowest Sell Price</p>
+      </div>
+      <div>
+        <div id='printBuy' class="fr"></div>
+        <p class="statement">Current Highest Buy Price</p>
+      </div>
+      <div>
+        <div id='totalSells' class="fr"></div>
+        <p class="statement">Total Number of Sell Orders</p>
+      </div>
+      <div>
+        <div id='totalBuys' class="fr"></div>
+        <p class="statement">Total Number of Buy Orders</p>
+      </div>
+      <div>
+        <div id='realSells' class="fr"></div>
+        <p class="statement">Real Sell Orders</p>
+      </div>
+      <div>
+        <div id='realBuys' class="fr"></div>
+        <p class="statement">Real Buy Orders</p>
+      </div>
+      <div>
+        <div id='realSellPercent' class="fr"></div>
+        <p class="statement">Percent Real Sells</p>
+      </div>
+      <div>
+        <div id='realBuyPercent' class="fr"></div>
+        <p class="statement">Percent Real Buys</p>
+      </div>
+      <div>
+        <div id='realTotalPercent' class="fr"></div>
+        <p class="statement">Total Percent Bad Orders</p>
+      </div>
     </div>
 
 
