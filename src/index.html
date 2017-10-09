@@ -11,16 +11,16 @@ body {
   float: left;
   border: 3px solid #BDBDBD;
   overflow: auto;
-  padding: 0.5em;
-  margin: 1em;
+  padding: 0.5rem;
+  margin: 1rem;
   border-radius: 25px;
 }
 #buyOrderInfo {
   float: left;
   border: 3px solid #BDBDBD;
   overflow: auto;
-  padding: 0.5em;
-  margin: 1em;
+  padding: 0.5rem;
+  margin: 1rem;
   border-radius: 25px;
 }
 #sellOrderInfo {
@@ -28,16 +28,27 @@ body {
   border: 3px solid #BDBDBD;
   overflow: auto;
   padding: 0.5em;
-  margin: 1em;
+  margin: 1rem;
   border-radius: 25px;
 }
 #amountMadeInfo {
   float: left;
   border: 3px solid #BDBDBD;
   overflow: auto;
-  padding: 1em;
-  margin: 1em;
+  padding: 1rem;
+  margin: 1rem;
   border-radius: 25px;
+}
+.fr {
+  float: right;
+  text-align: left;
+}
+.fl {
+  float: left;
+  text-align: left;
+}
+.fn {
+  float: none;
 }
 p, ul, li {
   font-weight: 200;
@@ -46,6 +57,14 @@ h1 {
   text-align: center;
   margin-top: 2em;
   margin-bottom: 1em;
+}
+.fontStand {
+  font-weight: 400;
+  font-size: 14px;
+  text-decoration: none;
+}
+.bottomMargin {
+  margin-bottom: 20px;
 }
 </style>
 </<head>
@@ -72,64 +91,80 @@ h1 {
       <h3>Total Number of Orders considered bad</h3>
       <p id='realTotalPercent'></p>
     </div>
+
+
+
     <div id='buyOrderInfo'>
-      <h2>Current Buy Order Info<h2>
-      <p id='currentOrder'></p>
-      <h3>Placed new order at:<h3>
+      <h2>Current Buy Order Info</h2>
+      <div class="fr currentOrder"></div>
+      <h3>Current Order #</h3>
         <ul>
-          <li>Currently Placing?: <div id='placingBuy'></div></li>
-          <li>Price: <div id='placingPriceBuy'></div></li>
-          <li>Size: <div id='placingSizeBuy'></div></li>
+          <li class="fontStand">State: <div class="fr fontStand" id='placingBuy'></div></li>
+          <li class="fontStand">Price: <div class="fr fontStand" id='placingPriceBuy'></div></li>
+          <li class="fontStand">Size: <div class="fr fontStand" id='placingSizeBuy'></div></li>
         </ul>
-      <h3>Updating Order<h3>
+      <h3>Updating Order</h3>
       <ul>
-        <li>Currently Updating?: <div id='talkAboutUpdatingBuy'></div></li>
-        <li>New Price: <div id='newPriceUpdateBuy'></div></li>
-        <li>Old Price: <div id='oldPriceUpdateBuy'></div></li>
-        <li>Difference: <div id='differenceBuy'></div></li>
+        <li class="fontStand">New Price: <div class="fr fontStand" id='newPriceUpdateBuy'></div></li>
+        <li class="fontStand">Old Price: <div class="fr fontStand" id='oldPriceUpdateBuy'></div></li>
+        <li class="fontStand">Difference: <div class="fr fontStand" id='differenceBuy'></div></li>
       </ul>
-      <h3>My Buy Order Info<h3>
-      <h3>ID<h3>
-      <p id='myBuyID'></p>
-      <h3>Current Price<h3>
-      <p id='myBuyPrice'></p>
-      <h3>Old Price<h3>
-      <p id='myOldBuyPrice'></p>
-      <h3>Margin<h3>
-      <p id='buyMargin'></p>
-      <h3>Number of orders between me and current top<h3>
+      <h3>My Buy Order Info</h3>
+      <div class='bottomMargin'>
+        <p class="fontStand">ID:</p>
+        <div id='myBuyID' class="fn"></div>
+      </div>
+      <div>
+        <div class="fr" id='myBuyPrice'></div>
+        <p class="fontStand">Current Price</p>
+      </div>
+      <div>
+        <div class="fr" id='myOldBuyPrice'></div>
+        <p class="fontStand">Old Price</p>
+      </div>
+      <div>
+        <div class="fr" id='buyMargin'></div>
+        <p class="fontStand">Margin</p>
+      </div>
+<!--
+      <h3>Number of orders between me and current top</h3>
       <p id=''></p>
-      <h3>Total USD to go between me and current top<h3>
+      <h3>Total USD to go between me and current top</h3>
       <p id=''></p>
+-->
     </div>
+
+
+
+
     <div id='sellOrderInfo'>
-      <h2>Current Sell Order Info<h2>
-      <p id='currentOrder'></p>
-      <h3>Placed new order at:<h3>
+      <h2>Current Sell Order Info</h2>
+      <div class="fl currentOrder"></div>
+      <h3>Current Order #</h3>
         <ul>
-          <li>Currently Placing?: <div id='placingSell'></div></li>
-          <li>Price: <div id='placingPriceSell'></div></li>
-          <li>Size: <div id='placingSizeSell'></div></li>
+          <li>Currently Placing?: <div class="fr" id='placingSell'></div></li>
+          <li>Price: <div class="fr" id='placingPriceSell'></div></li>
+          <li>Size: <div class="fr" id='placingSizeSell'></div></li>
         </ul>
-      <h3>Updating Order<h3>
+      <h3>Updating Order</h3>
       <ul>
         <li>Currently Updating?: <div id='talkAboutUpdatingSell'></div></li>
         <li>New Price: <div id='newPriceUpdateSell'></div></li>
         <li>Old Price: <div id='oldPriceUpdateSell'></div></li>
         <li>Difference: <div id='differenceSell'></div></li>
       </ul>
-      <h3>My Buy Order Info<h3>
-      <h3>ID<h3>
+      <h3>My Buy Order Info</h3>
+      <h3>ID</h3>
       <p id='mySellID'></p>
-      <h3>Current Price<h3>
+      <h3>Current Price</h3>
       <p id='mySellPrice'></p>
-      <h3>Old Price<h3>
+      <h3>Old Price</h3>
       <p id='myOldSellPrice'></p>
-      <h3>Margin<h3>
+      <h3>Margin</h3>
       <p id='sellMargin'></p>
-      <h3>Number of orders between me and current top<h3>
+      <h3>Number of orders between me and current top</h3>
       <p id=''></p>
-      <h3>Total USD to go between me and current top<h3>
+      <h3>Total USD to go between me and current top</h3>
       <p id=''></p>
     </div>
     <div id='amountMadeInfo'>
