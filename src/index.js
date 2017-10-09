@@ -59,12 +59,14 @@ var placeTalk = {
     buy: {
         placing: false,
         price: false,
-        size: false
+        size: false,
+        displayed: false
     },
     sell: {
         placing: false,
         price: false,
-        size: false
+        size: false,
+        displayed: false
     }
 };
 var myOrders = {
@@ -466,8 +468,6 @@ function findRealisticOrders() {
         outPutLoggingBuy();
         outPutLoggingSell();
 
-        resetPlaceTalk();
-
         if (myOrderIterator < ( mySettings.realityCriteria.length - 1) ) {
             myOrderIterator++;
         } else {
@@ -509,7 +509,8 @@ function placeBuy(){
         placeTalk.buy = {
             placing: true,
             price: currentBuyOrder.price,
-            size: 20
+            size: 20,
+            displayed: false
         };
 
         if (myBuyOrder) {
@@ -592,7 +593,8 @@ function placeSell(){
         placeTalk.sell = {
             placing: true,
             price: currentSellOrder.price,
-            size: 20
+            size: 20,
+            displayed: false
         };
 
         mySellOrder = currentSellOrder;
@@ -1014,6 +1016,7 @@ app.get('/api', function(req, res) {
         buyState: state.buy[myOrderIterator] ? state.buy[myOrderIterator] : false,
         sellState: state.sell[myOrderIterator] ? state.sell[myOrderIterator] : false
     });
+    resetPlaceTalk();
 });
 
 app.listen(3000);
@@ -1029,15 +1032,17 @@ app.listen(3000);
 //=============================================
 //=============================================
 function resetPlaceTalk() {
-    if (placeTalk.buy.placing && myOrders.buy[myOrderIterator] && state.buy != 'buying' && outPutLoggingBuy()) placeTalk.buy = {
+    if (placeTalk.buy.placing && myOrders.buy[myOrderIterator] && state.buy[myOrderIterator] != 'buying' && outPutLoggingBuy() && !placeTalk.buy.displayed) placeTalk.buy = {
         placing: false,
         price: false,
-        size: 'fucked'
+        size: false,
+        displayed: true
     };
-    if (placeTalk.sell.placing && myOrders.sell[myOrderIterator] && state.sell != 'selling' && outPutLoggingSell()) placeTalk.sell = {
+    if (placeTalk.sell.placing && myOrders.sell[myOrderIterator] && state.sell[myOrderIterator] != 'selling' && outPutLoggingSell() && !placeTalk.sell.displayed) placeTalk.sell = {
         placing: false,
         price: false,
-        size: 'fucked'
+        size: false,
+        displayed: true
     };
 }
 //=============================================
