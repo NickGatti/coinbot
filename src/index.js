@@ -531,11 +531,6 @@ function placeBuy(){
 
         return;
     } else if (state.buy[myOrderIterator] == 'waiting') {
-        placeTalk.buy = {
-            placing: false,
-            price: false,
-            size: false
-        };
         if (highestBuyPrice.price < myBuyOrder.price) {
 
             //console.log('Purchased!');
@@ -592,7 +587,6 @@ function placeSell(){
     }
 
     if (state.sell[myOrderIterator] == 'selling') {
-
         placeTalk.sell = {
             placing: true,
             price: currentSellOrder.price,
@@ -610,11 +604,6 @@ function placeSell(){
 
     } else if (mySellOrder) {
         if (state.sell[myOrderIterator] == 'waiting') {
-            placeTalk.sell = {
-                placing: false,
-                price: false,
-                size: false
-            };
             if (lowestSellPrice.price > mySellOrder.price) {
 
                 //console.log('Sold!');
