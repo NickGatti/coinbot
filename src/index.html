@@ -66,6 +66,13 @@ h1 {
 .bottomMargin {
   margin-bottom: 20px;
 }
+.miniID {
+  font-size: 60%;
+  font-stretch: condensed;
+  font-kerning: auto;
+  text-indent: 0;
+  margin-top: .2rem;
+}
 </style>
 </<head>
 <body>
@@ -95,33 +102,45 @@ h1 {
 
 
     <div id='buyOrderInfo'>
+
       <h2>Current Buy Order Info</h2>
-      <div class="fr currentOrder"></div>
-      <h3>Current Order #</h3>
-        <ul>
-          <li class="fontStand">State: <div class="fr fontStand" id='placingBuy'></div></li>
-          <li class="fontStand">Price: <div class="fr fontStand" id='placingPriceBuy'></div></li>
-          <li class="fontStand">Size: <div class="fr fontStand" id='placingSizeBuy'></div></li>
-        </ul>
+
+      <div>
+        <div class="fr currentOrder"></div>
+        <h3>Current Order #</h3>
+      </div>
+
+      <ul>
+        <li class="fontStand">State: <div class="fr fontStand" id='placingBuy'></div></li>
+        <li class="fontStand">Price: <div class="fr fontStand" id='placingPriceBuy'></div></li>
+        <li class="fontStand">Size: <div class="fr fontStand" id='placingSizeBuy'></div></li>
+      </ul>
+
       <h3>Updating Order</h3>
+
       <ul>
         <li class="fontStand">New Price: <div class="fr fontStand" id='newPriceUpdateBuy'></div></li>
         <li class="fontStand">Old Price: <div class="fr fontStand" id='oldPriceUpdateBuy'></div></li>
         <li class="fontStand">Difference: <div class="fr fontStand" id='differenceBuy'></div></li>
       </ul>
+
       <h3>My Buy Order Info</h3>
+
       <div class='bottomMargin'>
+        <div id='myBuyID' class="fr miniID"></div>
         <p class="fontStand">ID:</p>
-        <div id='myBuyID' class="fn"></div>
       </div>
+
       <div>
         <div class="fr" id='myBuyPrice'></div>
         <p class="fontStand">Current Price</p>
       </div>
+
       <div>
         <div class="fr" id='myOldBuyPrice'></div>
         <p class="fontStand">Old Price</p>
       </div>
+
       <div>
         <div class="fr" id='buyMargin'></div>
         <p class="fontStand">Margin</p>
@@ -136,37 +155,59 @@ h1 {
 
 
 
-
     <div id='sellOrderInfo'>
+
       <h2>Current Sell Order Info</h2>
-      <div class="fl currentOrder"></div>
-      <h3>Current Order #</h3>
-        <ul>
-          <li>Currently Placing?: <div class="fr" id='placingSell'></div></li>
-          <li>Price: <div class="fr" id='placingPriceSell'></div></li>
-          <li>Size: <div class="fr" id='placingSizeSell'></div></li>
-        </ul>
-      <h3>Updating Order</h3>
+
+      <div>
+        <div class="fr currentOrder"></div>
+        <h3>Current Order #</h3>
+      </div>
+
       <ul>
-        <li>Currently Updating?: <div id='talkAboutUpdatingSell'></div></li>
-        <li>New Price: <div id='newPriceUpdateSell'></div></li>
-        <li>Old Price: <div id='oldPriceUpdateSell'></div></li>
-        <li>Difference: <div id='differenceSell'></div></li>
+        <li class="fontStand">State: <div class="fr fontStand" id='placingSell'></div></li>
+        <li class="fontStand">Price: <div class="fr fontStand" id='placingPriceSell'></div></li>
+        <li class="fontStand">Size: <div class="fr fontStand" id='placingSizeSell'></div></li>
       </ul>
-      <h3>My Buy Order Info</h3>
-      <h3>ID</h3>
-      <p id='mySellID'></p>
-      <h3>Current Price</h3>
-      <p id='mySellPrice'></p>
-      <h3>Old Price</h3>
-      <p id='myOldSellPrice'></p>
-      <h3>Margin</h3>
-      <p id='sellMargin'></p>
+
+      <h3>Updating Order</h3>
+
+      <ul>
+        <li class="fontStand">New Price: <div class="fr fontStand" id='newPriceUpdateSell'></div></li>
+        <li class="fontStand">Old Price: <div class="fr fontStand" id='oldPriceUpdateSell'></div></li>
+        <li class="fontStand">Difference: <div class="fr fontStand" id='differenceSell'></div></li>
+      </ul>
+
+      <h3>My Sell Order Info</h3>
+
+      <div class='bottomMargin'>
+        <p class="fontStand">ID:</p>
+        <div id='mySellID' class="fn miniID"></div>
+      </div>
+
+      <div>
+        <div class="fr" id='mySellPrice'></div>
+        <p class="fontStand">Current Price</p>
+      </div>
+
+      <div>
+        <div class="fr" id='myOldSellPrice'></div>
+        <p class="fontStand">Old Price</p>
+      </div>
+
+      <div>
+        <div class="fr" id='sellMargin'></div>
+        <p class="fontStand">Margin</p>
+      </div>
+<!--
       <h3>Number of orders between me and current top</h3>
       <p id=''></p>
       <h3>Total USD to go between me and current top</h3>
       <p id=''></p>
+-->
     </div>
+
+
     <div id='amountMadeInfo'>
       <h2>Amount Made Info</h2>
       <h3>Total Amount Made</h3>
