@@ -14,19 +14,19 @@ setInterval (() => {
 var popData = (() => {
 
     //Place talk
-    document.getElementById('placingBuy').innerHTML = pageData.outPutLoggingEtc.placeTalk.buy.placing ? document.getElementById('placingBuy').innerHTML = 'Placing' : document.getElementById('placingBuy').innerHTML = 'Not Placing';
+    document.getElementById('placingBuy').innerHTML = pageData.buyState ? document.getElementById('placingBuy').innerHTML = pageData.buyState.charAt(0).toUpperCase() + pageData.buyState.slice(1) : document.getElementById('placingBuy').innerHTML = 'N/A';
     document.getElementById('placingPriceBuy').innerHTML = pageData.outPutLoggingEtc.placeTalk.buy.price ? '$' + pageData.outPutLoggingEtc.placeTalk.buy.price.toFixed(2) : document.getElementById('placingPriceBuy').innerHTML = 'N/A';
     document.getElementById('placingSizeBuy').innerHTML = pageData.outPutLoggingEtc.placeTalk.buy.size ? '#' + pageData.outPutLoggingEtc.placeTalk.buy.size : document.getElementById('placingSizeBuy').innerHTML = 'N/A';
-    document.getElementById('placingSell').innerHTML = pageData.outPutLoggingEtc.placeTalk.sell.placing ? document.getElementById('placingSell').innerHTML = 'Placing' : document.getElementById('placingSell').innerHTML = 'Not Placing';
+    document.getElementById('placingSell').innerHTML = pageData.sellState ? pageData.sellState.charAt(0).toUpperCase() + pageData.sellState.slice(1) : document.getElementById('placingSell').innerHTML = 'N/A';
     document.getElementById('placingPriceSell').innerHTML = pageData.outPutLoggingEtc.placeTalk.sell.price ? '$' + pageData.outPutLoggingEtc.placeTalk.sell.price.toFixed(2) : document.getElementById('placingPriceSell').innerHTML = 'N/A';
     document.getElementById('placingSizeSell').innerHTML = pageData.outPutLoggingEtc.placeTalk.sell.size ? '#' + pageData.outPutLoggingEtc.placeTalk.sell.size : document.getElementById('placingSizeSell').innerHTML = 'N/A';
     //Place talk
 
     //GOOD info
-    document.getElementById('totalSells').innerHTML = pageData.outPutLoggingGood.totalSells ? '#' + pageData.outPutLoggingGood.totalSells : document.getElementById('totalSells').innerHTML;
-    document.getElementById('totalBuys').innerHTML = pageData.outPutLoggingGood.totalBuys ? '#' + pageData.outPutLoggingGood.totalBuys : document.getElementById('totalBuys').innerHTML;
-    document.getElementById('realSells').innerHTML = pageData.outPutLoggingGood.realSells ? '#' + pageData.outPutLoggingGood.realSells : document.getElementById('realSells').innerHTML;
-    document.getElementById('realBuys').innerHTML = pageData.outPutLoggingGood.realBuys ? '#' + pageData.outPutLoggingGood.realBuys : document.getElementById('realBuys').innerHTML;
+    document.getElementById('totalSells').innerHTML = pageData.outPutLoggingGood.totalSells ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalSells) : document.getElementById('totalSells').innerHTML;
+    document.getElementById('totalBuys').innerHTML = pageData.outPutLoggingGood.totalBuys ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalBuys) : document.getElementById('totalBuys').innerHTML;
+    document.getElementById('realSells').innerHTML = pageData.outPutLoggingGood.realSells ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells) : document.getElementById('realSells').innerHTML;
+    document.getElementById('realBuys').innerHTML = pageData.outPutLoggingGood.realBuys ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys) : document.getElementById('realBuys').innerHTML;
     document.getElementById('realSellPercent').innerHTML = pageData.outPutLoggingGood.goodSellPercent ? pageData.outPutLoggingGood.goodSellPercent.toFixed(2) + '%' : document.getElementById('realSellPercent').innerHTML;
     document.getElementById('realBuyPercent').innerHTML = pageData.outPutLoggingGood.goodBuyPercent ? pageData.outPutLoggingGood.goodBuyPercent.toFixed(2) + '%' : document.getElementById('realBuyPercent').innerHTML;
     document.getElementById('realTotalPercent').innerHTML = pageData.outPutLoggingGood.totalBadPercent ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%' : document.getElementById('realTotalPercent').innerHTML;
@@ -42,19 +42,25 @@ var popData = (() => {
 
     //BUY ORDER
     //document.getElementById('talkAboutUpdatingBuy').innerHTML = pageData.outPutLoggingBuy.talkAboutUpdating ? pageData.outPutLoggingBuy.talkAboutUpdating : document.getElementById('talkAboutUpdatingBuy').innerHTML = 'Hasn\'t Changed Price Yet';
-    document.getElementById('newPriceUpdateBuy').innerHTML = pageData.outPutLoggingBuy.newPriceUpdate ? '$' + pageData.outPutLoggingBuy.newPriceUpdate.toFixed(2) : document.getElementById('newPriceUpdateBuy').innerHTML = 'No new update';
-    document.getElementById('oldPriceUpdateBuy').innerHTML = pageData.outPutLoggingBuy.oldPriceUpdate ? '$' + pageData.outPutLoggingBuy.oldPriceUpdate.toFixed(2) : document.getElementById('oldPriceUpdateBuy').innerHTML = 'N/A';
+    document.getElementById('newPriceUpdateBuy').innerHTML = pageData.outPutLoggingBuy.difference ? '$' + pageData.outPutLoggingBuy.newPriceUpdate.toFixed(2) : document.getElementById('newPriceUpdateBuy').innerHTML = 'No new update';
+    document.getElementById('oldPriceUpdateBuy').innerHTML = pageData.outPutLoggingBuy.difference ? '$' + pageData.outPutLoggingBuy.oldPriceUpdate.toFixed(2) : document.getElementById('oldPriceUpdateBuy').innerHTML = 'N/A';
     document.getElementById('differenceBuy').innerHTML = pageData.outPutLoggingBuy.difference ? '$' + pageData.outPutLoggingBuy.difference.toFixed(2) : document.getElementById('differenceBuy').innerHTML = 'N/A';
     if (pageData.outPutLoggingBuy.myBuyOrder) {
         document.getElementById('myBuyID').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.order_id ? pageData.outPutLoggingBuy.myBuyOrder.order_id : document.getElementById('myBuyID').innerHTML = 'N/A';
         document.getElementById('myBuyPrice').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.price ? '$' + pageData.outPutLoggingBuy.myBuyOrder.price.toFixed(2) : document.getElementById('myBuyPrice').innerHTML = 'N/A';
         document.getElementById('myOldBuyPrice').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldPrice ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2) : document.getElementById('myOldBuyPrice').innerHTML = 'N/A';
         document.getElementById('buyMargin').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldMargin ? pageData.outPutLoggingBuy.myBuyOrder.oldMargin.toFixed(4) + '%' : document.getElementById('buyMargin').innerHTML = 'N/A';
+        document.getElementById('orderGapBuy').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldOrdersToGo ? '#' + pageData.outPutLoggingBuy.myBuyOrder.oldOrdersToGo : document.getElementById('orderGapBuy').innerHTML = 'N/A';
+        document.getElementById('dollarGapBuy').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldAmountToGo ? '$' + numberWithCommas(pageData.outPutLoggingBuy.myBuyOrder.oldAmountToGo.toFixed(2)) : document.getElementById('dollarGapBuy').innerHTML = 'N/A';
+        document.getElementById('buyTotal').innerHTML = 20 * pageData.outPutLoggingBuy.myBuyOrder.price ? '$' + numberWithCommas( (20 * pageData.outPutLoggingBuy.myBuyOrder.price).toFixed(2) ) : document.getElementById('buyTotal').innerHTML = 'N/A';
     } else {
         document.getElementById('myBuyID').innerHTML = 'N/A';
         document.getElementById('myBuyPrice').innerHTML = 'N/A';
         document.getElementById('myOldBuyPrice').innerHTML = 'N/A';
         document.getElementById('buyMargin').innerHTML = 'N/A';
+        document.getElementById('orderGapBuy').innerHTML = 'N/A';
+        document.getElementById('dollarGapBuy').innerHTML = 'N/A';
+        document.getElementById('buyTotal').innerHTML = 'N/A';
     }
     //BUY ORDER
 
@@ -64,11 +70,32 @@ var popData = (() => {
         document.getElementById('mySellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.price ? '$' + pageData.outPutLoggingSell.mySellOrder.price.toFixed(2) : document.getElementById('mySellPrice').innerHTML = 'N/A';
         document.getElementById('myOldSellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldPrice ? '$' + pageData.outPutLoggingSell.mySellOrder.oldPrice.toFixed(2) : document.getElementById('myOldSellPrice').innerHTML = 'N/A';
         document.getElementById('sellMargin').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldMargin ? pageData.outPutLoggingSell.mySellOrder.oldMargin.toFixed(4) + '%' : document.getElementById('sellMargin').innerHTML = 'N/A';
+        document.getElementById('orderGapSell').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldOrdersToGo ? '#' + pageData.outPutLoggingSell.mySellOrder.oldOrdersToGo : document.getElementById('orderGapSell').innerHTML = 'N/A';
+        document.getElementById('dollarGapSell').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldAmountToGo ? '$' + numberWithCommas(pageData.outPutLoggingSell.mySellOrder.oldAmountToGo.toFixed(2)) : document.getElementById('dollarGapSell').innerHTML = 'N/A';
+        document.getElementById('sellTotal').innerHTML = 20 * pageData.outPutLoggingSell.mySellOrder.price ? '$' + numberWithCommas( (20 * pageData.outPutLoggingSell.mySellOrder.price).toFixed(2) ) : document.getElementById('sellTotal').innerHTML = 'N/A';
     } else {
         document.getElementById('mySellID').innerHTML = 'N/A';
         document.getElementById('mySellPrice').innerHTML = 'N/A';
         document.getElementById('myOldSellPrice').innerHTML = 'N/A';
         document.getElementById('sellMargin').innerHTML = 'N/A';
+        document.getElementById('orderGapSell').innerHTML = 'N/A';
+        document.getElementById('dollarGapSell').innerHTML = 'N/A';
+        document.getElementById('sellTotal').innerHTML = 'N/A';
     }
     //SELL ORDER
 });
+
+//START>> Number with commas
+//=============================================
+//=============================================
+//=============================================
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+//=============================================
+//=============================================
+//=============================================
+//END>> Number with Commas
+//=============================================
+//=============================================
+//=============================================
