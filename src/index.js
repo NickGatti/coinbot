@@ -56,9 +56,16 @@ var orderBook = {
 var myOrderIterator = 0;
 var talkAboutUpdating = false;
 var placeTalk = {
-    placing: false,
-    price: false,
-    size: false
+    buy: {
+        placing: false,
+        price: false,
+        size: false
+    },
+    sell: {
+        placing: false,
+        price: false,
+        size: false
+    }
 };
 var myOrders = {
     buy: [],
@@ -497,7 +504,7 @@ function placeBuy(){
 
     if (state.buy[myOrderIterator] == 'buying') {
 
-        placeTalk = {
+        placeTalk.buy = {
             placing: true,
             price: currentBuyOrder.price,
             size: 20
@@ -524,7 +531,7 @@ function placeBuy(){
 
         return;
     } else if (state.buy[myOrderIterator] == 'waiting') {
-        placeTalk = {
+        placeTalk.buy = {
             placing: false,
             price: false,
             size: false
@@ -586,7 +593,7 @@ function placeSell(){
 
     if (state.sell[myOrderIterator] == 'selling') {
 
-        placeTalk = {
+        placeTalk.sell = {
             placing: true,
             price: currentSellOrder.price,
             size: 20
@@ -603,7 +610,7 @@ function placeSell(){
 
     } else if (mySellOrder) {
         if (state.sell[myOrderIterator] == 'waiting') {
-            placeTalk = {
+            placeTalk.sell = {
                 placing: false,
                 price: false,
                 size: false
