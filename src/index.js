@@ -423,7 +423,7 @@ function catchWebSocketMessage(data) {
 //=============================================
 function deDupe() {
     dataIntegrityTest = true;
-    //console.log('OrderBook Downloaded! de-Duping OrderBook!');
+    console.log('OrderBook Downloaded! de-Duping OrderBook!');
 
     // let funt = (objectSide) => {
     //     for (let i = 0; i < orderBook[objectSide].length; i++) {
