@@ -128,7 +128,7 @@ function downloadOrderBook(flag){
 
         pauseOrderBook = true;
         resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
-        
+
         let savedTime = new Date().getTime();
         var countdown = setInterval(() => {
         let now = new Date().getTime();
@@ -962,7 +962,7 @@ app.get('/api', function(req, res) {
     });
 });
 
-app.listen(process.env.PORT, process.env.IP); //3000 Normal //process.env.PORT, process.env.IP for C9.io
+app.listen(3000)    //(process.env.PORT, process.env.IP); //3000 Normal //process.env.PORT, process.env.IP for C9.io
 //=============================================
 //=============================================
 //=============================================
@@ -1004,10 +1004,10 @@ function writeData() {
           writeMyData();
           return;
         }
-    
+
         throw err;
       }
-    
+
       writeMyData();
     });
 }
@@ -1018,7 +1018,7 @@ function readData() {
           console.error('Storage file does not exist...');
           return;
         }
-    
+
         throw err;
       }
       console.error('Loading from storage file...');
@@ -1029,7 +1029,7 @@ function writeMyData() {
     fs.writeFile('storage.json', JSON.stringify(myOrders), (err) => {
       if (err) throw err;
       //console.log('The "data to append" was appended to file!');
-    });    
+    });
 }
 function appendMyData() {
     fs.appendFile('storage.json', myOrders, (err) => {
