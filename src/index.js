@@ -7,6 +7,7 @@
 //=============================================
 const Gdax = require('gdax');
 const util = require('util');
+var fs = require('fs');
 var express = require('express');
 const publicClient = new Gdax.PublicClient('ETH-USD');
 const websocket = new Gdax.WebsocketClient(['ETH-USD']);
@@ -71,6 +72,7 @@ var myOrders = {
     buy: [],
     sell: []
 };
+readData();
 //=============================================
 //=============================================
 //=============================================
@@ -465,6 +467,7 @@ function findRealisticOrders() {
             myOrderIterator++;
         } else {
             myOrderIterator = 0;
+            writeData();
             resetPlaceTalk();
         }
     }
@@ -951,7 +954,7 @@ app.get('/api', function(req, res) {
     });
 });
 
-app.listen(3000);
+app.listen(process.env.PORT, process.env.IP); //3000 Normal //process.env.PORT, process.env.IP for C9.io
 //=============================================
 //=============================================
 //=============================================
@@ -982,3 +985,49 @@ function resetPlaceTalk() {
 //=============================================
 //=============================================
 //=============================================
+function writeData() {
+    fs.open('storage.json', 'wx', (err, fd) => {
+      if (err) {
+        if (err.code === 'EEXIST') {
+          appendMyData();
+          return;
+        }
+    
+        throw err;
+      }
+    
+      writeMyData();
+    });
+}
+function readData() {
+    fs.open('storage.json', 'r', (err, fd) => {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          console.error('myfile does not exist');
+          return;
+        }
+    
+        throw err;
+      }
+    
+      readMyData();
+    });
+}
+function writeMyData() {
+    fs.writeFile('storage.json', myOrders, (err) => {
+      if (err) throw err;
+      console.log('The "data to append" was appended to file!');
+    });    
+}
+function appendMyData() {
+    fs.appendFile('storage.json', myOrders, (err) => {
+      if (err) throw err;
+      console.log('The "data to append" was appended to file!');
+    });
+}
+function readMyData() {
+    fs.readFile('storage.json', (err, data) => {
+      if (err) throw err;
+      myOrders = data;
+    });
+}
