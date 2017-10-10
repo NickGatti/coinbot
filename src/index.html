@@ -64,6 +64,61 @@ body {
 #innerTitle {
   margin-top: 2px;
 }
+.outerChart {
+  border: 3px solid black;
+  height: 80px;
+  width: 100%;
+  background: grey;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+#inBuy {
+  border: 3px solid black;
+  height: 40px;
+  width: 200px;
+  background: salmon;
+  color: black;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.innerBuy {
+  height: 80px;
+  background: salmon;
+}
+#inSell {
+  border: 3px solid black;
+  height: 40px;
+  width: 200px;
+  background: skyblue;
+  color: black;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.innerSell {
+  height: 80px;
+  background: skyblue;
+}
+#inRest {
+  border: 3px solid black;
+  height: 40px;
+  width: 200px;
+  background: orange;
+  color: black;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.innerRest {
+  height: 80px;
+  background: orange;
+}
 </style>
 </<head>
 <body>
@@ -252,6 +307,34 @@ body {
       <p id='amountMade'></p>
     </div>
 
+  </div>
+
+  <div id="inBuy">
+    Good Buys
+  </div>
+  <div id="inSell">
+    Good Sells
+  </div>
+  <div id="inRest">
+    Other
+  </div>
+
+  <div class='outerChart'>
+    <div class='innerBuy'>
+    </div>
+    <div class='innerSell'>
+    </div>
+    <div class='innerRest'>
+    </div>
+  </div>
+
+  <div class='outerChart'>
+    <div class='innerBuy'>
+    </div>
+    <div class='innerSell'>
+    </div>
+    <div class='innerRest'>
+    </div>
   </div>
 
   <script src='front.js'></script>
