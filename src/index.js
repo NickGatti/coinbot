@@ -125,7 +125,7 @@ function downloadOrderBook(flag){
         if (flag) resetPause = true;
 
         pauseOrderBook = true;
-        //resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
+        resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
 
         getOrderBook(3).then(function(value) {
 
