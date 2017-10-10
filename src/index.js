@@ -131,9 +131,9 @@ function downloadOrderBook(flag){
 
         let savedTime = new Date().getTime();
         var countdown = setInterval(() => {
-        let now = new Date().getTime();
-        let output = ('Orderbook re-download timeout: '+ (now - savedTime)).toString()
-            console.log(output.slice(0, -3))
+            let now = new Date().getTime();
+            let output = ('Orderbook re-download timeout: '+ (now - savedTime)).toString();
+            console.log(output.slice(0, -3));
         }, 1000);
 
         getOrderBook(3).then(function(value) {
@@ -962,7 +962,7 @@ app.get('/api', function(req, res) {
     });
 });
 
-app.listen(3000)    //(process.env.PORT, process.env.IP); //3000 Normal //process.env.PORT, process.env.IP for C9.io
+app.listen(3000);//(process.env.PORT, process.env.IP); //3000 Normal //process.env.PORT, process.env.IP for C9.io
 //=============================================
 //=============================================
 //=============================================
@@ -998,51 +998,53 @@ function resetPlaceTalk() {
 //=============================================
 //=============================================
 function writeData() {
-    fs.open('storage.json', 'wx', (err, fd) => {
-      if (err) {
-        if (err.code === 'EEXIST') {
-          writeMyData();
-          return;
+    fs.open('storage.json', 'wx', (err) => {
+        if (err) {
+            if (err.code === 'EEXIST') {
+                writeMyData();
+                return;
+            }
+
+            throw err;
         }
 
-        throw err;
-      }
-
-      writeMyData();
+        writeMyData();
     });
 }
 function readData() {
-    fs.open('storage.json', 'r', (err, fd) => {
-      if (err) {
-        if (err.code === 'ENOENT') {
-          console.error('Storage file does not exist...');
-          return;
-        }
+    fs.open('storage.json', 'r', (err) => {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                console.error('Storage file does not exist...');
+                return;
+            }
 
-        throw err;
-      }
-      console.error('Loading from storage file...');
-      readMyData();
+            throw err;
+        }
+        console.error('Loading from storage file...');
+        readMyData();
     });
 }
 function writeMyData() {
     fs.writeFile('storage.json', JSON.stringify(myOrders), (err) => {
-      if (err) throw err;
-      //console.log('The "data to append" was appended to file!');
+        if (err) throw err;
+        //console.log('The "data to append" was appended to file!');
     });
 }
+function readMyData() {
+    fs.readFile('storage.json', 'utf8', (err, data) => {
+        if (err) throw err;
+        myOrders = JSON.parse(data);
+    });
+}
+/*
 function appendMyData() {
     fs.appendFile('storage.json', myOrders, (err) => {
       if (err) throw err;
       //console.log('The "data to append" was appended to file!');
     });
 }
-function readMyData() {
-    fs.readFile('storage.json', 'utf8', (err, data) => {
-      if (err) throw err;
-      myOrders = JSON.parse(data);
-    });
-}
+*/
 //=============================================
 //=============================================
 //=============================================
