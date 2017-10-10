@@ -26,6 +26,7 @@ body {
   font-weight: normal;
   font-size: 14px;
   text-decoration: none;
+  text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);
 }
 .miniID {
   font-size: 60%;
@@ -39,6 +40,7 @@ body {
   overflow: auto;
   font-stretch: condensed;
   font-size: 95%;
+  text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);
 }
 .fr {
   float: right;
@@ -118,6 +120,17 @@ body {
 .innerRest {
   height: 80px;
   background: orange;
+}
+#chartWrapper {
+  width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 3px solid #BDBDBD;
+  border-radius: 25px;
+  padding: 30px;
+}
+.chartText {
+  text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);
 }
 </style>
 </<head>
@@ -309,31 +322,40 @@ body {
 
   </div>
 
-  <div id="inBuy">
-    Good Buys
+<div id='chartWrapper'>
+  <div>
+    <div id="inBuy">
+      Good Buys
+    </div>
+    <div id="inSell">
+      Good Sells
+    </div>
+    <div id="inRest">
+      Ignored Orders
+    </div>
   </div>
-  <div id="inSell">
-    Good Sells
-  </div>
-  <div id="inRest">
-    Other
-  </div>
+    <div class='outerChart' >
+      <div class='innerBuy'>
+      </div>
+      <div class='innerSell'>
+      </div>
+      <div class='innerRest'>
+      </div>
+    </div>
+    <div class="fl chartText">
+      Orders Valued Over 400 Dollars
+    </div>
 
-  <div class='outerChart'>
-    <div class='innerBuy'>
+    <div class='outerChart'>
+      <div class='innerBuy'>
+      </div>
+      <div class='innerSell'>
+      </div>
+      <div class='innerRest'>
+      </div>
     </div>
-    <div class='innerSell'>
-    </div>
-    <div class='innerRest'>
-    </div>
-  </div>
-
-  <div class='outerChart'>
-    <div class='innerBuy'>
-    </div>
-    <div class='innerSell'>
-    </div>
-    <div class='innerRest'>
+    <div class="fl chartText">
+      Orders Valued Over 6000 Dollars
     </div>
   </div>
 
