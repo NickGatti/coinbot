@@ -989,7 +989,7 @@ function writeData() {
     fs.open('storage.json', 'wx', (err, fd) => {
       if (err) {
         if (err.code === 'EEXIST') {
-          appendMyData();
+          writeMyData();
           return;
         }
     
@@ -1003,30 +1003,30 @@ function readData() {
     fs.open('storage.json', 'r', (err, fd) => {
       if (err) {
         if (err.code === 'ENOENT') {
-          console.error('myfile does not exist');
+          console.error('Storage file does not exist...');
           return;
         }
     
         throw err;
       }
-    
+      console.error('Loading from storage file...');
       readMyData();
     });
 }
 function writeMyData() {
     fs.writeFile('storage.json', JSON.stringify(myOrders), (err) => {
       if (err) throw err;
-      console.log('The "data to append" was appended to file!');
+      //console.log('The "data to append" was appended to file!');
     });    
 }
 function appendMyData() {
-    fs.appendFile('storage.json', JSON.stringify(myOrders), (err) => {
+    fs.appendFile('storage.json', myOrders, (err) => {
       if (err) throw err;
-      console.log('The "data to append" was appended to file!');
+      //console.log('The "data to append" was appended to file!');
     });
 }
 function readMyData() {
-    fs.readFile('storage.json', (err, data) => {
+    fs.readFile('storage.json', 'utf8', (err, data) => {
       if (err) throw err;
       myOrders = JSON.parse(data);
     });
