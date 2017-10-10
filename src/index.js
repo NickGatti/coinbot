@@ -1014,13 +1014,13 @@ function readData() {
     });
 }
 function writeMyData() {
-    fs.writeFile('storage.json', myOrders, (err) => {
+    fs.writeFile('storage.json', JSON.stringify(myOrders), (err) => {
       if (err) throw err;
       console.log('The "data to append" was appended to file!');
     });    
 }
 function appendMyData() {
-    fs.appendFile('storage.json', myOrders, (err) => {
+    fs.appendFile('storage.json', JSON.stringify(myOrders), (err) => {
       if (err) throw err;
       console.log('The "data to append" was appended to file!');
     });
@@ -1028,6 +1028,6 @@ function appendMyData() {
 function readMyData() {
     fs.readFile('storage.json', (err, data) => {
       if (err) throw err;
-      myOrders = data;
+      myOrders = JSON.parse(data);
     });
 }
