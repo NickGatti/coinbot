@@ -128,6 +128,13 @@ function downloadOrderBook(flag){
 
         pauseOrderBook = true;
         resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
+        
+        let savedTime = new Date().getTime();
+        var countdown = setInterval(() => {
+        let now = new Date().getTime();
+        let output = ('Orderbook re-download timeout: '+ (now - savedTime)).toString()
+            console.log(output.slice(0, -3))
+        }, 1000);
 
         getOrderBook(3).then(function(value) {
 
@@ -151,6 +158,7 @@ function downloadOrderBook(flag){
             populateOrders('sell');
 
             deDupe(); //how do i run dedupe while the rest of it runs?
+            clearInterval(countdown);
 
             if (resetFlag) {
                 resetFlag = false;
@@ -985,6 +993,10 @@ function resetPlaceTalk() {
 //=============================================
 //=============================================
 //=============================================
+//START>> File control
+//=============================================
+//=============================================
+//=============================================
 function writeData() {
     fs.open('storage.json', 'wx', (err, fd) => {
       if (err) {
@@ -1031,3 +1043,10 @@ function readMyData() {
       myOrders = JSON.parse(data);
     });
 }
+//=============================================
+//=============================================
+//=============================================
+//END>> File control
+//=============================================
+//=============================================
+//=============================================
