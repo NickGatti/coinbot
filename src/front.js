@@ -10,6 +10,7 @@ setInterval (() => {
         //console.log('ERROR: ', err);
     });
     marketData();
+    makePie();
 }, 400);
 
 var popData = (() => {
@@ -112,4 +113,54 @@ function marketData() {
     if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerBuy')[1].style.width = pageData.outPutLoggingGood.goodBuyPercent + '%';
     if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerSell')[1].style.width = pageData.outPutLoggingGood.goodSellPercent + '%';
     if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerRest')[1].style.width = pageData.outPutLoggingGood.totalBadPercent + '%';
+}
+
+function makePie() {
+  if (pageData.myOrderIterator % 2) {
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart1);
+  } else {
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart2);
+  }
+
+  function drawChart1() {
+    let firstBuyPercent = pageData.outPutLoggingGood.goodBuyPercent;
+    let firstSellPercent = pageData.outPutLoggingGood.goodSellPercent;
+    let firstTotalBadPercent = pageData.outPutLoggingGood.totalBadPercent;
+    var data = google.visualization.arrayToDataTable([
+      ['Task', 'Orders valued over 400 USD'],
+      ['Good Buys',     firstBuyPercent],
+      ['Good Sells',      firstSellPercent],
+      ['Ignored orders',  firstTotalBadPercent]
+    ]);
+
+    var options = {
+      title: 'Orders valued over 400 USD'
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+
+    chart.draw(data, options);
+  }
+
+  function drawChart2() {
+    let secondBuyPercent = pageData.outPutLoggingGood.goodBuyPercent;
+    let secondSellPercent = pageData.outPutLoggingGood.goodSellPercent;
+    let secondTotalBadPercent = pageData.outPutLoggingGood.totalBadPercent;
+    var data = google.visualization.arrayToDataTable([
+      ['Task', 'Orders valued over 6000 USD'],
+      ['Good Buys',     secondBuyPercent],
+      ['Good Sells',      secondSellPercent],
+      ['Ignored orders',  secondTotalBadPercent]
+    ]);
+
+    var options = {
+      title: 'Orders valued over 6000 USD'
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
+
+    chart.draw(data, options);
+  }
 }

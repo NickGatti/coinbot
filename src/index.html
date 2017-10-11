@@ -3,13 +3,13 @@
 <style>
 body {
   text-decoration: none;
-  color: #BDBDBD;
-  background: #424242;
+  color: black;
+  background: white;
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 .infoBox {
   float: left;
-  border: 3px solid #BDBDBD;
+  border: 3px solid black;
   overflow: auto;
   padding: 10px;
   margin: 10px;
@@ -123,7 +123,7 @@ body {
   width: 85%;
   margin-left: auto;
   margin-right: auto;
-  border: 3px solid #BDBDBD;
+  border: 3px solid black;
   border-radius: 25px;
   padding: 30px;
 }
@@ -135,9 +135,21 @@ body {
   margin-bottom: -2px;
   font-size: 85%;
 }
+.pieStyle {
+  width: 50%;
+  height: 400px;
+  float: left;
+}
+.pieWrap {
+  width: 85%;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
 </style>
 </<head>
 <body>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
   <div id ='title'>
     <h1>EthBot</h1>
@@ -396,7 +408,10 @@ body {
       Orders Valued Over 6000 Dollars
     </div>
   </div>
-
+  <div class="pieWrap">
+    <div id="piechart1" class="pieStyle"></div>
+    <div id="piechart2" class="pieStyle"></div>
+  </div>
   <script src='front.js'></script>
 </body>
 </html>
