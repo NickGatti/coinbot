@@ -92,7 +92,7 @@ var resetPause = false;
 var dataIntegrityTest = false;
 setInterval(() => {
     resetFlag = true;
-}, 2400000);
+}, 3000000);
 getWebSocketData();
 //=============================================
 //=============================================
@@ -462,6 +462,19 @@ function deDupe() {
 function findRealisticOrders() {
     if (resetFlag) return;
     if (runBenchmark && !resetFlag) {
+        let savedTime = new Date().getTime();
+        let timeDown = 0;
+        var countdown = setInterval(() => {
+            timeDown = (new Date().getTime()  - savedTime);
+            let output = timeDown.toString();
+            console.log('Order took: ' + output.slice(0, -2) + 'ms');
+            if (timeDown > 1000) {
+                console.log('Order timeout...');
+                myOrderIterator++;
+                clearInterval(countdown);
+                return;
+              }
+        }, 100);
 
         sortBothSides();
         filterGoodOrders();
@@ -473,10 +486,12 @@ function findRealisticOrders() {
 
         if (myOrderIterator < ( mySettings.realityCriteria.length - 1) ) {
             myOrderIterator++;
+            clearInterval(countdown);
         } else {
             myOrderIterator = 0;
             writeData();
             resetPlaceTalk();
+            clearInterval(countdown);
         }
     }
 }
