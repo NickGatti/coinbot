@@ -26,11 +26,16 @@ var popData = (() => {
     //GOOD info
     document.getElementById('totalSells').innerHTML = pageData.outPutLoggingGood.totalSells ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalSells) : document.getElementById('totalSells').innerHTML;
     document.getElementById('totalBuys').innerHTML = pageData.outPutLoggingGood.totalBuys ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalBuys) : document.getElementById('totalBuys').innerHTML;
-    document.getElementById('realSells').innerHTML = pageData.outPutLoggingGood.realSells ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells) : document.getElementById('realSells').innerHTML;
-    document.getElementById('realBuys').innerHTML = pageData.outPutLoggingGood.realBuys ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys) : document.getElementById('realBuys').innerHTML;
-    document.getElementById('realSellPercent').innerHTML = pageData.outPutLoggingGood.goodSellPercent ? pageData.outPutLoggingGood.goodSellPercent.toFixed(2) + '%' : document.getElementById('realSellPercent').innerHTML;
-    document.getElementById('realBuyPercent').innerHTML = pageData.outPutLoggingGood.goodBuyPercent ? pageData.outPutLoggingGood.goodBuyPercent.toFixed(2) + '%' : document.getElementById('realBuyPercent').innerHTML;
-    document.getElementById('realTotalPercent').innerHTML = pageData.outPutLoggingGood.totalBadPercent ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%' : document.getElementById('realTotalPercent').innerHTML;
+    if (pageData.myOrderIterator % 2) document.querySelectorAll('.realSells')[0].innerHTML = pageData.outPutLoggingGood.realSells ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells) : document.getElementById('realSells').innerHTML;
+    if (pageData.myOrderIterator % 2) document.querySelectorAll('.realBuys')[0].innerHTML = pageData.outPutLoggingGood.realBuys ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys) : document.getElementById('realBuys').innerHTML;
+    if (pageData.myOrderIterator % 2) document.querySelectorAll('.realSellPercent')[0].innerHTML = pageData.outPutLoggingGood.goodSellPercent ? pageData.outPutLoggingGood.goodSellPercent.toFixed(2) + '%' : document.getElementById('realSellPercent').innerHTML;
+    if (pageData.myOrderIterator % 2) document.querySelectorAll('.realBuyPercent')[0].innerHTML = pageData.outPutLoggingGood.goodBuyPercent ? pageData.outPutLoggingGood.goodBuyPercent.toFixed(2) + '%' : document.getElementById('realBuyPercent').innerHTML;
+    if (pageData.myOrderIterator % 2) document.querySelectorAll('.realTotalPercent')[0].innerHTML = pageData.outPutLoggingGood.totalBadPercent ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%' : document.getElementById('realTotalPercent').innerHTML;
+    if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.realSells')[1].innerHTML = pageData.outPutLoggingGood.realSells ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells) : document.getElementById('realSells').innerHTML;
+    if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.realBuys')[1].innerHTML = pageData.outPutLoggingGood.realBuys ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys) : document.getElementById('realBuys').innerHTML;
+    if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.realSellPercent')[1].innerHTML = pageData.outPutLoggingGood.goodSellPercent ? pageData.outPutLoggingGood.goodSellPercent.toFixed(2) + '%' : document.getElementById('realSellPercent').innerHTML;
+    if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.realBuyPercent')[1].innerHTML = pageData.outPutLoggingGood.goodBuyPercent ? pageData.outPutLoggingGood.goodBuyPercent.toFixed(2) + '%' : document.getElementById('realBuyPercent').innerHTML;
+    if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.realTotalPercent')[1].innerHTML = pageData.outPutLoggingGood.totalBadPercent ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%' : document.getElementById('realTotalPercent').innerHTML;
     //GOOD Info
 
     //ETC info

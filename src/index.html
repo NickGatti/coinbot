@@ -24,9 +24,8 @@ body {
 }
 .fontStand {
   font-weight: normal;
-  font-size: 14px;
+  font-size: 13px;
   text-decoration: none;
-  text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);
 }
 .miniID {
   font-size: 60%;
@@ -40,7 +39,6 @@ body {
   overflow: auto;
   font-stretch: condensed;
   font-size: 95%;
-  text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);
 }
 .fr {
   float: right;
@@ -130,7 +128,12 @@ body {
   padding: 30px;
 }
 .chartText {
-  text-shadow: 1px 1px 1px rgba(150, 150, 150, 1);
+  text-shadow: 1px 0px 1px rgba(150, 150, 150, 1);
+}
+.tight {
+  margin-top: -2px;
+  margin-bottom: -2px;
+  font-size: 85%;
 }
 </style>
 </<head>
@@ -171,28 +174,63 @@ body {
       </div>
 
       <div class="bottom">
-        <div id='realSells' class="fr"></div>
-        <p class="statement">Real Sell Orders:</p>
+        <div class='fr'></div>
+        <p class="fontStand">Orders Valued Over 400 USD:</p>
+      </div>
+
+      <div class="tight">
+        <div class='realSells fr'></div>
+        <p class="fontStand">Real Sell Orders:</p>
+      </div>
+
+      <div class="tight">
+        <div class='realBuys fr'></div>
+        <p class="fontStand">Real Buy Orders:</p>
+      </div>
+
+      <div class="tight">
+        <div class='realSellPercent fr'></div>
+        <p class="fontStand">Percent Real Sells:</p>
+      </div>
+
+      <div class="tight">
+        <div class='realBuyPercent fr'></div>
+        <p class="fontStand">Percent Real Buys:</p>
+      </div>
+
+      <div class='bottom'>
+        <div class='realTotalPercent fr'></div>
+        <p class="fontStand">Total Percent Bad Orders:</p>
       </div>
 
       <div class="bottom">
-        <div id='realBuys' class="fr"></div>
-        <p class="statement">Real Buy Orders:</p>
+        <div class='fr'></div>
+        <p class="fontStand">Orders Valued Over 6000 USD:</p>
       </div>
 
-      <div class="bottom">
-        <div id='realSellPercent' class="fr"></div>
-        <p class="statement">Percent Real Sells:</p>
+      <div class="tight">
+        <div class='realSells fr'></div>
+        <p class="fontStand">Real Sell Orders:</p>
       </div>
 
-      <div class="bottom">
-        <div id='realBuyPercent' class="fr"></div>
-        <p class="statement">Percent Real Buys:</p>
+      <div class="tight">
+        <div class='realBuys fr'></div>
+        <p class="fontStand">Real Buy Orders:</p>
       </div>
 
-      <div>
-        <div id='realTotalPercent' class="fr"></div>
-        <p class="statement">Total Percent Bad Orders:</p>
+      <div class="tight">
+        <div class='realSellPercent fr'></div>
+        <p class="fontStand">Percent Real Sells:</p>
+      </div>
+
+      <div class="tight">
+        <div class='realBuyPercent fr'></div>
+        <p class="fontStand">Percent Real Buys:</p>
+      </div>
+
+      <div class='tight'>
+        <div class='realTotalPercent fr'></div>
+        <p class="fontStand">Total Percent Bad Orders:</p>
       </div>
 
     </div>
