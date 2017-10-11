@@ -130,13 +130,20 @@ function downloadOrderBook(flag){
         resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
 
         let savedTime = new Date().getTime();
+        let timeDown = 0;
         var countdown = setInterval(() => {
-            let now = new Date().getTime();
-            let output = ('Orderbook re-download timeout: '+ (now - savedTime)).toString();
+            timeDown = (new Date().getTime() - savedTime);
+            let output = ('Orderbook re-download timeout: '+ (timeDown)).toString();
             console.log(output.slice(0, -3));
         }, 1000);
 
         getOrderBook(3).then(function(value) {
+
+            if (timeDown > 30000) {
+              clearInterval(countdown);
+              console.log('Orderbook re-download connection lost...');
+              return;
+            }
 
             let rawOrderBookData = {
                 'buy': value.bids,
