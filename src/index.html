@@ -425,16 +425,18 @@ loadScript('https://www.gstatic.com/charts/loader.js', (() => {
 }));
 
 setInterval(() => {
-  fetch('https://multicoinbot-nickgatti.c9users.io/api', {
+  fetch('https://bot-nickgatti.c9users.io/api', {method: 'no-cors'}, {
     method: 'GET'
   }).then(function(data) {
     return data.json();
   }).then(function(data) {
+    //console.log('Yes')
     pageData = data;
     activate();
   }).catch((err) => {
+    //console.log('No')
     oReq.addEventListener("load", reqListener);
-    oReq.open("GET", "https://multicoinbot-nickgatti.c9users.io/api");
+    oReq.open("GET", "https://bot-nickgatti.c9users.io/api");
     oReq.send();
     activate();
   });
