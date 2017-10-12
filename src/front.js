@@ -12,41 +12,110 @@ setInterval(() => {
     return data.json();
   }).then(function(data) {
     pageData = data;
+    popOrderPlacementData();
+    pageData.myOrderIterator % 2 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
+    popOtherMarketData();
     popData();
+    marketData();
+    makePie();
   }).catch(() => {
     //console.log('ERROR: ', err);
   });
-  marketData();
-  makePie();
 }, 400);
 
+var docBuyStateID  = document.getElementById('placingBuy');
+var docBuyPriceID  = document.getElementById('placingPriceBuy');
+var docBuySizeID   = document.getElementById('placingSizeBuy');
+var docSellStateID = document.getElementById('placingSell');
+var docSellPriceID = document.getElementById('placingPriceSell');
+var docSellSizeID  = document.getElementById('placingSizeSell');
 
+var popOrderPlacementData = (() => {
+  docBuyStateID.innerHTML      = pageData.buyState
+    ? docBuyStateID.innerHTML  = pageData.buyState.charAt(0).toUpperCase() + pageData.buyState.slice(1)
+    : docBuyStateID.innerHTML  = 'N/A';
+
+  docBuyPriceID.innerHTML      = pageData.outPutLoggingEtc.placeTalk.buy.price
+    ? '$' + pageData.outPutLoggingEtc.placeTalk.buy.price.toFixed(2)
+    : docBuyPriceID.innerHTML  = 'Not placing';
+
+  docBuySizeID.innerHTML       = pageData.outPutLoggingEtc.placeTalk.buy.size
+    ? '#' + pageData.outPutLoggingEtc.placeTalk.buy.size
+    : docBuySizeID.innerHTML   = 'Not placing';
+
+  docSellStateID.innerHTML     = pageData.sellState
+    ? pageData.sellState.charAt(0).toUpperCase() + pageData.sellState.slice(1)
+    : docSellStateID.innerHTML = 'N/A';
+
+  docSellPriceID.innerHTML     = pageData.outPutLoggingEtc.placeTalk.sell.price
+    ? '$' + pageData.outPutLoggingEtc.placeTalk.sell.price.toFixed(2)
+    : docSellPriceID.innerHTML = 'Not placing';
+
+  docSellSizeID.innerHTML      = pageData.outPutLoggingEtc.placeTalk.sell.size
+    ? '#' + pageData.outPutLoggingEtc.placeTalk.sell.size
+    : docSellSizeID.innerHTML  = 'Not placing';
+
+});
+
+var docRealSells        = document.querySelectorAll('.realSells');
+var docRealBuys         = document.querySelectorAll('.realBuys');
+var docRealSellPercent  = document.querySelectorAll('.realSellPercent');
+var docRealBuyPercent   = document.querySelectorAll('.realBuyPercent');
+var docRealTotalPercent = document.querySelectorAll('.realTotalPercent');
+var docTotalSells       = document.getElementById('totalSells');
+var docTotalBuys        = document.getElementById('totalBuys');
+
+var popLowCriteraMarketData = (() => {
+  docRealSells[0].innerHTML        = pageData.outPutLoggingGood.realSells
+    ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
+    : 'Error loading Data';
+  docRealBuys[0].innerHTML = pageData.outPutLoggingGood.realBuys
+    ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys)
+    : 'Error loading Data';
+  docRealSellPercent[0].innerHTML  = pageData.outPutLoggingGood.goodSellPercent
+    ? pageData.outPutLoggingGood.goodSellPercent.toFixed(2) + '%'
+    : 'Error loading Data';
+  docRealBuyPercent[0].innerHTML   = pageData.outPutLoggingGood.goodBuyPercent
+    ? pageData.outPutLoggingGood.goodBuyPercent.toFixed(2) + '%'
+    : 'Error loading Data';
+  docRealTotalPercent[0].innerHTML = pageData.outPutLoggingGood.totalBadPercent
+    ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%'
+    : 'Error loading Data';
+});
+
+var popHighCriteriaMarketData = (() => {
+  docRealSells[1].innerHTML        = pageData.outPutLoggingGood.realSells
+    ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
+    : 'Error loading Data';
+
+  docRealBuys[1].innerHTML         = pageData.outPutLoggingGood.realBuys
+    ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys)
+    : 'Error loading Data';
+
+  docRealSellPercent[1].innerHTML  = pageData.outPutLoggingGood.goodSellPercent
+    ? pageData.outPutLoggingGood.goodSellPercent.toFixed(2) + '%'
+    : 'Error loading Data';
+
+  docRealBuyPercent[1].innerHTML   = pageData.outPutLoggingGood.goodBuyPercent
+    ? pageData.outPutLoggingGood.goodBuyPercent.toFixed(2) + '%'
+    : 'Error loading Data';
+
+  docRealTotalPercent[1].innerHTML = pageData.outPutLoggingGood.totalBadPercent
+    ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%'
+    : 'Error loading Data';
+});
+
+var popOtherMarketData = (() => {
+  docTotalBuys.innerHTML  = pageData.outPutLoggingGood.totalSells
+    ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalSells)
+    : 'Error loading Data';
+    
+  docTotalSells.innerHTML = pageData.outPutLoggingGood.totalBuys
+    ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalBuys)
+    : 'Error loading Data';
+});
 
 var popData = (() => {
-
-  //Place talk
-  document.getElementById('placingBuy').innerHTML = pageData.buyState ? document.getElementById('placingBuy').innerHTML = pageData.buyState.charAt(0).toUpperCase() + pageData.buyState.slice(1) : document.getElementById('placingBuy').innerHTML = 'N/A';
-  document.getElementById('placingPriceBuy').innerHTML = pageData.outPutLoggingEtc.placeTalk.buy.price ? '$' + pageData.outPutLoggingEtc.placeTalk.buy.price.toFixed(2) : document.getElementById('placingPriceBuy').innerHTML = 'Not placing';
-  document.getElementById('placingSizeBuy').innerHTML = pageData.outPutLoggingEtc.placeTalk.buy.size ? '#' + pageData.outPutLoggingEtc.placeTalk.buy.size : document.getElementById('placingSizeBuy').innerHTML = 'Not placing';
-  document.getElementById('placingSell').innerHTML = pageData.sellState ? pageData.sellState.charAt(0).toUpperCase() + pageData.sellState.slice(1) : document.getElementById('placingSell').innerHTML = 'N/A';
-  document.getElementById('placingPriceSell').innerHTML = pageData.outPutLoggingEtc.placeTalk.sell.price ? '$' + pageData.outPutLoggingEtc.placeTalk.sell.price.toFixed(2) : document.getElementById('placingPriceSell').innerHTML = 'Not placing';
-  document.getElementById('placingSizeSell').innerHTML = pageData.outPutLoggingEtc.placeTalk.sell.size ? '#' + pageData.outPutLoggingEtc.placeTalk.sell.size : document.getElementById('placingSizeSell').innerHTML = 'Not placing';
-  //Place talk
-
-  //GOOD info
-  document.getElementById('totalSells').innerHTML = pageData.outPutLoggingGood.totalSells ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalSells) : document.getElementById('totalSells').innerHTML;
-  document.getElementById('totalBuys').innerHTML = pageData.outPutLoggingGood.totalBuys ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalBuys) : document.getElementById('totalBuys').innerHTML;
-  if (pageData.myOrderIterator % 2) document.querySelectorAll('.realSells')[0].innerHTML = pageData.outPutLoggingGood.realSells ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells) : document.getElementById('realSells').innerHTML;
-  if (pageData.myOrderIterator % 2) document.querySelectorAll('.realBuys')[0].innerHTML = pageData.outPutLoggingGood.realBuys ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys) : document.getElementById('realBuys').innerHTML;
-  if (pageData.myOrderIterator % 2) document.querySelectorAll('.realSellPercent')[0].innerHTML = pageData.outPutLoggingGood.goodSellPercent ? pageData.outPutLoggingGood.goodSellPercent.toFixed(2) + '%' : document.getElementById('realSellPercent').innerHTML;
-  if (pageData.myOrderIterator % 2) document.querySelectorAll('.realBuyPercent')[0].innerHTML = pageData.outPutLoggingGood.goodBuyPercent ? pageData.outPutLoggingGood.goodBuyPercent.toFixed(2) + '%' : document.getElementById('realBuyPercent').innerHTML;
-  if (pageData.myOrderIterator % 2) document.querySelectorAll('.realTotalPercent')[0].innerHTML = pageData.outPutLoggingGood.totalBadPercent ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%' : document.getElementById('realTotalPercent').innerHTML;
-  if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.realSells')[1].innerHTML = pageData.outPutLoggingGood.realSells ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells) : document.getElementById('realSells').innerHTML;
-  if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.realBuys')[1].innerHTML = pageData.outPutLoggingGood.realBuys ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys) : document.getElementById('realBuys').innerHTML;
-  if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.realSellPercent')[1].innerHTML = pageData.outPutLoggingGood.goodSellPercent ? pageData.outPutLoggingGood.goodSellPercent.toFixed(2) + '%' : document.getElementById('realSellPercent').innerHTML;
-  if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.realBuyPercent')[1].innerHTML = pageData.outPutLoggingGood.goodBuyPercent ? pageData.outPutLoggingGood.goodBuyPercent.toFixed(2) + '%' : document.getElementById('realBuyPercent').innerHTML;
-  if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.realTotalPercent')[1].innerHTML = pageData.outPutLoggingGood.totalBadPercent ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%' : document.getElementById('realTotalPercent').innerHTML;
-  //GOOD Info
 
   //ETC info
   document.getElementById('totalAmountMade').innerHTML = pageData.outPutLoggingEtc.totalAmountMade ? '$' + pageData.outPutLoggingEtc.totalAmountMade.toFixed(2) : document.getElementById('totalAmountMade').innerHTML = 'N/A';
