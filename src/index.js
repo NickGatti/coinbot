@@ -89,7 +89,7 @@ var dataIntegrityTest = false;
 setInterval(() => {
   clearInterval(findRealisticOrders);
   resetFlag = true;
-}, 3000000);
+}, 1500000);
 getWebSocketData();
 //=============================================
 //=============================================

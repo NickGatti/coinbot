@@ -115,14 +115,38 @@ var popOtherMarketData = (() => {
     : 'Error loading Data';
 });
 
+let docTotalAmountMade = document.getElementById('totalAmountMade');
+let docOrderAmountMade = document.getElementById('amountMade');
+let docLowestSellPrice = document.getElementById('printSell');
+let docHighestBuyPrice = document.getElementById('printBuy');
+let docCurrentOrder    = document.getElementsByClassName('currentOrder');
+
+var popEtcInfo = (() => {
+  
+});
+
 var popData = (() => {
 
   //ETC info
-  document.getElementById('totalAmountMade').innerHTML = pageData.outPutLoggingEtc.totalAmountMade ? '$' + pageData.outPutLoggingEtc.totalAmountMade.toFixed(2) : document.getElementById('totalAmountMade').innerHTML = 'N/A';
-  document.getElementById('amountMade').innerHTML = pageData.outPutLoggingEtc.amountMade ? '$' + pageData.outPutLoggingEtc.amountMade.toFixed(2) : document.getElementById('amountMade').innerHTML = 'N/A';
-  document.getElementById('printSell').innerHTML = pageData.lowestSellPrice ? '$' + pageData.lowestSellPrice.toFixed(2) : document.getElementById('printSell').innerHTML = 'N/A';
-  document.getElementById('printBuy').innerHTML = pageData.highestBuyPrice ? '$' + pageData.highestBuyPrice.toFixed(2) : document.getElementById('printBuy').innerHTML = 'N/A';
-  document.getElementsByClassName('currentOrder')[0].innerHTML = pageData.myOrderIterator != undefined ? pageData.myOrderIterator + 1 : document.getElementsByClassName('currentOrder')[0].innerHTML = 'Restarting...';
+  docTotalAmountMade.innerHTML              = pageData.outPutLoggingEtc.totalAmountMade 
+    ? '$' + pageData.outPutLoggingEtc.totalAmountMade.toFixed(2) 
+    : docTotalAmountMade.innerHTML          = 'N/A';
+    
+  docOrderAmountMade.innerHTML              = pageData.outPutLoggingEtc.amountMade 
+    ? '$' + pageData.outPutLoggingEtc.amountMade.toFixed(2) 
+    : docOrderAmountMade.innerHTML          = 'N/A';
+    
+  docLowestSellPrice.innerHTML               = pageData.lowestSellPrice 
+    ? '$' + pageData.lowestSellPrice.toFixed(2) 
+    : docLowestSellPrice.innerHTML = 'N/A';
+    
+  document.getElementById('printBuy').innerHTML                = pageData.highestBuyPrice 
+    ? '$' + pageData.highestBuyPrice.toFixed(2)
+    : document.getElementById('printBuy').innerHTML = 'N/A';
+    
+  document.getElementsByClassName('currentOrder')[0].innerHTML = pageData.myOrderIterator != undefined 
+    ? pageData.myOrderIterator + 1 
+    : document.getElementsByClassName('currentOrder')[0].innerHTML = 'Restarting...';
   //ETC Info
 
   //BUY ORDER
