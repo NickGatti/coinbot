@@ -970,6 +970,17 @@ function addTotalAmount() {
 //=============================================
 console.log('Starting server...');
 var app = express();
+app.use(function(err, req, res, next){
+    res.status(err.status || 500);
+    res.send({
+        message: err.message,
+        error: err
+    });
+   return;
+});
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/index.html');
+})
 app.get('/api', function(req, res) {
   res.json({
     highestBuyPrice: findHighestBuyPrice() ? findHighestBuyPrice().price : false,
@@ -984,7 +995,7 @@ app.get('/api', function(req, res) {
   });
 });
 
-app.listen(3000); //(process.env.PORT, process.env.IP); //3000 Normal //process.env.PORT, process.env.IP for C9.io
+app.listen(process.env.PORT, process.env.IP)  //(3000); //; //3000 Normal //process.env.PORT, process.env.IP for C9.io
 //=============================================
 //=============================================
 //=============================================

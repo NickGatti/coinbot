@@ -6,7 +6,7 @@ loadScript('https://www.gstatic.com/charts/loader.js', (() => {
 }));
 
 setInterval(() => {
-  fetch('http://localhost:3000/api/', {
+  fetch('https://multicoinbot-nickgatti.c9users.io/api', {
     method: 'GET'
   }).then(function(data) {
     return data.json();
