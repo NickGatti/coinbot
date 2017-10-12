@@ -13,15 +13,17 @@ setInterval (() => {
     makePie();
 }, 400);
 
+
+
 var popData = (() => {
 
     //Place talk
     document.getElementById('placingBuy').innerHTML = pageData.buyState ? document.getElementById('placingBuy').innerHTML = pageData.buyState.charAt(0).toUpperCase() + pageData.buyState.slice(1) : document.getElementById('placingBuy').innerHTML = 'N/A';
-    document.getElementById('placingPriceBuy').innerHTML = pageData.outPutLoggingEtc.placeTalk.buy.price ? '$' + pageData.outPutLoggingEtc.placeTalk.buy.price.toFixed(2) : document.getElementById('placingPriceBuy').innerHTML = 'N/A';
-    document.getElementById('placingSizeBuy').innerHTML = pageData.outPutLoggingEtc.placeTalk.buy.size ? '#' + pageData.outPutLoggingEtc.placeTalk.buy.size : document.getElementById('placingSizeBuy').innerHTML = 'N/A';
+    document.getElementById('placingPriceBuy').innerHTML = pageData.outPutLoggingEtc.placeTalk.buy.price ? '$' + pageData.outPutLoggingEtc.placeTalk.buy.price.toFixed(2) : document.getElementById('placingPriceBuy').innerHTML = 'Not placing';
+    document.getElementById('placingSizeBuy').innerHTML = pageData.outPutLoggingEtc.placeTalk.buy.size ? '#' + pageData.outPutLoggingEtc.placeTalk.buy.size : document.getElementById('placingSizeBuy').innerHTML = 'Not placing';
     document.getElementById('placingSell').innerHTML = pageData.sellState ? pageData.sellState.charAt(0).toUpperCase() + pageData.sellState.slice(1) : document.getElementById('placingSell').innerHTML = 'N/A';
-    document.getElementById('placingPriceSell').innerHTML = pageData.outPutLoggingEtc.placeTalk.sell.price ? '$' + pageData.outPutLoggingEtc.placeTalk.sell.price.toFixed(2) : document.getElementById('placingPriceSell').innerHTML = 'N/A';
-    document.getElementById('placingSizeSell').innerHTML = pageData.outPutLoggingEtc.placeTalk.sell.size ? '#' + pageData.outPutLoggingEtc.placeTalk.sell.size : document.getElementById('placingSizeSell').innerHTML = 'N/A';
+    document.getElementById('placingPriceSell').innerHTML = pageData.outPutLoggingEtc.placeTalk.sell.price ? '$' + pageData.outPutLoggingEtc.placeTalk.sell.price.toFixed(2) : document.getElementById('placingPriceSell').innerHTML = 'Not placing';
+    document.getElementById('placingSizeSell').innerHTML = pageData.outPutLoggingEtc.placeTalk.sell.size ? '#' + pageData.outPutLoggingEtc.placeTalk.sell.size : document.getElementById('placingSizeSell').innerHTML = 'Not placing';
     //Place talk
 
     //GOOD info
@@ -61,19 +63,19 @@ var popData = (() => {
         document.getElementById('dollarGapBuy').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldAmountToGo ? '$' + numberWithCommas(pageData.outPutLoggingBuy.myBuyOrder.oldAmountToGo.toFixed(2)) : document.getElementById('dollarGapBuy').innerHTML = 'N/A';
         document.getElementById('buyTotal').innerHTML = 20 * pageData.outPutLoggingBuy.myBuyOrder.price ? '$' + numberWithCommas( (20 * pageData.outPutLoggingBuy.myBuyOrder.price).toFixed(2) ) : document.getElementById('buyTotal').innerHTML = 'N/A';
     } else {
-        document.getElementById('myBuyID').innerHTML = 'N/A';
-        document.getElementById('myBuyPrice').innerHTML = 'N/A';
-        document.getElementById('myOldBuyPrice').innerHTML = 'N/A';
-        document.getElementById('buyMargin').innerHTML = 'N/A';
-        document.getElementById('orderGapBuy').innerHTML = 'N/A';
-        document.getElementById('dollarGapBuy').innerHTML = 'N/A';
-        document.getElementById('buyTotal').innerHTML = 'N/A';
+        document.getElementById('myBuyID').innerHTML = 'No existing order';
+        document.getElementById('myBuyPrice').innerHTML = 'No existing order';
+        document.getElementById('myOldBuyPrice').innerHTML = 'No existing order';
+        document.getElementById('buyMargin').innerHTML = 'No existing order';
+        document.getElementById('orderGapBuy').innerHTML = 'No existing order';
+        document.getElementById('dollarGapBuy').innerHTML = 'No existing order';
+        document.getElementById('buyTotal').innerHTML = 'No existing order';
     }
     //BUY ORDER
 
     //SELL ORDER
     if (pageData.outPutLoggingSell.mySellOrder) {
-        document.getElementById('mySellID').innerHTML = pageData.outPutLoggingSell.mySellOrder.order_id ? pageData.outPutLoggingSell.mySellOrder.order_id : document.getElementById('mySellID').innerHTML = 'N/A';
+        document.getElementById('mySellID').innerHTML = pageData.outPutLoggingSell.mySellOrder.order_id ? pageData.outPutLoggingSell.mySellOrder.order_id : document.getElementById('mySellID').innerHTML = 'No existing order';
         document.getElementById('mySellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.price ? '$' + pageData.outPutLoggingSell.mySellOrder.price.toFixed(2) : document.getElementById('mySellPrice').innerHTML = 'N/A';
         document.getElementById('myOldSellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldPrice ? '$' + pageData.outPutLoggingSell.mySellOrder.oldPrice.toFixed(2) : document.getElementById('myOldSellPrice').innerHTML = 'N/A';
         document.getElementById('sellMargin').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldMargin ? pageData.outPutLoggingSell.mySellOrder.oldMargin.toFixed(4) + '%' : document.getElementById('sellMargin').innerHTML = 'N/A';
@@ -81,13 +83,13 @@ var popData = (() => {
         document.getElementById('dollarGapSell').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldAmountToGo ? '$' + numberWithCommas(pageData.outPutLoggingSell.mySellOrder.oldAmountToGo.toFixed(2)) : document.getElementById('dollarGapSell').innerHTML = 'N/A';
         document.getElementById('sellTotal').innerHTML = 20 * pageData.outPutLoggingSell.mySellOrder.price ? '$' + numberWithCommas( (20 * pageData.outPutLoggingSell.mySellOrder.price).toFixed(2) ) : document.getElementById('sellTotal').innerHTML = 'N/A';
     } else {
-        document.getElementById('mySellID').innerHTML = 'N/A';
-        document.getElementById('mySellPrice').innerHTML = 'N/A';
-        document.getElementById('myOldSellPrice').innerHTML = 'N/A';
-        document.getElementById('sellMargin').innerHTML = 'N/A';
-        document.getElementById('orderGapSell').innerHTML = 'N/A';
-        document.getElementById('dollarGapSell').innerHTML = 'N/A';
-        document.getElementById('sellTotal').innerHTML = 'N/A';
+        document.getElementById('mySellID').innerHTML = 'No existing order';
+        document.getElementById('mySellPrice').innerHTML = 'No existing order';
+        document.getElementById('myOldSellPrice').innerHTML = 'No existing order';
+        document.getElementById('sellMargin').innerHTML = 'No existing order';
+        document.getElementById('orderGapSell').innerHTML = 'No existing order';
+        document.getElementById('dollarGapSell').innerHTML = 'No existing order';
+        document.getElementById('sellTotal').innerHTML = 'No existing order';
     }
     //SELL ORDER
 });
