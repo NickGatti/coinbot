@@ -2,7 +2,7 @@ var google = '';
 var pageData = {};
 
 loadScript('https://www.gstatic.com/charts/loader.js', (() => {
-  console.log('Loaded');
+  return;
 }));
 
 setInterval(() => {
