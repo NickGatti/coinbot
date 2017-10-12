@@ -136,9 +136,9 @@ function downloadOrderBook(flag){
         getOrderBook(3).then(function(value) {
 
             if (timeDown > 30000) {
-              clearInterval(countdown);
-              console.log('Orderbook re-download connection lost...');
-              return;
+                clearInterval(countdown);
+                console.log('Orderbook re-download connection lost...');
+                return;
             }
 
             let rawOrderBookData = {
@@ -204,7 +204,7 @@ function getWebSocketData() {
         }
         catchWebSocketMessage(data);
     });
-  }
+}
 //=============================================
 //=============================================
 //=============================================
@@ -477,7 +477,7 @@ function findRealisticOrders() {
                 myOrderIterator++;
                 clearInterval(countdown);
                 return;
-              }
+            }
         }, 100);
 
         sortBothSides();
@@ -714,7 +714,7 @@ function outPutLoggingSell(){
 //=============================================
 //=============================================
 function buyGapInfo(){
-    if (!(myOrders.buy[myOrderIterator].price)) return false
+    if (!(myOrders.buy[myOrderIterator].price)) return false;
     let buyCount = 0;
     let buyTotal = 0;
     for (let i = 0; i < orderBook['buy'].length && myOrders.buy[myOrderIterator]; i++) {
@@ -739,7 +739,7 @@ function buyGapInfo(){
 //=============================================
 //=============================================
 function sellGapInfo(){
-    if (!(myOrders.sell[myOrderIterator].price)) return false
+    if (!(myOrders.sell[myOrderIterator].price)) return false;
     let sellCount = 0;
     let sellTotal = 0;
     for (let i = 0; i < orderBook['sell'].length && myOrders.sell[myOrderIterator]; i++) {
@@ -902,15 +902,15 @@ function populateMySettings(num){
         mySettings.realityCriteria.push(6000);
     }
     for (let i = 0; i < num * 2; i++) {
-      myOrders.buy.push({
-        price: false,
-        state: 'buying'
-      });
-      myOrders.sell.push({
-        price: false,
-        state: 'waiting'
-      });
-      amountMade.push(0);
+        myOrders.buy.push({
+            price: false,
+            state: 'buying'
+        });
+        myOrders.sell.push({
+            price: false,
+            state: 'waiting'
+        });
+        amountMade.push(0);
     }
 }
 //=============================================
