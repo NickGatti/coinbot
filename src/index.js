@@ -40,9 +40,9 @@ const mySettings = {
         1.0250      // 20
     ]
 };
-var state = {
-    buy: [],
-    sell: []
+var myOrders = {
+    'buy': [],
+    'sell': []
 };
 var amountMade = [];
 populateMySettings(10);
@@ -67,10 +67,6 @@ var placeTalk = {
         price: false,
         size: false
     }
-};
-var myOrders = {
-    buy: [],
-    sell: []
 };
 readData();
 //=============================================
@@ -207,7 +203,8 @@ function getWebSocketData() {
             return;
         }
         catchWebSocketMessage(data);
-    });}
+    });
+  }
 //=============================================
 //=============================================
 //=============================================
@@ -519,7 +516,7 @@ function placeBuy(){
         return;
     }
 
-    if (state.buy[myOrderIterator] == 'buying') {
+    if (myOrders.buy[myOrderIterator].state == 'buying') {
 
         placeTalk.buy = {
             placing: true,
@@ -527,8 +524,8 @@ function placeBuy(){
             size: 20
         };
 
-        if (myOrders.buy[myOrderIterator]) {
-            myOrders.buy[myOrderIterator].oldPrice = parseFloat(myOrders.buy[myOrderIterator].price);
+        if (myOrders.buy[myOrderIterator].price) {
+            myOrders.buy[myOrderIterator].oldPrice = parseFloat(myOrders.buy[myOrderIterator].price + 0.01);
         } else {
             myOrders.buy[myOrderIterator] = filterBuyOrder();
             myOrders.buy[myOrderIterator].oldPrice = parseFloat(filterBuyOrder().price + 0.01);
@@ -543,19 +540,19 @@ function placeBuy(){
         myOrders.buy[myOrderIterator].oldOrdersToGo = buyGapInfo()[0];
         myOrders.buy[myOrderIterator].oldAmountToGo = buyGapInfo()[1];
 
-        state.buy[myOrderIterator] = 'waiting';
+        myOrders.buy[myOrderIterator].state = 'waiting';
 
         return;
-    } else if (state.buy[myOrderIterator] == 'waiting') {
+    } else if (myOrders.buy[myOrderIterator].state == 'waiting') {
         if (findHighestBuyPrice().price < myOrders.buy[myOrderIterator].price) {
 
             //console.log('Purchased!');
 
-            state.buy[myOrderIterator] = 'paused';
-            state.sell[myOrderIterator] = 'selling';
+            myOrders.buy[myOrderIterator].state = 'paused';
+            myOrders.sell[myOrderIterator].state = 'selling';
 
             return;
-        } else if (myOrders.buy[myOrderIterator]) {
+        } else if (myOrders.buy[myOrderIterator].price) {
             if (buyGapInfo()[0] > myOrders.buy[myOrderIterator].oldOrdersToGo &&
                         buyGapInfo()[1] > myOrders.buy[myOrderIterator].oldAmountToGo &&
                         (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[myOrderIterator].oldMargin &&
@@ -594,7 +591,7 @@ function placeSell(){
         return;
     }
 
-    if (state.sell[myOrderIterator] == 'selling') {
+    if (myOrders.sell[myOrderIterator].state == 'selling') {
         placeTalk.sell = {
             placing: true,
             price: filterSellOrder().price,
@@ -606,20 +603,20 @@ function placeSell(){
 
         myOrders.sell[myOrderIterator] = myOrders.sell[myOrderIterator];
 
-        state.sell[myOrderIterator] = 'waiting';
+        myOrders.sell[myOrderIterator].state = 'waiting';
 
         return;
 
-    } else if (myOrders.sell[myOrderIterator]) {
-        if (state.sell[myOrderIterator] == 'waiting') {
+    } else if (myOrders.sell[myOrderIterator].price) {
+        if (myOrders.sell[myOrderIterator].state == 'waiting') {
             if (findLowestSellPrice().price > myOrders.sell[myOrderIterator].price) {
 
                 //console.log('Sold!');
 
                 let buyAmount = myOrders.buy[myOrderIterator].price * 1.04;
                 amountMade[myOrderIterator] = parseFloat((myOrders.sell[myOrderIterator].price * 20) - (buyAmount * 20));
-                state.sell[myOrderIterator] = 'paused';
-                state.buy[myOrderIterator] = 'buying';
+                myOrders.sell[myOrderIterator].state = 'paused';
+                myOrders.buy[myOrderIterator].state = 'buying';
 
                 return;
 
@@ -717,6 +714,7 @@ function outPutLoggingSell(){
 //=============================================
 //=============================================
 function buyGapInfo(){
+    if (!(myOrders.buy[myOrderIterator].price)) return false
     let buyCount = 0;
     let buyTotal = 0;
     for (let i = 0; i < orderBook['buy'].length && myOrders.buy[myOrderIterator]; i++) {
@@ -741,6 +739,7 @@ function buyGapInfo(){
 //=============================================
 //=============================================
 function sellGapInfo(){
+    if (!(myOrders.sell[myOrderIterator].price)) return false
     let sellCount = 0;
     let sellTotal = 0;
     for (let i = 0; i < orderBook['sell'].length && myOrders.sell[myOrderIterator]; i++) {
@@ -875,10 +874,10 @@ function checkVars(){
         myOrders.sell[myOrderIterator] = myOrders.sell[myOrderIterator];
     }
 
-    if (myOrders.buy[myOrderIterator]) {
+    if (myOrders.buy[myOrderIterator].price) {
         if (Number(myOrders.buy[myOrderIterator].price)) myOrders.buy[myOrderIterator].price = parseFloat(myOrders.buy[myOrderIterator].price);
     }
-    if (myOrders.sell[myOrderIterator]) {
+    if (myOrders.sell[myOrderIterator].price) {
         if (Number(myOrders.sell[myOrderIterator].price)) myOrders.sell[myOrderIterator].price = parseFloat(myOrders.sell[myOrderIterator].price);
     }
 
@@ -901,12 +900,17 @@ function populateMySettings(num){
     for (let i = 0; i < num; i++ ) {
         mySettings.realityCriteria.push(400);
         mySettings.realityCriteria.push(6000);
-        state.buy.push('buying');
-        state.buy.push('buying');
-        state.sell.push('waiting');
-        state.sell.push('waiting');
-        amountMade.push(0);
-        amountMade.push(0);
+    }
+    for (let i = 0; i < num * 2; i++) {
+      myOrders.buy.push({
+        price: false,
+        state: 'buying'
+      });
+      myOrders.sell.push({
+        price: false,
+        state: 'waiting'
+      });
+      amountMade.push(0);
     }
 }
 //=============================================
@@ -979,8 +983,8 @@ app.get('/api', function(req, res) {
         outPutLoggingBuy: outPutLoggingBuy() ? outPutLoggingBuy() : false,
         outPutLoggingSell: outPutLoggingSell() ? outPutLoggingSell() : false,
         myOrderIterator: myOrderIterator ? myOrderIterator : false,
-        buyState: state.buy[myOrderIterator] ? state.buy[myOrderIterator] : false,
-        sellState: state.sell[myOrderIterator] ? state.sell[myOrderIterator] : false
+        buyState: myOrders.buy[myOrderIterator].state ? myOrders.buy[myOrderIterator].state : false,
+        sellState: myOrders.sell[myOrderIterator].state ? myOrders.sell[myOrderIterator].state : false
     });
 });
 
