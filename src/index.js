@@ -42,9 +42,9 @@ const mySettings = {
 };
 var myOrders = {
   'buy': [],
-  'sell': []
+  'sell': [],
+  'orderAmountMade': []
 };
-var amountMade = [];
 populateMySettings(10);
 //=============================================
 //==============REALITY CRITERIA===============
@@ -604,8 +604,10 @@ function placeSell() {
         //console.log('Sold!');
 
         let buyAmount = myOrders.buy[myOrderIterator].price * 1.04;
-        amountMade[myOrderIterator] = parseFloat((myOrders.sell[myOrderIterator].price * 20) - (buyAmount * 20));
+        myOrders.orderAmountMade[myOrderIterator] = parseFloat((myOrders.sell[myOrderIterator].price * 20) - (buyAmount * 20));
+        myOrders.sell[myOrderIterator] = {};
         myOrders.sell[myOrderIterator].state = 'paused';
+        myOrders.buy[myOrderIterator] = {};
         myOrders.buy[myOrderIterator].state = 'buying';
 
         return;
@@ -651,10 +653,10 @@ function outPutLoggingGood() {
 //=============================================
 //=============================================
 function outPutLoggingEtc() {
-  amountMade[myOrderIterator] = parseFloat(amountMade[myOrderIterator]);
+  myOrders.orderAmountMade[myOrderIterator] = parseFloat(myOrders.orderAmountMade[myOrderIterator]);
   return {
     totalAmountMade: addTotalAmount() ? addTotalAmount() : false,
-    amountMade: amountMade ? amountMade[myOrderIterator] : false,
+    amountMade: myOrders.orderAmountMade ? myOrders.orderAmountMade[myOrderIterator] : false,
     placeTalk: placeTalk ? placeTalk : false
   };
 }
@@ -866,8 +868,8 @@ function checkVars() {
     if (Number(myOrders.sell[myOrderIterator].price)) myOrders.sell[myOrderIterator].price = parseFloat(myOrders.sell[myOrderIterator].price);
   }
 
-  if (amountMade[myOrderIterator]) {
-    if (Number(amountMade[myOrderIterator])) amountMade[myOrderIterator] = parseFloat(amountMade[myOrderIterator]);
+  if (myOrders.orderAmountMade[myOrderIterator]) {
+    if (Number(myOrders.orderAmountMade[myOrderIterator])) myOrders.orderAmountMade[myOrderIterator] = parseFloat(myOrders.orderAmountMade[myOrderIterator]);
   }
 }
 //=============================================
@@ -895,7 +897,7 @@ function populateMySettings(num) {
       price: false,
       state: 'waiting'
     });
-    amountMade.push(0);
+    myOrders.orderAmountMade.push(0);
   }
 }
 //=============================================
@@ -942,7 +944,7 @@ function filterSellOrder() {
 //=============================================
 //=============================================
 function addTotalAmount() {
-  return amountMade.reduce((init, data) => {
+  return myOrders.orderAmountMade.reduce((init, data) => {
     return init + data;
   });
 }
