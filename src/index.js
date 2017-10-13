@@ -962,16 +962,16 @@ function addTotalAmount() {
 console.log('Starting server...');
 var app = express();
 app.use(function(err, req, res, next){
-    res.status(err.status || 500);
-    res.send({
-        message: err.message,
-        error: err
-    });
-   return;
+  res.status(err.status || 500);
+  res.send({
+    message: err.message,
+    error: err
+  });
+  return;
 });
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
-})
+  res.sendFile(__dirname + '/index.html');
+});
 app.get('/api', function(req, res) {
   res.json({
     highestBuyPrice: findHighestBuyPrice() ? findHighestBuyPrice().price : false,

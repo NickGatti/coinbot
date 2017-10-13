@@ -1,27 +1,44 @@
 var google = '';
 var pageData = {};
+var oReq = new XMLHttpRequest();
+var myAPIurl = 'http://localhost:3000/api';
 
 loadScript('https://www.gstatic.com/charts/loader.js', (() => {
   return;
 }));
 
 setInterval(() => {
-  fetch('https://multicoinbot-nickgatti.c9users.io/api', {
+  fetch(myAPIurl, {
     method: 'GET'
   }).then(function(data) {
     return data.json();
   }).then(function(data) {
+    //console.log('Yes')
     pageData = data;
-    popOrderPlacementData();
-    pageData.myOrderIterator % 2 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
-    popOtherMarketData();
-    popData();
-    marketData();
-    makePie();
+    activate();
   }).catch(() => {
-    //console.log('ERROR: ', err);
+    //console.log('No')
+    oReq.addEventListener('load', reqListener);
+    oReq.open('GET', myAPIurl);
+    oReq.send();
+    activate();
   });
 }, 400);
+
+var reqListener = (() => {
+  pageData = JSON.parse(this.responseText);
+  oReq.removeEventListener('load', reqListener);
+});
+
+var activate = (() => {
+  popOrderPlacementData();
+  pageData.myOrderIterator % 2 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
+  popOtherMarketData();
+  popData();
+  popEtcInfo();
+  marketData();
+  makePie();  
+});
 
 var docBuyStateID  = document.getElementById('placingBuy');
 var docBuyPriceID  = document.getElementById('placingPriceBuy');
@@ -109,7 +126,7 @@ var popOtherMarketData = (() => {
   docTotalBuys.innerHTML  = pageData.outPutLoggingGood.totalSells
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalSells)
     : 'Error loading Data';
-    
+
   docTotalSells.innerHTML = pageData.outPutLoggingGood.totalBuys
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalBuys)
     : 'Error loading Data';
@@ -122,32 +139,28 @@ let docHighestBuyPrice = document.getElementById('printBuy');
 let docCurrentOrder    = document.getElementsByClassName('currentOrder');
 
 var popEtcInfo = (() => {
-  
+  docTotalAmountMade.innerHTML              = pageData.outPutLoggingEtc.totalAmountMade
+    ? '$' + pageData.outPutLoggingEtc.totalAmountMade.toFixed(2)
+    : docTotalAmountMade.innerHTML          = 'N/A';
+
+  docOrderAmountMade.innerHTML              = pageData.outPutLoggingEtc.amountMade
+    ? '$' + pageData.outPutLoggingEtc.amountMade.toFixed(2)
+    : docOrderAmountMade.innerHTML          = 'N/A';
+
+  docLowestSellPrice.innerHTML               = pageData.lowestSellPrice
+    ? '$' + pageData.lowestSellPrice.toFixed(2)
+    : docLowestSellPrice.innerHTML = 'N/A';
+
+  docHighestBuyPrice.innerHTML                = pageData.highestBuyPrice
+    ? '$' + pageData.highestBuyPrice.toFixed(2)
+    : docHighestBuyPrice.innerHTML = 'N/A';
+
+  docCurrentOrder[0].innerHTML = pageData.myOrderIterator != undefined
+    ? pageData.myOrderIterator + 1
+    : docCurrentOrder[0].innerHTML = 'Restarting...';
 });
 
 var popData = (() => {
-
-  //ETC info
-  docTotalAmountMade.innerHTML              = pageData.outPutLoggingEtc.totalAmountMade 
-    ? '$' + pageData.outPutLoggingEtc.totalAmountMade.toFixed(2) 
-    : docTotalAmountMade.innerHTML          = 'N/A';
-    
-  docOrderAmountMade.innerHTML              = pageData.outPutLoggingEtc.amountMade 
-    ? '$' + pageData.outPutLoggingEtc.amountMade.toFixed(2) 
-    : docOrderAmountMade.innerHTML          = 'N/A';
-    
-  docLowestSellPrice.innerHTML               = pageData.lowestSellPrice 
-    ? '$' + pageData.lowestSellPrice.toFixed(2) 
-    : docLowestSellPrice.innerHTML = 'N/A';
-    
-  document.getElementById('printBuy').innerHTML                = pageData.highestBuyPrice 
-    ? '$' + pageData.highestBuyPrice.toFixed(2)
-    : document.getElementById('printBuy').innerHTML = 'N/A';
-    
-  document.getElementsByClassName('currentOrder')[0].innerHTML = pageData.myOrderIterator != undefined 
-    ? pageData.myOrderIterator + 1 
-    : document.getElementsByClassName('currentOrder')[0].innerHTML = 'Restarting...';
-  //ETC Info
 
   //BUY ORDER
   //document.getElementById('talkAboutUpdatingBuy').innerHTML = pageData.outPutLoggingBuy.talkAboutUpdating ? pageData.outPutLoggingBuy.talkAboutUpdating : document.getElementById('talkAboutUpdatingBuy').innerHTML = 'Hasn\'t Changed Price Yet';
