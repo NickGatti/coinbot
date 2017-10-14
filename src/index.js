@@ -1,14 +1,18 @@
 //=============================================
 //=============================================
 //=============================================
-//START>> Global Var Dec's
+//START>> Global let Dec's
 //=============================================
+//================SERVER PORT==================
+// Number for localhost
+// String 'c9' for cloudnine.io
+let lisenPort = 3000;
 //=============================================
 //=============================================
 const Gdax = require('gdax');
 const util = require('util');
-var fs = require('fs');
-var express = require('express');
+const fs = require('fs');
+const express = require('express');
 const publicClient = new Gdax.PublicClient('ETH-USD');
 const websocket = new Gdax.WebsocketClient(['ETH-USD']);
 const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind(publicClient));
@@ -40,7 +44,7 @@ const mySettings = {
     1.0250 // 20
   ]
 };
-var myOrders = {
+let myOrders = {
   'buy': [],
   'sell': [],
   'orderAmountMade': []
@@ -49,14 +53,14 @@ populateMySettings(10);
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
-var orderBook = {
+let orderBook = {
   'buy': [],
   'sell': []
 };
 
-var myOrderIterator = 0;
-var talkAboutUpdating = false;
-var placeTalk = {
+let myOrderIterator = 0;
+let talkAboutUpdating = false;
+let placeTalk = {
   buy: {
     placing: false,
     price: false,
@@ -72,7 +76,7 @@ readData();
 //=============================================
 //=============================================
 //=============================================
-//END>> Global Var Dec's
+//END>> Global let Dec's
 //=============================================
 //=============================================
 //=============================================
@@ -81,11 +85,11 @@ readData();
 //=============================================
 //=============================================
 //console.log('Conneting WebSocket...');
-var pauseOrderBook = false;
-var resetFlag = false;
-var runBenchmark = false;
-var resetPause = false;
-var dataIntegrityTest = false;
+let pauseOrderBook = false;
+let resetFlag = false;
+let runBenchmark = false;
+let resetPause = false;
+let dataIntegrityTest = false;
 setInterval(() => {
   clearInterval(findRealisticOrders);
   resetFlag = true;
@@ -102,13 +106,13 @@ getWebSocketData();
 //=============================================
 //=============================================
 //=============================================
-function getOrderBook(level) {
+let getOrderBook = ((level) => {
   return getProductOrderBook({
     'level': level
   }).then(function(data) {
     return JSON.parse(data.body);
   });
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -116,11 +120,11 @@ function getOrderBook(level) {
 //=============================================
 //=============================================
 //=============================================
-//START>> Call GDAX function for ASYNC variable
+//START>> Call GDAX function for ASYNC letiable
 //=============================================
 //=============================================
 //=============================================
-function downloadOrderBook(flag) {
+let downloadOrderBook = ((flag) => {
   if (orderBook['buy'][0] && orderBook['sell'][0] || flag) {
 
     if (flag) resetPause = true;
@@ -130,7 +134,7 @@ function downloadOrderBook(flag) {
 
     let savedTime = new Date().getTime();
     let timeDown = 0;
-    var countdown = setInterval(() => {
+    let countdown = setInterval(() => {
       timeDown = (new Date().getTime() - savedTime);
       let output = ('Orderbook re-download timeout: ' + (timeDown)).toString();
       console.log(output.slice(0, -3));
@@ -178,7 +182,7 @@ function downloadOrderBook(flag) {
       console.log(err);
     });
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -219,7 +223,7 @@ function getWebSocketData() {
 //=============================================
 //=============================================
 //=============================================
-function catchWebSocketMessage(data) {
+let catchWebSocketMessage = ((data) => {
 
   if (dataIntegrityTest) console.log('DataIntegrityTesting');
   let objectSide = data.side;
@@ -421,7 +425,7 @@ function catchWebSocketMessage(data) {
   } else {
     console.log('Uncaught WebSocket type in feed: ', data.type);
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -433,7 +437,7 @@ function catchWebSocketMessage(data) {
 //=============================================
 //=============================================
 //=============================================
-function deDupe() {
+let deDupe = (() => {
   dataIntegrityTest = true;
   console.log('OrderBook Downloaded! de-Duping OrderBook!');
 
@@ -455,19 +459,131 @@ function deDupe() {
   //console.log('=============================================================================================================================================================================');
   dataIntegrityTest = false;
   runBenchmark = true;
-}
+});
+//=============================================
+//=============================================
 //=============================================
 //END>> DeDupe OrderBook
 //=============================================
+//=============================================
+//=============================================
+//START>> Output logging
+//=============================================
+//=============================================
+//=============================================
+let outPutLoggingGood = (() => {
+  if (orderBook['buy'] && orderBook['sell'] && findGoodOrders()) {
+    return {
+      realBuys: findGoodOrders()['buy'] ? findGoodOrders()['buy'] : false,
+      realSells: findGoodOrders()['sell'] ? findGoodOrders()['sell'] : false,
+      totalBuys: orderBook['buy'].length ? orderBook['buy'].length : false,
+      totalSells: orderBook['sell'].length ? orderBook['sell'].length : false
+    };
+  }
+  return false;
+});
+//=============================================
+//=============================================
+//=============================================
+let outPutLoggingEtc = (() => {
+  myOrders.orderAmountMade[myOrderIterator] = parseFloat(myOrders.orderAmountMade[myOrderIterator]);
+  return {
+    totalAmountMade: addTotalAmount() ? addTotalAmount() : false,
+    amountMade: myOrders.orderAmountMade ? myOrders.orderAmountMade[myOrderIterator] : false,
+    placeTalk: placeTalk ? placeTalk : false
+  };
+});
+//=============================================
+//=============================================
+//=============================================
+let outPutLoggingBuy = (() => {
+  if (!buyGapInfo()) return 'noBuyInfo';
+  if (!myOrders.buy[myOrderIterator]) return 'noBuyOrder';
+  if (myOrders.buy[myOrderIterator] && buyGapInfo()) {
+    return {
+      talkAboutUpdating: talkAboutUpdating ? talkAboutUpdating : false,
+      myBuyOrder: myOrders.buy[myOrderIterator] ? myOrders.buy[myOrderIterator] : false,
+      buyCount: buyGapInfo()[0] ? buyGapInfo()[0] : false,
+      buyTotal: buyGapInfo()[1] ? buyGapInfo()[1] : false
+    };
+  }
+  return false;
+});
+//=============================================
+//=============================================
+//=============================================
+let outPutLoggingSell = (() => {
+  if (!sellGapInfo()) return 'noSellInfo';
+  if (!myOrders.sell[myOrderIterator]) return 'noSellOrder';
+  if (myOrders.sell[myOrderIterator] && sellGapInfo()) {
+    return {
+      mySellOrder: myOrders.sell[myOrderIterator] ? myOrders.sell[myOrderIterator] : false,
+      sellCount: sellGapInfo()[0] ? sellGapInfo()[0] : false,
+      sellTotal: sellGapInfo()[1] ? sellGapInfo()[1] : false
+    };
+  }
+  return false;
+});
+//=============================================
+//=============================================
+//=============================================
+//END>> Output logging
+//=============================================
+//=============================================
+//=============================================
+//START>> SERVER
+//=============================================
+//=============================================
+//=============================================
+console.log('Starting server...');
+let app = express();
+app.use(function(err, req, res, next){
+  res.status(err.status || 500);
+  res.send({
+    message: err.message,
+    error: err
+  });
+  return;
+});
+app.get('/', function(req, res) {
+  res.sendFile(__dirname + '/index.html');
+});
+app.get('/api', function(req, res) {
+  res.json({
+    highestBuyPrice: findHighestBuyPrice() ? findHighestBuyPrice().price : false,
+    lowestSellPrice: findLowestSellPrice() ? findLowestSellPrice().price : false,
+    outPutLoggingGood: outPutLoggingGood() ? outPutLoggingGood() : false,
+    outPutLoggingEtc: outPutLoggingEtc() ? outPutLoggingEtc() : false,
+    outPutLoggingBuy: outPutLoggingBuy() ? outPutLoggingBuy() : false,
+    outPutLoggingSell: outPutLoggingSell() ? outPutLoggingSell() : false,
+    myOrderIterator: myOrderIterator ? myOrderIterator : false,
+    buyState: myOrders.buy[myOrderIterator].state ? myOrders.buy[myOrderIterator].state : false,
+    sellState: myOrders.sell[myOrderIterator].state ? myOrders.sell[myOrderIterator].state : false
+  });
+});
+if (lisenPort === 'c9') {
+  app.listen(process.env.PORT, process.env.IP);
+} else {
+  app.listen(lisenPort);
+}
+//=============================================
+//=============================================
+//=============================================
+//END>> SERVER
+//=============================================
+//=============================================
+//=============================================
 //START>> Market Order Reality Checks
 //=============================================
-function findRealisticOrders() {
+//=============================================
+//=============================================
+let findRealisticOrders = (() => {
   if (resetFlag) return;
   if (runBenchmark && !resetFlag) {
 
     let savedTime = new Date().getTime();
     let timeDown = 0;
-    var countdown = setInterval(() => {
+    let countdown = setInterval(() => {
       timeDown = (new Date().getTime() - savedTime);
       let output = timeDown.toString();
       console.log('Order took: ' + output.slice(0, -2) + 'ms');
@@ -488,7 +604,7 @@ function findRealisticOrders() {
 
     resetOrderInterval(countdown);
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -500,7 +616,7 @@ function findRealisticOrders() {
 //=============================================
 //=============================================
 //=============================================
-function placeBuy() {
+let placeBuy = (() => {
   if (!filterBuyOrder(findHighestBuyPrice())) {
     //console.log('Wait what? This should\'t happen!');
     return;
@@ -524,8 +640,7 @@ function placeBuy() {
     myOrders.buy[myOrderIterator] = filterBuyOrder();
     myOrders.buy[myOrderIterator].price = parseFloat(filterBuyOrder().price + 0.01);
 
-    let myMargin = (findHighestBuyPrice().price / myOrders.buy[myOrderIterator].price);
-    myOrders.buy[myOrderIterator].oldMargin = myMargin;
+    myOrders.buy[myOrderIterator].margin = (findHighestBuyPrice().price / myOrders.buy[myOrderIterator].price);
 
     myOrders.buy[myOrderIterator].oldOrdersToGo = buyGapInfo()[0];
     myOrders.buy[myOrderIterator].oldAmountToGo = buyGapInfo()[1];
@@ -545,16 +660,15 @@ function placeBuy() {
     } else if (myOrders.buy[myOrderIterator].price) {
       if (buyGapInfo()[0] > myOrders.buy[myOrderIterator].oldOrdersToGo &&
         buyGapInfo()[1] > myOrders.buy[myOrderIterator].oldAmountToGo &&
-        (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[myOrderIterator].oldMargin &&
+        (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[myOrderIterator].margin &&
         filterBuyOrder().price > myOrders.buy[myOrderIterator].oldPrice) {
 
-        talkAboutUpdating = parseFloat(myOrders.buy[myOrderIterator].oldPrice);
+        talkAboutUpdating = true;
 
         myOrders.buy[myOrderIterator].oldOrdersToGo = buyGapInfo()[0];
         myOrders.buy[myOrderIterator].oldAmountToGo = buyGapInfo()[1];
 
-        let myMargin = (findHighestBuyPrice().price / myOrders.buy[myOrderIterator].price);
-        myOrders.buy[myOrderIterator].oldMargin = myMargin;
+        myOrders.buy[myOrderIterator].margin = (findHighestBuyPrice().price / myOrders.buy[myOrderIterator].price);
 
         myOrders.buy[myOrderIterator].oldPrice = parseFloat(myOrders.buy[myOrderIterator].price);
         myOrders.buy[myOrderIterator].price = parseFloat(filterBuyOrder().price + 0.01);
@@ -563,7 +677,7 @@ function placeBuy() {
       }
     }
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -575,7 +689,7 @@ function placeBuy() {
 //=============================================
 //=============================================
 //=============================================
-function placeSell() {
+let placeSell = (() => {
   if (!filterSellOrder()) {
     //console.log('Bubble?');
     return;
@@ -590,8 +704,7 @@ function placeSell() {
 
     myOrders.sell[myOrderIterator] = filterSellOrder();
     myOrders.sell[myOrderIterator].price = parseFloat(myOrders.sell[myOrderIterator].price - 0.01);
-
-    myOrders.sell[myOrderIterator] = myOrders.sell[myOrderIterator];
+    myOrders.sell[myOrderIterator].margin = parseFloat(myOrders.sell[myOrderIterator].price / myOrders.buy[myOrderIterator].price);
 
     myOrders.sell[myOrderIterator].state = 'waiting';
 
@@ -623,7 +736,7 @@ function placeSell() {
       }
     }
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -631,81 +744,11 @@ function placeSell() {
 //=============================================
 //=============================================
 //=============================================
-//START>> Output logging
-//=============================================
-//=============================================
-//=============================================
-function outPutLoggingGood() {
-  if (orderBook['buy'] && orderBook['sell'] && findGoodOrders()) {
-    return {
-      realBuys: findGoodOrders()['buy'] ? findGoodOrders()['buy'] : false,
-      realSells: findGoodOrders()['sell'] ? findGoodOrders()['sell'] : false,
-      totalBuys: orderBook['buy'].length ? orderBook['buy'].length : false,
-      totalSells: orderBook['sell'].length ? orderBook['sell'].length : false,
-      goodBuyPercent: parseFloat(orderBook['buy'].length / findGoodOrders()['buy']) ? parseFloat(orderBook['buy'].length / findGoodOrders()['buy']) : false,
-      goodSellPercent: parseFloat(orderBook['sell'].length / findGoodOrders()['sell']) ? parseFloat(orderBook['sell'].length / findGoodOrders()['sell']) : false,
-      totalBadPercent: parseFloat(100 - (parseFloat(orderBook['buy'].length / findGoodOrders()['buy']) + parseFloat(orderBook['sell'].length / findGoodOrders()['sell']))) ? parseFloat(100 - (parseFloat(orderBook['buy'].length / findGoodOrders()['buy']) + parseFloat(orderBook['sell'].length / findGoodOrders()['sell']))) : false
-    };
-  }
-  return false;
-}
-//=============================================
-//=============================================
-//=============================================
-function outPutLoggingEtc() {
-  myOrders.orderAmountMade[myOrderIterator] = parseFloat(myOrders.orderAmountMade[myOrderIterator]);
-  return {
-    totalAmountMade: addTotalAmount() ? addTotalAmount() : false,
-    amountMade: myOrders.orderAmountMade ? myOrders.orderAmountMade[myOrderIterator] : false,
-    placeTalk: placeTalk ? placeTalk : false
-  };
-}
-//=============================================
-//=============================================
-//=============================================
-function outPutLoggingBuy() {
-  if (!buyGapInfo()) return 'noBuyInfo';
-  if (!myOrders.buy[myOrderIterator]) return 'noBuyOrder';
-  if (myOrders.buy[myOrderIterator] && buyGapInfo()) {
-    return {
-      talkAboutUpdating: talkAboutUpdating ? talkAboutUpdating : false,
-      newPriceUpdate: talkAboutUpdating ? myOrders.buy[myOrderIterator].price : false,
-      oldPriceUpdate: talkAboutUpdating ? talkAboutUpdating : false,
-      difference: talkAboutUpdating ? myOrders.buy[myOrderIterator].price - myOrders.buy[myOrderIterator].oldPrice : false,
-      myBuyOrder: myOrders.buy[myOrderIterator] ? myOrders.buy[myOrderIterator] : false,
-      buyCount: buyGapInfo()[0] ? buyGapInfo()[0] : false,
-      buyTotal: buyGapInfo()[1] ? buyGapInfo()[1] : false
-    };
-  }
-  return false;
-}
-//=============================================
-//=============================================
-//=============================================
-function outPutLoggingSell() {
-  if (!sellGapInfo()) return 'noSellInfo';
-  if (!myOrders.sell[myOrderIterator]) return 'noSellOrder';
-  if (myOrders.sell[myOrderIterator] && sellGapInfo()) {
-    return {
-      mySellOrder: myOrders.sell[myOrderIterator] ? myOrders.sell[myOrderIterator] : false,
-      sellCount: sellGapInfo()[0] ? sellGapInfo()[0] : false,
-      sellTotal: sellGapInfo()[1] ? sellGapInfo()[1] : false
-    };
-  }
-  return false;
-}
-//=============================================
-//=============================================
-//=============================================
-//END>> Output logging
-//=============================================
-//=============================================
-//=============================================
 //START>> Buy gap info
 //=============================================
 //=============================================
 //=============================================
-function buyGapInfo() {
+let buyGapInfo = (() => {
   if (!(myOrders.buy[myOrderIterator].price)) return false;
   let buyCount = 0;
   let buyTotal = 0;
@@ -718,7 +761,7 @@ function buyGapInfo() {
     }
   }
   return [buyCount, buyTotal];
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -730,7 +773,7 @@ function buyGapInfo() {
 //=============================================
 //=============================================
 //=============================================
-function sellGapInfo() {
+let sellGapInfo = (() => {
   if (!(myOrders.sell[myOrderIterator].price)) return false;
   let sellCount = 0;
   let sellTotal = 0;
@@ -743,7 +786,7 @@ function sellGapInfo() {
     }
   }
   return [sellCount, sellTotal];
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -755,7 +798,7 @@ function sellGapInfo() {
 //=============================================
 //=============================================
 //=============================================
-function sortBothSides() {
+let sortBothSides = (() => {
   orderBook['buy']
     .sort((a, b) => {
       return b.price - a.price;
@@ -764,7 +807,7 @@ function sortBothSides() {
     .sort((a, b) => {
       return a.price - b.price;
     });
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -776,7 +819,7 @@ function sortBothSides() {
 //=============================================
 //=============================================
 //=============================================
-function filterGoodOrders() {
+let filterGoodOrders = (() => {
   let goodOrderOp = (objectSide) => {
     for (let i = 0; i < orderBook[objectSide].length; i++) {
       let obj = orderBook[objectSide][i];
@@ -789,9 +832,9 @@ function filterGoodOrders() {
   };
   goodOrderOp('buy');
   goodOrderOp('sell');
-}
-
-function findGoodOrders() {
+});
+//=============================================
+let findGoodOrders = (() => {
   let good = {
     'buy': 0,
     'sell': 0
@@ -808,7 +851,7 @@ function findGoodOrders() {
   goodOrderOp('sell');
 
   return good;
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -820,12 +863,12 @@ function findGoodOrders() {
 //=============================================
 //=============================================
 //=============================================
-function findHighestBuyPrice() {
+let findHighestBuyPrice = (() => {
   return orderBook['buy']
     .find((data) => {
       if (data.price) return data;
     });
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -837,12 +880,12 @@ function findHighestBuyPrice() {
 //=============================================
 //=============================================
 //=============================================
-function findLowestSellPrice() {
+let findLowestSellPrice = (() => {
   return orderBook['sell']
     .find((data) => {
       if (data.price) return data;
     });
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -854,7 +897,7 @@ function findLowestSellPrice() {
 //=============================================
 //=============================================
 //=============================================
-function checkVars() {
+let checkVars = (() => {
   if (Number(findHighestBuyPrice().price)) findHighestBuyPrice().price = parseFloat(findHighestBuyPrice().price);
   if (Number(findLowestSellPrice().price)) findLowestSellPrice().price = parseFloat(findLowestSellPrice().price);
 
@@ -871,7 +914,7 @@ function checkVars() {
   if (myOrders.orderAmountMade[myOrderIterator]) {
     if (Number(myOrders.orderAmountMade[myOrderIterator])) myOrders.orderAmountMade[myOrderIterator] = parseFloat(myOrders.orderAmountMade[myOrderIterator]);
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -911,11 +954,11 @@ function populateMySettings(num) {
 //=============================================
 //=============================================
 //=============================================
-function filterBuyOrder() {
+let filterBuyOrder = (() => {
   return orderBook['buy'].find((data) => {
     if (data.goodOrder && (findHighestBuyPrice().price / data.price) >= mySettings.realMargin[myOrderIterator]) return data;
   });
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -927,11 +970,11 @@ function filterBuyOrder() {
 //=============================================
 //=============================================
 //=============================================
-function filterSellOrder() {
+let filterSellOrder = (() => {
   return orderBook['sell'].find((data) => {
     if (data.goodOrder && (data.price / myOrders.buy[myOrderIterator].price) >= ((mySettings.realMargin[myOrderIterator]) * 2) - 1) return data;
   });
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -943,11 +986,11 @@ function filterSellOrder() {
 //=============================================
 //=============================================
 //=============================================
-function addTotalAmount() {
+let addTotalAmount = (() => {
   return myOrders.orderAmountMade.reduce((init, data) => {
     return init + data;
   });
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -955,50 +998,12 @@ function addTotalAmount() {
 //=============================================
 //=============================================
 //=============================================
-//START>> Backend API
-//=============================================
-//=============================================
-//=============================================
-console.log('Starting server...');
-var app = express();
-app.use(function(err, req, res, next){
-    res.status(err.status || 500);
-    res.send({
-        message: err.message,
-        error: err
-    });
-   return;
-});
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
-})
-app.get('/api', function(req, res) {
-  res.json({
-    highestBuyPrice: findHighestBuyPrice() ? findHighestBuyPrice().price : false,
-    lowestSellPrice: findLowestSellPrice() ? findLowestSellPrice().price : false,
-    outPutLoggingGood: outPutLoggingGood() ? outPutLoggingGood() : false,
-    outPutLoggingEtc: outPutLoggingEtc() ? outPutLoggingEtc() : false,
-    outPutLoggingBuy: outPutLoggingBuy() ? outPutLoggingBuy() : false,
-    outPutLoggingSell: outPutLoggingSell() ? outPutLoggingSell() : false,
-    myOrderIterator: myOrderIterator ? myOrderIterator : false,
-    buyState: myOrders.buy[myOrderIterator].state ? myOrders.buy[myOrderIterator].state : false,
-    sellState: myOrders.sell[myOrderIterator].state ? myOrders.sell[myOrderIterator].state : false
-  });
-});
-
-app.listen(3000); //(process.env.PORT, process.env.IP)  ; //3000 Normal //process.env.PORT, process.env.IP for C9.io
-//=============================================
-//=============================================
-//=============================================
-//END>> Backend API
-//=============================================
-//=============================================
 //=============================================
 //START>> Reset placeTalk
 //=============================================
 //=============================================
 //=============================================
-function resetPlaceTalk() {
+let resetPlaceTalk = (() => {
   if (placeTalk.buy.placing) placeTalk.buy = {
     placing: false,
     price: false,
@@ -1009,7 +1014,7 @@ function resetPlaceTalk() {
     price: false,
     size: false
   };
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -1021,7 +1026,7 @@ function resetPlaceTalk() {
 //=============================================
 //=============================================
 //=============================================
-function writeData() {
+let writeData = (() => {
   fs.open('storage.json', 'wx', (err) => {
     if (err) {
       if (err.code === 'EEXIST') {
@@ -1034,8 +1039,8 @@ function writeData() {
 
     writeMyData();
   });
-}
-
+});
+//=============================================
 function readData() {
   fs.open('storage.json', 'r', (err) => {
     if (err) {
@@ -1050,20 +1055,20 @@ function readData() {
     readMyData();
   });
 }
-
-function writeMyData() {
+//=============================================
+let writeMyData = (() => {
   fs.writeFile('storage.json', JSON.stringify(myOrders), (err) => {
     if (err) throw err;
     //console.log('The "data to append" was appended to file!');
   });
-}
-
-function readMyData() {
+});
+//=============================================
+let readMyData = (() => {
   fs.readFile('storage.json', 'utf8', (err, data) => {
     if (err) throw err;
     myOrders = JSON.parse(data);
   });
-}
+});
 /*
 function appendMyData() {
     fs.appendFile('storage.json', myOrders, (err) => {
@@ -1079,7 +1084,11 @@ function appendMyData() {
 //=============================================
 //=============================================
 //=============================================
-var resetOrderInterval = ((countdown) => {
+//START>> Reset Timer
+//=============================================
+//=============================================
+//=============================================
+let resetOrderInterval = ((countdown) => {
   if (myOrderIterator < (mySettings.realityCriteria.length - 1)) {
     myOrderIterator++;
     clearInterval(countdown);
@@ -1090,3 +1099,10 @@ var resetOrderInterval = ((countdown) => {
     clearInterval(countdown);
   }
 });
+//=============================================
+//=============================================
+//=============================================
+//END>> Reset Timer
+//=============================================
+//=============================================
+//=============================================
