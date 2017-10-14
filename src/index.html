@@ -710,8 +710,8 @@ body {
         ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2)
         : docMyOldBuyPrice.innerHTML = 'N/A';
 
-      docMyBuyMargin.innerHTML       = pageData.outPutLoggingBuy.myBuyOrder.oldMargin
-        ? pageData.outPutLoggingBuy.myBuyOrder.oldMargin.toFixed(4) + '%'
+      docMyBuyMargin.innerHTML       = pageData.outPutLoggingBuy.myBuyOrder.margin
+        ? pageData.outPutLoggingBuy.myBuyOrder.margin.toFixed(4) + '%'
         : docMyBuyMargin.innerHTML   = 'N/A';
 
       docOrderGapBuy.innerHTML       = pageData.outPutLoggingBuy.myBuyOrder.oldOrdersToGo
@@ -770,12 +770,12 @@ body {
         ? pageData.outPutLoggingSell.mySellOrder.margin.toFixed(4) + '%'
         : docMySellMargin.innerHTML   = 'N/A';
 
-      docOrderGapSell.innerHTML       = pageData.outPutLoggingSell.mySellOrder.oldOrdersToGo
-        ? '#' + pageData.outPutLoggingSell.mySellOrder.oldOrdersToGo
+      docOrderGapSell.innerHTML       = pageData.outPutLoggingSell.sellCount
+        ? '#' + pageData.outPutLoggingSell.sellCount
         : docOrderGapSell.innerHTML   = 'N/A';
 
-      docDollarGapSell.innerHTML      = pageData.outPutLoggingSell.mySellOrder.oldAmountToGo
-        ? '$' + numberWithCommas(pageData.outPutLoggingSell.mySellOrder.oldAmountToGo.toFixed(2))
+      docDollarGapSell.innerHTML      = pageData.outPutLoggingSell.sellTotal
+        ? '$' + numberWithCommas(pageData.outPutLoggingSell.sellTotal.toFixed(2))
         : docDollarGapSell.innerHTML  = 'N/A';
 
       docTotalSell.innerHTML          = 20 * pageData.outPutLoggingSell.mySellOrder.price

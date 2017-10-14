@@ -272,8 +272,8 @@ let popBuyData = (() => {
       ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2)
       : docMyOldBuyPrice.innerHTML = 'N/A';
 
-    docMyBuyMargin.innerHTML       = pageData.outPutLoggingBuy.myBuyOrder.oldMargin
-      ? pageData.outPutLoggingBuy.myBuyOrder.oldMargin.toFixed(4) + '%'
+    docMyBuyMargin.innerHTML       = pageData.outPutLoggingBuy.myBuyOrder.margin
+      ? pageData.outPutLoggingBuy.myBuyOrder.margin.toFixed(4) + '%'
       : docMyBuyMargin.innerHTML   = 'N/A';
 
     docOrderGapBuy.innerHTML       = pageData.outPutLoggingBuy.myBuyOrder.oldOrdersToGo
@@ -313,7 +313,6 @@ let popBuyData = (() => {
 //=============================================
 let docMySellID           = document.getElementById('mySellID');
 let docMySellPrice        = document.getElementById('mySellPrice');
-let docMyOldSellPrice     = document.getElementById('myOldSellPrice');
 let docMySellMargin       = document.getElementById('sellMargin');
 let docOrderGapSell       = document.getElementById('orderGapSell');
 let docDollarGapSell      = document.getElementById('dollarGapSell');
@@ -329,20 +328,16 @@ let popSellData = (() => {
       ? '$' + pageData.outPutLoggingSell.mySellOrder.price.toFixed(2)
       : docMySellPrice.innerHTML    = 'N/A';
 
-    docMyOldSellPrice.innerHTML     = pageData.outPutLoggingSell.mySellOrder.oldPrice
-      ? '$' + pageData.outPutLoggingSell.mySellOrder.oldPrice.toFixed(2)
-      : docMyOldSellPrice.innerHTML = 'N/A';
-
-    docMySellMargin.innerHTML       = pageData.outPutLoggingSell.mySellOrder.oldMargin
-      ? pageData.outPutLoggingSell.mySellOrder.oldMargin.toFixed(4) + '%'
+    docMySellMargin.innerHTML       = pageData.outPutLoggingSell.mySellOrder.margin
+      ? pageData.outPutLoggingSell.mySellOrder.margin.toFixed(4) + '%'
       : docMySellMargin.innerHTML   = 'N/A';
 
-    docOrderGapSell.innerHTML       = pageData.outPutLoggingSell.mySellOrder.oldOrdersToGo
-      ? '#' + pageData.outPutLoggingSell.mySellOrder.oldOrdersToGo
+    docOrderGapSell.innerHTML       = pageData.outPutLoggingSell.sellCount
+      ? '#' + pageData.outPutLoggingSell.sellCount
       : docOrderGapSell.innerHTML   = 'N/A';
 
-    docDollarGapSell.innerHTML      = pageData.outPutLoggingSell.mySellOrder.oldAmountToGo
-      ? '$' + numberWithCommas(pageData.outPutLoggingSell.mySellOrder.oldAmountToGo.toFixed(2))
+    docDollarGapSell.innerHTML      = pageData.outPutLoggingSell.sellTotal
+      ? '$' + numberWithCommas(pageData.outPutLoggingSell.sellTotal.toFixed(2))
       : docDollarGapSell.innerHTML  = 'N/A';
 
     docTotalSell.innerHTML          = 20 * pageData.outPutLoggingSell.mySellOrder.price
@@ -351,7 +346,6 @@ let popSellData = (() => {
   } else {
     docMySellID.innerHTML       = 'No existing order';
     docMySellPrice.innerHTML    = 'No existing order';
-    docMyOldSellPrice.innerHTML = 'No existing order';
     docMySellMargin.innerHTML   = 'No existing order';
     docOrderGapSell.innerHTML   = 'No existing order';
     docDollarGapSell.innerHTML  = 'No existing order';
