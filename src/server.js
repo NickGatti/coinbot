@@ -44,7 +44,7 @@ let getWebSocketData = (() => {
       console.log('Error on WebSocket Feed data.type === ', data.type);
       console.log('Error on WebSocket Feed data.message === ', data.message);
       return;
-    } else if (data.side != 'buy' && data.side != 'sell' && data.side) {
+    } else if (data.side !== 'buy' && data.side !== 'sell' && data.side) {
       console.log('Error on WebSocket Feed data.type not sell or buy data.type === ', data.side);
       return;
     }
@@ -341,10 +341,10 @@ let catchWebSocketMessage = ((data) => {
         }
         */
     orderBook[objectSide] = orderBook[objectSide].filter((item) => {
-      return data.maker_order_id != item.order_id;
+      return data.maker_order_id !== item.order_id;
     });
     orderBook[objectSide] = orderBook[objectSide].filter((item) => {
-      return data.taker_order_id != item.order_id;
+      return data.taker_order_id !== item.order_id;
     });
   } else if (data.type === 'received') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Received Order!');
@@ -421,7 +421,7 @@ let catchWebSocketMessage = ((data) => {
         }
         */
     orderBook[objectSide] = orderBook[objectSide].filter((item) => {
-      return data.order_id != item.order_id;
+      return data.order_id !== item.order_id;
     });
   } else if (data.type === 'activate') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Activated Order!');

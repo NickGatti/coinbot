@@ -255,7 +255,7 @@ let popEtcInfo = (() => {
     ? '$' + pageData.highestBuyPrice.toFixed(2)
     : docHighestBuyPrice.innerHTML = 'N/A';
 
-  docCurrentOrder[0].innerHTML = pageData.currentOrder != undefined
+  docCurrentOrder[0].innerHTML = pageData.currentOrder !== undefined
     ? pageData.currentOrder + 1
     : docCurrentOrder[0].innerHTML = 'Restarting...';
 });
