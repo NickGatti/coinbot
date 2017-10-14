@@ -646,8 +646,7 @@ let placeBuy = (() => {
     myOrders.buy[myOrderIterator] = filterBuyOrder();
     myOrders.buy[myOrderIterator].price = parseFloat(filterBuyOrder().price + 0.01);
 
-    let myMargin = (findHighestBuyPrice().price / myOrders.buy[myOrderIterator].price);
-    myOrders.buy[myOrderIterator].oldMargin = myMargin;
+    myOrders.buy[myOrderIterator].margin = (findHighestBuyPrice().price / myOrders.buy[myOrderIterator].price);
 
     myOrders.buy[myOrderIterator].oldOrdersToGo = buyGapInfo()[0];
     myOrders.buy[myOrderIterator].oldAmountToGo = buyGapInfo()[1];
@@ -667,7 +666,7 @@ let placeBuy = (() => {
     } else if (myOrders.buy[myOrderIterator].price) {
       if (buyGapInfo()[0] > myOrders.buy[myOrderIterator].oldOrdersToGo &&
         buyGapInfo()[1] > myOrders.buy[myOrderIterator].oldAmountToGo &&
-        (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[myOrderIterator].oldMargin &&
+        (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[myOrderIterator].margin &&
         filterBuyOrder().price > myOrders.buy[myOrderIterator].oldPrice) {
 
         talkAboutUpdating = parseFloat(myOrders.buy[myOrderIterator].oldPrice);
@@ -675,8 +674,7 @@ let placeBuy = (() => {
         myOrders.buy[myOrderIterator].oldOrdersToGo = buyGapInfo()[0];
         myOrders.buy[myOrderIterator].oldAmountToGo = buyGapInfo()[1];
 
-        let myMargin = (findHighestBuyPrice().price / myOrders.buy[myOrderIterator].price);
-        myOrders.buy[myOrderIterator].oldMargin = myMargin;
+        myOrders.buy[myOrderIterator].margin = (findHighestBuyPrice().price / myOrders.buy[myOrderIterator].price);
 
         myOrders.buy[myOrderIterator].oldPrice = parseFloat(myOrders.buy[myOrderIterator].price);
         myOrders.buy[myOrderIterator].price = parseFloat(filterBuyOrder().price + 0.01);
@@ -712,8 +710,7 @@ let placeSell = (() => {
 
     myOrders.sell[myOrderIterator] = filterSellOrder();
     myOrders.sell[myOrderIterator].price = parseFloat(myOrders.sell[myOrderIterator].price - 0.01);
-
-    myOrders.sell[myOrderIterator] = myOrders.sell[myOrderIterator];
+    myOrders.sell[myOrderIterator].margin = parseFloat(myOrders.sell[myOrderIterator].price / myOrders.buy[myOrderIterator].price);
 
     myOrders.sell[myOrderIterator].state = 'waiting';
 
