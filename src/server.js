@@ -162,9 +162,9 @@ getWebSocketData();
 let getOrderBook = ((level) => {
   return getProductOrderBook({
     'level': level
-  }).then(function(data) {
+  }).then(((data) => {
     return JSON.parse(data.body);
-  });
+  }));
 });
 //=============================================
 //=============================================
