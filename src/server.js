@@ -5,7 +5,7 @@
 //=============================================
 //=============================================
 //=============================================
-var populateMySettings = ((num) => {
+let populateMySettings = ((num) => {
   for (let i = 0; i < num; i++) {
     mySettings.realityCriteria.push(400);
     mySettings.realityCriteria.push(6000);
@@ -33,7 +33,7 @@ var populateMySettings = ((num) => {
 //=============================================
 //=============================================
 //=============================================
-var getWebSocketData = (() => {
+let getWebSocketData = (() => {
   websocket.on('message', ((data) => {
     //if (data.type === 'match') data.size === 'sell' ? console.log('Up tick!') : console.log('Down tick!')
 
@@ -62,7 +62,7 @@ var getWebSocketData = (() => {
 //=============================================
 //=============================================
 //=============================================
-var readData = (() => {
+let readData = (() => {
   fs.open('storage.json', 'r', (err) => {
     if (err) {
       if (err.code === 'ENOENT') {
