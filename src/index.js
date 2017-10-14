@@ -505,9 +505,6 @@ let outPutLoggingBuy = (() => {
   if (myOrders.buy[myOrderIterator] && buyGapInfo()) {
     return {
       talkAboutUpdating: talkAboutUpdating ? talkAboutUpdating : false,
-      newPriceUpdate: talkAboutUpdating ? myOrders.buy[myOrderIterator].price : false,
-      oldPriceUpdate: talkAboutUpdating ? talkAboutUpdating : false,
-      difference: talkAboutUpdating ? myOrders.buy[myOrderIterator].price - myOrders.buy[myOrderIterator].oldPrice : false,
       myBuyOrder: myOrders.buy[myOrderIterator] ? myOrders.buy[myOrderIterator] : false,
       buyCount: buyGapInfo()[0] ? buyGapInfo()[0] : false,
       buyTotal: buyGapInfo()[1] ? buyGapInfo()[1] : false
@@ -669,7 +666,7 @@ let placeBuy = (() => {
         (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[myOrderIterator].margin &&
         filterBuyOrder().price > myOrders.buy[myOrderIterator].oldPrice) {
 
-        talkAboutUpdating = parseFloat(myOrders.buy[myOrderIterator].oldPrice);
+        talkAboutUpdating = true;
 
         myOrders.buy[myOrderIterator].oldOrdersToGo = buyGapInfo()[0];
         myOrders.buy[myOrderIterator].oldAmountToGo = buyGapInfo()[1];
@@ -1112,3 +1109,6 @@ let resetOrderInterval = ((countdown) => {
 //=============================================
 //=============================================
 //=============================================
+// FIX PIE CHARTS TOTAL NEEDS BUYS AND SELLS SUBTRACTED
+// REMOVE DIFFERENCE ON UPDATE BACK / ONLY DO FRONT
+// REMOVE GOOD SELL/BUY/TOTAL PERCENT BACK FRONT / ONLY DO FRONT

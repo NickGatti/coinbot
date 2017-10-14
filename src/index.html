@@ -473,7 +473,7 @@ body {
 
   let activate = (() => {
     popOrderPlacementData();
-    pageData.myOrderIterator % 2 === 0 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
+    pageData.myOrderIterator % 2 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
     popOtherMarketData();
     popEtcInfo();
     popBuyData();
@@ -687,16 +687,16 @@ body {
 
   let popBuyData = (() => {
 
-    docNewPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.difference
-      ? '$' + pageData.outPutLoggingBuy.newPriceUpdate.toFixed(2)
+    docNewPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.talkAboutUpdating
+      ? '$' + pageData.outPutLoggingBuy.myBuyOrder.price.toFixed(2)
       : docNewPriceUpdateBuy.innerHTML = 'No new update';
 
-    docOldPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.difference
-      ? '$' + pageData.outPutLoggingBuy.oldPriceUpdate.toFixed(2)
+    docOldPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.talkAboutUpdating
+      ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2)
       : docOldPriceUpdateBuy.innerHTML = 'N/A';
 
-    docDifferenceBuy.innerHTML         = pageData.outPutLoggingBuy.difference
-      ? '$' + pageData.outPutLoggingBuy.difference.toFixed(2)
+    docDifferenceBuy.innerHTML         = pageData.outPutLoggingBuy.talkAboutUpdating
+      ? '$' + (pageData.outPutLoggingBuy.myBuyOrder.price - pageData.outPutLoggingBuy.myBuyOrder.oldPrice).toFixed(2)
       : docDifferenceBuy.innerHTML     = 'N/A';
 
 
@@ -847,13 +847,13 @@ body {
   //=============================================
   //=============================================
   let makePie = (() => {
+    let buyPercent = pageData.outPutLoggingGood.realBuys;
+    let sellPercent = pageData.outPutLoggingGood.realSells;
+    let totalBadPercent = ((pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) - (pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys));
     if (pageData.myOrderIterator % 2 === 0) {
       google.charts.load('current', {
         'packages': ['corechart']
       });
-      let buyPercent = pageData.outPutLoggingGood.realBuys;
-      let sellPercent = pageData.outPutLoggingGood.realSells;
-      let totalBadPercent = (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells);
       let data = google.visualization.arrayToDataTable([
         ['Task', 'Orders valued over 400 USD'],
         ['Good Sells', sellPercent],
@@ -870,9 +870,6 @@ body {
       google.charts.load('current', {
         'packages': ['corechart']
       });
-      let buyPercent = pageData.outPutLoggingGood.realBuys;
-      let sellPercent = pageData.outPutLoggingGood.realSells;
-      let totalBadPercent = (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells);
       let data = google.visualization.arrayToDataTable([
         ['Task', 'Orders valued over 6000 USD'],
         ['Good Sells', sellPercent],

@@ -406,13 +406,13 @@ let marketData = (() => {
 //=============================================
 //=============================================
 let makePie = (() => {
+  let buyPercent = pageData.outPutLoggingGood.realBuys;
+  let sellPercent = pageData.outPutLoggingGood.realSells;
+  let totalBadPercent = ((pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) - (pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys));
   if (pageData.myOrderIterator % 2) {
     google.charts.load('current', {
       'packages': ['corechart']
     });
-    let buyPercent = pageData.outPutLoggingGood.realBuys;
-    let sellPercent = pageData.outPutLoggingGood.realSells;
-    let totalBadPercent = (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells);
     let data = google.visualization.arrayToDataTable([
       ['Task', 'Orders valued over 400 USD'],
       ['Good Buys', buyPercent],
@@ -429,9 +429,6 @@ let makePie = (() => {
     google.charts.load('current', {
       'packages': ['corechart']
     });
-    let buyPercent = pageData.outPutLoggingGood.realBuys;
-    let sellPercent = pageData.outPutLoggingGood.realSells;
-    let totalBadPercent = (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells);
     let data = google.visualization.arrayToDataTable([
       ['Task', 'Orders valued over 6000 USD'],
       ['Good Buys', buyPercent],
