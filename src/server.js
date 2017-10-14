@@ -33,6 +33,16 @@ let populateMySettings = ((num) => {
 //=============================================
 //=============================================
 //=============================================
+let websocketConnected = false;
+let websocketTimeout = new Date().getTime();
+setInterval(() => {
+  if ((new Date().getTime() - websocketTimeout) > 10000) {
+    console.log('WebSocket Connection Lost...');
+    websocketConnected = false;
+    reconnect();
+    resetFlag = true;
+  }
+}, 1000);
 let getWebSocketData = (() => {
   websocket.on('message', ((data) => {
     //if (data.type === 'match') data.size === 'sell' ? console.log('Up tick!') : console.log('Down tick!')
@@ -48,7 +58,7 @@ let getWebSocketData = (() => {
       console.log('Error on WebSocket Feed data.type not sell or buy data.type === ', data.side);
       return;
     }
-    catchWebSocketMessage(data);
+    if (catchWebSocketMessage(data)) websocketTimeout = new Date().getTime();
   }));
 });
 //=============================================
@@ -319,6 +329,7 @@ let catchWebSocketMessage = ((data) => {
         side: data.side
       });
     if (!pauseOrderBook) downloadOrderBook(false);
+    return true;
   } else if (data.type === 'match') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Trade Match!');
     /*
@@ -346,6 +357,7 @@ let catchWebSocketMessage = ((data) => {
     orderBook[objectSide] = orderBook[objectSide].filter((item) => {
       return data.taker_order_id !== item.order_id;
     });
+    return true;
   } else if (data.type === 'received') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Received Order!');
     /*
@@ -370,6 +382,7 @@ let catchWebSocketMessage = ((data) => {
             "order_type": "limit"
         }
         */
+    return true;
   } else if (data.type === 'change') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Changed Order!');
     /*
@@ -400,6 +413,7 @@ let catchWebSocketMessage = ((data) => {
         break;
       }
     }
+    return true;
   } else if (data.type === 'done') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Done Order!');
     /*
@@ -423,6 +437,7 @@ let catchWebSocketMessage = ((data) => {
     orderBook[objectSide] = orderBook[objectSide].filter((item) => {
       return data.order_id !== item.order_id;
     });
+    return true;
   } else if (data.type === 'activate') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Activated Order!');
     /*
@@ -444,6 +459,7 @@ let catchWebSocketMessage = ((data) => {
           "private": true,
         }
         */
+    return true;
   } else if (data.type === 'margin_profile_update') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Margin Profile Update!');
     /*
@@ -472,11 +488,14 @@ let catchWebSocketMessage = ((data) => {
           "private": true
         }
         */
+    return true;
   } else if (data.type === 'error') {
     console.log('Error on WebSocket Feed data.type === ', data.type);
     console.log('Message was an error: ', data.message);
+    return false;
   } else {
     console.log('Uncaught WebSocket type in feed: ', data.type);
+    return false;
   }
 });
 //=============================================
@@ -625,19 +644,6 @@ let findRealisticOrders = (() => {
   if (resetFlag) return;
   if (runBenchmark && !resetFlag) {
 
-    let savedTime = new Date().getTime();
-    let timeDown = 0;
-    let countdown = setInterval(() => {
-      timeDown = (new Date().getTime() - savedTime);
-      let output = timeDown.toString();
-      console.log('Order took: ' + output.slice(0, -2) + 'ms');
-      if (timeDown > 1000) {
-        console.log('Order timeout...');
-        resetOrderInterval(countdown);
-        return;
-      }
-    }, 100);
-
     sortBothSides();
     filterGoodOrders();
 
@@ -646,7 +652,7 @@ let findRealisticOrders = (() => {
     placeBuy();
     placeSell();
 
-    resetOrderInterval(countdown);
+    resetOrderInterval();
   }
 });
 //=============================================
@@ -1086,25 +1092,36 @@ function appendMyData() {
 //=============================================
 //=============================================
 //=============================================
-// Reset Timer
+// Reset Orders
 //=============================================
 //=============================================
 //=============================================
-let resetOrderInterval = ((countdown) => {
+let resetOrderInterval = (() => {
   if (currentOrder < (mySettings.realityCriteria.length - 1)) {
     currentOrder++;
-    clearInterval(countdown);
   } else {
     currentOrder = 0;
     writeData();
     resetnewOrder();
-    clearInterval(countdown);
   }
 });
 //=============================================
 //=============================================
 //=============================================
-// Reset Timer
+// Reset Orders
 //=============================================
 //=============================================
 //=============================================
+let reconnect = (() => {
+  if (!websocketConnected) {
+    console.log('Connecting...');
+    websocketConnected = true;
+    pauseOrderBook = false;
+    resetFlag = false;
+    runBenchmark = false;
+    resetPause = false;
+    dataIntegrityTest = false;
+    websocketTimeout = new Date().getTime();
+    getWebSocketData();
+  }
+});
