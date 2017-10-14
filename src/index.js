@@ -1106,6 +1106,3 @@ let resetOrderInterval = ((countdown) => {
 //=============================================
 //=============================================
 //=============================================
-// FIX PIE CHARTS TOTAL NEEDS BUYS AND SELLS SUBTRACTED
-// REMOVE DIFFERENCE ON UPDATE BACK / ONLY DO FRONT
-// REMOVE GOOD SELL/BUY/TOTAL PERCENT BACK FRONT / ONLY DO FRONT

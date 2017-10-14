@@ -119,7 +119,7 @@ let docTotalBuys        = document.getElementById('totalBuys');
 let popLowCriteraMarketData = (() => {
   let realSellPercent     = (((pageData.outPutLoggingGood.realSells / pageData.outPutLoggingGood.totalSells) * 10000) / 100);
   let realBuyPercent      = (((pageData.outPutLoggingGood.realBuys / pageData.outPutLoggingGood.totalBuys) * 10000) / 100);
-  let realTotalPercent    = (((pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys) / (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) * 10000) / 100);
+  let realTotalPercent    = (100 - ((pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys) / (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) * 10000) / 100);
   docRealSells[0].innerHTML        = pageData.outPutLoggingGood.realSells
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
     : 'Error loading Data';
@@ -147,7 +147,7 @@ let popLowCriteraMarketData = (() => {
 let popHighCriteriaMarketData = (() => {
   let realSellPercent     = (((pageData.outPutLoggingGood.realSells / pageData.outPutLoggingGood.totalSells) * 10000) / 100);
   let realBuyPercent      = (((pageData.outPutLoggingGood.realBuys / pageData.outPutLoggingGood.totalBuys) * 10000) / 100);
-  let realTotalPercent    = (((pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys) / (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) * 10000) / 100);
+  let realTotalPercent    = (100 - ((pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys) / (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) * 10000) / 100);
   docRealSells[1].innerHTML        = pageData.outPutLoggingGood.realSells
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
     : 'Error loading Data';
