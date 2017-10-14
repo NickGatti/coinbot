@@ -29,6 +29,35 @@ var populateMySettings = ((num) => {
 //=============================================
 //=============================================
 //=============================================
+// Websocket Change Detections
+//=============================================
+//=============================================
+//=============================================
+var getWebSocketData = (() => {
+  websocket.on('message', ((data) => {
+    //if (data.type === 'match') data.size === 'sell' ? console.log('Up tick!') : console.log('Down tick!')
+
+    if (data.type === 'ticker' || data.type === 'snapshot' || data.type === 'l2update' || data.type === 'heartbeat' || data.type === 'subscribe' || data.type === 'unsubscribe' || data.type === 'subscriptions') {
+      console.log('Error on WebSocket Feed data.type === ', data.type);
+      return;
+    } else if (data.type === 'error') {
+      console.log('Error on WebSocket Feed data.type === ', data.type);
+      console.log('Error on WebSocket Feed data.message === ', data.message);
+      return;
+    } else if (data.side != 'buy' && data.side != 'sell' && data.side) {
+      console.log('Error on WebSocket Feed data.type not sell or buy data.type === ', data.side);
+      return;
+    }
+    catchWebSocketMessage(data);
+  }));
+});
+//=============================================
+//=============================================
+//=============================================
+// Websocket Change Detections
+//=============================================
+//=============================================
+//=============================================
 // Load datafile
 //=============================================
 //=============================================
@@ -240,35 +269,6 @@ let downloadOrderBook = ((flag) => {
 //=============================================
 //=============================================
 // Call GDAX function for ASYNC variable
-//=============================================
-//=============================================
-//=============================================
-// Websocket Change Detections
-//=============================================
-//=============================================
-//=============================================
-function getWebSocketData() {
-  websocket.on('message', function(data) {
-    //if (data.type === 'match') data.size === 'sell' ? console.log('Up tick!') : console.log('Down tick!')
-
-    if (data.type === 'ticker' || data.type === 'snapshot' || data.type === 'l2update' || data.type === 'heartbeat' || data.type === 'subscribe' || data.type === 'unsubscribe' || data.type === 'subscriptions') {
-      console.log('Error on WebSocket Feed data.type === ', data.type);
-      return;
-    } else if (data.type === 'error') {
-      console.log('Error on WebSocket Feed data.type === ', data.type);
-      console.log('Error on WebSocket Feed data.message === ', data.message);
-      return;
-    } else if (data.side != 'buy' && data.side != 'sell' && data.side) {
-      console.log('Error on WebSocket Feed data.type not sell or buy data.type === ', data.side);
-      return;
-    }
-    catchWebSocketMessage(data);
-  });
-}
-//=============================================
-//=============================================
-//=============================================
-// Websocket Change Detections
 //=============================================
 //=============================================
 //=============================================
@@ -582,18 +582,18 @@ let sellOrderData = (() => {
 //=============================================
 console.log('Starting server...');
 let app = express();
-app.use(function(err, req, res, next){
+app.use(((err, req, res, next) => {
   res.status(err.status || 500);
   res.send({
     message: err.message,
     error: err
   });
   return;
-});
-app.get('/', function(req, res) {
+}));
+app.get('/', ((req, res) => {
   res.sendFile(__dirname + '/index.html');
-});
-app.get('/api', function(req, res) {
+}));
+app.get('/api', ((req, res) => {
   res.json({
     highestBuyPrice: findHighestBuyPrice() ? findHighestBuyPrice().price : false,
     lowestSellPrice: findLowestSellPrice() ? findLowestSellPrice().price : false,
@@ -604,7 +604,7 @@ app.get('/api', function(req, res) {
     buyOrderData: buyOrderData() ? buyOrderData() : false,
     sellOrderData: sellOrderData() ? sellOrderData() : false
   });
-});
+}));
 if (lisenPort === 'c9') {
   app.listen(process.env.PORT, process.env.IP);
 } else {
