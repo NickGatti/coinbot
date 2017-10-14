@@ -193,7 +193,7 @@ let downloadOrderBook = ((flag) => {
       console.log(output.slice(0, -3));
     }, 1000);
 
-    getOrderBook(3).then(function(value) {
+    getOrderBook(3).then(((value) => {
 
       if (timeDown > 30000) {
         clearInterval(countdown);
@@ -231,9 +231,9 @@ let downloadOrderBook = ((flag) => {
         setInterval(findRealisticOrders, 500);
       }
 
-    }).catch(function(err) {
+    })).catch(((err) => {
       console.log(err);
-    });
+    }));
   }
 });
 //=============================================
