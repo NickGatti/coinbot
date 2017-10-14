@@ -196,17 +196,17 @@ let downloadOrderBook = ((flag) => {
 //=============================================
 function getWebSocketData() {
   websocket.on('message', function(data) {
-    //if (data.type == 'match') data.size == 'sell' ? console.log('Up tick!') : console.log('Down tick!')
+    //if (data.type === 'match') data.size === 'sell' ? console.log('Up tick!') : console.log('Down tick!')
 
-    if (data.type == 'ticker' || data.type == 'snapshot' || data.type == 'l2update' || data.type == 'heartbeat' || data.type == 'subscribe' || data.type == 'unsubscribe' || data.type == 'subscriptions') {
-      console.log('Error on WebSocket Feed data.type == ', data.type);
+    if (data.type === 'ticker' || data.type === 'snapshot' || data.type === 'l2update' || data.type === 'heartbeat' || data.type === 'subscribe' || data.type === 'unsubscribe' || data.type === 'subscriptions') {
+      console.log('Error on WebSocket Feed data.type === ', data.type);
       return;
-    } else if (data.type == 'error') {
-      console.log('Error on WebSocket Feed data.type == ', data.type);
-      console.log('Error on WebSocket Feed data.message == ', data.message);
+    } else if (data.type === 'error') {
+      console.log('Error on WebSocket Feed data.type === ', data.type);
+      console.log('Error on WebSocket Feed data.message === ', data.message);
       return;
     } else if (data.side != 'buy' && data.side != 'sell' && data.side) {
-      console.log('Error on WebSocket Feed data.type not sell or buy data.type == ', data.side);
+      console.log('Error on WebSocket Feed data.type not sell or buy data.type === ', data.side);
       return;
     }
     catchWebSocketMessage(data);
@@ -237,7 +237,7 @@ let catchWebSocketMessage = ((data) => {
     downloadOrderBook(true);
   }
 
-  if (data.type == 'open') {
+  if (data.type === 'open') {
     //sideIndex is not true here so orders are not found in the orderBook
     /*
         The order is now open on the order book.
@@ -266,7 +266,7 @@ let catchWebSocketMessage = ((data) => {
         side: data.side
       });
     if (!pauseOrderBook) downloadOrderBook(false);
-  } else if (data.type == 'match') {
+  } else if (data.type === 'match') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Trade Match!');
     /*
         A trade occurred between two orders.
@@ -293,7 +293,7 @@ let catchWebSocketMessage = ((data) => {
     orderBook[objectSide] = orderBook[objectSide].filter((item) => {
       return data.taker_order_id != item.order_id;
     });
-  } else if (data.type == 'received') {
+  } else if (data.type === 'received') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Received Order!');
     /*
         A valid order has been received and is now active.
@@ -317,7 +317,7 @@ let catchWebSocketMessage = ((data) => {
             "order_type": "limit"
         }
         */
-  } else if (data.type == 'change') {
+  } else if (data.type === 'change') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Changed Order!');
     /*
             An order has changed.
@@ -341,13 +341,13 @@ let catchWebSocketMessage = ((data) => {
             }
         */
     for (let i = 0; i < orderBook[objectSide.length]; i++) {
-      if (orderBook[objectSide].order_id == data.order_id) {
+      if (orderBook[objectSide].order_id === data.order_id) {
         orderBook[objectSide][i].size = Number(data.new_size) ? Number(data.new_size) : parseFloat(data.new_size);
         orderBook[objectSide][i].price = parseFloat(data.price);
         break;
       }
     }
-  } else if (data.type == 'done') {
+  } else if (data.type === 'done') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Done Order!');
     /*
         The order is no longer on the order book.
@@ -370,7 +370,7 @@ let catchWebSocketMessage = ((data) => {
     orderBook[objectSide] = orderBook[objectSide].filter((item) => {
       return data.order_id != item.order_id;
     });
-  } else if (data.type == 'activate') {
+  } else if (data.type === 'activate') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Activated Order!');
     /*
         An activate message is sent when a stop order is placed.
@@ -391,7 +391,7 @@ let catchWebSocketMessage = ((data) => {
           "private": true,
         }
         */
-  } else if (data.type == 'margin_profile_update') {
+  } else if (data.type === 'margin_profile_update') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Margin Profile Update!');
     /*
         This feed message will only be received if you are authenticated with a margin profile.
@@ -419,8 +419,8 @@ let catchWebSocketMessage = ((data) => {
           "private": true
         }
         */
-  } else if (data.type == 'error') {
-    console.log('Error on WebSocket Feed data.type == ', data.type);
+  } else if (data.type === 'error') {
+    console.log('Error on WebSocket Feed data.type === ', data.type);
     console.log('Message was an error: ', data.message);
   } else {
     console.log('Uncaught WebSocket type in feed: ', data.type);
@@ -444,7 +444,7 @@ let deDupe = (() => {
   // let funt = (objectSide) => {
   //     for (let i = 0; i < orderBook[objectSide].length; i++) {
   //         for(let z = i+1; z < orderBook[objectSide].length; z++) {
-  //             if (orderBook[objectSide][i].order_id == orderBook[objectSide][z].order_id) {
+  //             if (orderBook[objectSide][i].order_id === orderBook[objectSide][z].order_id) {
   //                 console.log('Duped Order Found! You should probably never really see this message!');
   //                 orderBook[objectSide].splice(z, 1);
   //             }
@@ -622,7 +622,7 @@ let placeBuy = (() => {
     return;
   }
 
-  if (myOrders.buy[myOrderIterator].state == 'buying') {
+  if (myOrders.buy[myOrderIterator].state === 'buying') {
 
     placeTalk.buy = {
       placing: true,
@@ -648,7 +648,7 @@ let placeBuy = (() => {
     myOrders.buy[myOrderIterator].state = 'waiting';
 
     return;
-  } else if (myOrders.buy[myOrderIterator].state == 'waiting') {
+  } else if (myOrders.buy[myOrderIterator].state === 'waiting') {
     if (findHighestBuyPrice().price < myOrders.buy[myOrderIterator].price) {
 
       //console.log('Purchased!');
@@ -695,7 +695,7 @@ let placeSell = (() => {
     return;
   }
 
-  if (myOrders.sell[myOrderIterator].state == 'selling') {
+  if (myOrders.sell[myOrderIterator].state === 'selling') {
     placeTalk.sell = {
       placing: true,
       price: filterSellOrder().price,
@@ -711,7 +711,7 @@ let placeSell = (() => {
     return;
 
   } else if (myOrders.sell[myOrderIterator].price) {
-    if (myOrders.sell[myOrderIterator].state == 'waiting') {
+    if (myOrders.sell[myOrderIterator].state === 'waiting') {
       if (findLowestSellPrice().price > myOrders.sell[myOrderIterator].price) {
 
         //console.log('Sold!');
