@@ -935,7 +935,7 @@ var checkVars = (() => {
 //=============================================
 //=============================================
 //=============================================
-var populateMySettings = ((num) => {
+function populateMySettings(num) {
   for (let i = 0; i < num; i++) {
     mySettings.realityCriteria.push(400);
     mySettings.realityCriteria.push(6000);
@@ -951,7 +951,7 @@ var populateMySettings = ((num) => {
     });
     myOrders.orderAmountMade.push(0);
   }
-});
+}
 //=============================================
 //=============================================
 //=============================================
@@ -1050,7 +1050,7 @@ var writeData = (() => {
   });
 });
 //=============================================
-var readData = (() => {
+function readData() {
   fs.open('storage.json', 'r', (err) => {
     if (err) {
       if (err.code === 'ENOENT') {
@@ -1063,7 +1063,7 @@ var readData = (() => {
     console.error('Loading from storage file...');
     readMyData();
   });
-});
+}
 //=============================================
 var writeMyData = (() => {
   fs.writeFile('storage.json', JSON.stringify(myOrders), (err) => {
