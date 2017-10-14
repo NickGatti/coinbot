@@ -70,24 +70,24 @@ let popOrderPlacementData = (() => {
     ? docBuyStateID.innerHTML  = pageData.buyState.charAt(0).toUpperCase() + pageData.buyState.slice(1)
     : docBuyStateID.innerHTML  = 'N/A';
 
-  docBuyPriceID.innerHTML      = pageData.marketDataEtc.placeTalk.buy.price
-    ? '$' + pageData.marketDataEtc.placeTalk.buy.price.toFixed(2)
+  docBuyPriceID.innerHTML      = pageData.marketData.placeTalk.buy.price
+    ? '$' + pageData.marketData.placeTalk.buy.price.toFixed(2)
     : docBuyPriceID.innerHTML  = 'Not placing';
 
-  docBuySizeID.innerHTML       = pageData.marketDataEtc.placeTalk.buy.size
-    ? '#' + pageData.marketDataEtc.placeTalk.buy.size
+  docBuySizeID.innerHTML       = pageData.marketData.placeTalk.buy.size
+    ? '#' + pageData.marketData.placeTalk.buy.size
     : docBuySizeID.innerHTML   = 'Not placing';
 
   docSellStateID.innerHTML     = pageData.sellState
     ? pageData.sellState.charAt(0).toUpperCase() + pageData.sellState.slice(1)
     : docSellStateID.innerHTML = 'N/A';
 
-  docSellPriceID.innerHTML     = pageData.marketDataEtc.placeTalk.sell.price
-    ? '$' + pageData.marketDataEtc.placeTalk.sell.price.toFixed(2)
+  docSellPriceID.innerHTML     = pageData.marketData.placeTalk.sell.price
+    ? '$' + pageData.marketData.placeTalk.sell.price.toFixed(2)
     : docSellPriceID.innerHTML = 'Not placing';
 
-  docSellSizeID.innerHTML      = pageData.marketDataEtc.placeTalk.sell.size
-    ? '#' + pageData.marketDataEtc.placeTalk.sell.size
+  docSellSizeID.innerHTML      = pageData.marketData.placeTalk.sell.size
+    ? '#' + pageData.marketData.placeTalk.sell.size
     : docSellSizeID.innerHTML  = 'Not placing';
 
 });
@@ -205,12 +205,12 @@ let docHighestBuyPrice = document.getElementById('printBuy');
 let docCurrentOrder    = document.getElementsByClassName('currentOrder');
 
 let popEtcInfo = (() => {
-  docTotalAmountMade.innerHTML              = pageData.marketDataEtc.totalAmountMade
-    ? '$' + pageData.marketDataEtc.totalAmountMade.toFixed(2)
+  docTotalAmountMade.innerHTML              = pageData.marketData.totalAmountMade
+    ? '$' + pageData.marketData.totalAmountMade.toFixed(2)
     : docTotalAmountMade.innerHTML          = 'N/A';
 
-  docOrderAmountMade.innerHTML              = pageData.marketDataEtc.amountMade
-    ? '$' + pageData.marketDataEtc.amountMade.toFixed(2)
+  docOrderAmountMade.innerHTML              = pageData.marketData.amountMade
+    ? '$' + pageData.marketData.amountMade.toFixed(2)
     : docOrderAmountMade.innerHTML          = 'N/A';
 
   docLowestSellPrice.innerHTML               = pageData.lowestSellPrice

@@ -477,21 +477,13 @@ let marketData = (() => {
       realBuys: findGoodOrders()['buy'] ? findGoodOrders()['buy'] : false,
       realSells: findGoodOrders()['sell'] ? findGoodOrders()['sell'] : false,
       totalBuys: orderBook['buy'].length ? orderBook['buy'].length : false,
-      totalSells: orderBook['sell'].length ? orderBook['sell'].length : false
+      totalSells: orderBook['sell'].length ? orderBook['sell'].length : false,
+      totalAmountMade: addTotalAmount() ? addTotalAmount() : false,
+      amountMade: myOrders.orderAmountMade ? myOrders.orderAmountMade[currentOrder] : false,
+      placeTalk: placeTalk ? placeTalk : false
     };
   }
   return false;
-});
-//=============================================
-//=============================================
-//=============================================
-let marketDataEtc = (() => {
-  myOrders.orderAmountMade[currentOrder] = parseFloat(myOrders.orderAmountMade[currentOrder]);
-  return {
-    totalAmountMade: addTotalAmount() ? addTotalAmount() : false,
-    amountMade: myOrders.orderAmountMade ? myOrders.orderAmountMade[currentOrder] : false,
-    placeTalk: placeTalk ? placeTalk : false
-  };
 });
 //=============================================
 //=============================================
@@ -553,7 +545,6 @@ app.get('/api', function(req, res) {
     highestBuyPrice: findHighestBuyPrice() ? findHighestBuyPrice().price : false,
     lowestSellPrice: findLowestSellPrice() ? findLowestSellPrice().price : false,
     marketData: marketData() ? marketData() : false,
-    marketDataEtc: marketDataEtc() ? marketDataEtc() : false,
     buyOrderData: buyOrderData() ? buyOrderData() : false,
     sellOrderData: sellOrderData() ? sellOrderData() : false,
     currentOrder: currentOrder ? currentOrder : false,
