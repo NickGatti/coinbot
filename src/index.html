@@ -442,13 +442,22 @@ body {
   var google = '';
   let pageData = {};
   let oReq = new XMLHttpRequest();
-  let myAPIurl = 'http://localhost:3000/api';
+  let myAPIurl = 'c9';
+  
+  if (myAPIurl === 'c9') {
+    myAPIurl = 'https://bot-nickgatti.c9users.io';
+  } else if (myAPIurl === 'local') {
+    myAPIurl = 'http://localhost:3000/api';
+  } else {
+    console.log('Error need fetch url');
+    myAPIurl = false;
+  }
 
   loadScript('https://www.gstatic.com/charts/loader.js', (() => {
     return;
   }));
 
-  setInterval(() => {
+  if (myAPIurl) setInterval(() => {
     fetch(myAPIurl, {
       method: 'GET'
     }).then(function(data) {
