@@ -58,7 +58,7 @@ let orderBook = {
   'sell': []
 };
 
-let myOrderIterator = 0;
+let currentOrder = 0;
 let orderUpdate = false;
 let placeTalk = {
   buy: {
@@ -471,7 +471,7 @@ let deDupe = (() => {
 //=============================================
 //=============================================
 //=============================================
-let outPutLoggingGood = (() => {
+let marketData = (() => {
   if (orderBook['buy'] && orderBook['sell'] && findGoodOrders()) {
     return {
       realBuys: findGoodOrders()['buy'] ? findGoodOrders()['buy'] : false,
@@ -485,24 +485,24 @@ let outPutLoggingGood = (() => {
 //=============================================
 //=============================================
 //=============================================
-let outPutLoggingEtc = (() => {
-  myOrders.orderAmountMade[myOrderIterator] = parseFloat(myOrders.orderAmountMade[myOrderIterator]);
+let marketDataEtc = (() => {
+  myOrders.orderAmountMade[currentOrder] = parseFloat(myOrders.orderAmountMade[currentOrder]);
   return {
     totalAmountMade: addTotalAmount() ? addTotalAmount() : false,
-    amountMade: myOrders.orderAmountMade ? myOrders.orderAmountMade[myOrderIterator] : false,
+    amountMade: myOrders.orderAmountMade ? myOrders.orderAmountMade[currentOrder] : false,
     placeTalk: placeTalk ? placeTalk : false
   };
 });
 //=============================================
 //=============================================
 //=============================================
-let outPutLoggingBuy = (() => {
-  if (!myOrders.buy[myOrderIterator].price) return false;
+let buyOrderData = (() => {
+  if (!myOrders.buy[currentOrder].price) return false;
   if (!buyGapInfo()) return false;
-  if (myOrders.buy[myOrderIterator] && buyGapInfo()) {
+  if (myOrders.buy[currentOrder] && buyGapInfo()) {
     return {
       orderUpdate: orderUpdate ? orderUpdate : false,
-      myBuyOrder: myOrders.buy[myOrderIterator] ? myOrders.buy[myOrderIterator] : false,
+      myBuyOrder: myOrders.buy[currentOrder] ? myOrders.buy[currentOrder] : false,
       buyCount: buyGapInfo()[0] ? buyGapInfo()[0] : false,
       buyTotal: buyGapInfo()[1] ? buyGapInfo()[1] : false
     };
@@ -512,12 +512,12 @@ let outPutLoggingBuy = (() => {
 //=============================================
 //=============================================
 //=============================================
-let outPutLoggingSell = (() => {
-  if (!myOrders.sell[myOrderIterator].price) return false;
+let sellOrderData = (() => {
+  if (!myOrders.sell[currentOrder].price) return false;
   if (!sellGapInfo()) return false;
-  if (myOrders.sell[myOrderIterator] && sellGapInfo()) {
+  if (myOrders.sell[currentOrder] && sellGapInfo()) {
     return {
-      mySellOrder: myOrders.sell[myOrderIterator] ? myOrders.sell[myOrderIterator] : false,
+      mySellOrder: myOrders.sell[currentOrder] ? myOrders.sell[currentOrder] : false,
       sellCount: sellGapInfo()[0] ? sellGapInfo()[0] : false,
       sellTotal: sellGapInfo()[1] ? sellGapInfo()[1] : false
     };
@@ -552,13 +552,13 @@ app.get('/api', function(req, res) {
   res.json({
     highestBuyPrice: findHighestBuyPrice() ? findHighestBuyPrice().price : false,
     lowestSellPrice: findLowestSellPrice() ? findLowestSellPrice().price : false,
-    outPutLoggingGood: outPutLoggingGood() ? outPutLoggingGood() : false,
-    outPutLoggingEtc: outPutLoggingEtc() ? outPutLoggingEtc() : false,
-    outPutLoggingBuy: outPutLoggingBuy() ? outPutLoggingBuy() : false,
-    outPutLoggingSell: outPutLoggingSell() ? outPutLoggingSell() : false,
-    myOrderIterator: myOrderIterator ? myOrderIterator : false,
-    buyState: myOrders.buy[myOrderIterator].state ? myOrders.buy[myOrderIterator].state : false,
-    sellState: myOrders.sell[myOrderIterator].state ? myOrders.sell[myOrderIterator].state : false
+    marketData: marketData() ? marketData() : false,
+    marketDataEtc: marketDataEtc() ? marketDataEtc() : false,
+    buyOrderData: buyOrderData() ? buyOrderData() : false,
+    sellOrderData: sellOrderData() ? sellOrderData() : false,
+    currentOrder: currentOrder ? currentOrder : false,
+    buyState: myOrders.buy[currentOrder].state ? myOrders.buy[currentOrder].state : false,
+    sellState: myOrders.sell[currentOrder].state ? myOrders.sell[currentOrder].state : false
   });
 });
 if (lisenPort === 'c9') {
@@ -623,7 +623,7 @@ let placeBuy = (() => {
     return;
   }
 
-  if (myOrders.buy[myOrderIterator].state === 'buying') {
+  if (myOrders.buy[currentOrder].state === 'buying') {
 
     placeTalk.buy = {
       placing: true,
@@ -631,48 +631,48 @@ let placeBuy = (() => {
       size: 20
     };
 
-    if (myOrders.buy[myOrderIterator].price) {
-      myOrders.buy[myOrderIterator].oldPrice = parseFloat(myOrders.buy[myOrderIterator].price + 0.01);
+    if (myOrders.buy[currentOrder].price) {
+      myOrders.buy[currentOrder].oldPrice = parseFloat(myOrders.buy[currentOrder].price + 0.01);
     } else {
-      myOrders.buy[myOrderIterator] = filterBuyOrder();
-      myOrders.buy[myOrderIterator].oldPrice = parseFloat(filterBuyOrder().price + 0.01);
+      myOrders.buy[currentOrder] = filterBuyOrder();
+      myOrders.buy[currentOrder].oldPrice = parseFloat(filterBuyOrder().price + 0.01);
     }
 
-    myOrders.buy[myOrderIterator] = filterBuyOrder();
-    myOrders.buy[myOrderIterator].price = parseFloat(filterBuyOrder().price + 0.01);
+    myOrders.buy[currentOrder] = filterBuyOrder();
+    myOrders.buy[currentOrder].price = parseFloat(filterBuyOrder().price + 0.01);
 
-    myOrders.buy[myOrderIterator].margin = (findHighestBuyPrice().price / myOrders.buy[myOrderIterator].price);
+    myOrders.buy[currentOrder].margin = (findHighestBuyPrice().price / myOrders.buy[currentOrder].price);
 
-    myOrders.buy[myOrderIterator].oldOrdersToGo = buyGapInfo()[0];
-    myOrders.buy[myOrderIterator].oldAmountToGo = buyGapInfo()[1];
+    myOrders.buy[currentOrder].oldOrdersToGo = buyGapInfo()[0];
+    myOrders.buy[currentOrder].oldAmountToGo = buyGapInfo()[1];
 
-    myOrders.buy[myOrderIterator].state = 'waiting';
+    myOrders.buy[currentOrder].state = 'waiting';
 
     return;
-  } else if (myOrders.buy[myOrderIterator].state === 'waiting') {
-    if (findHighestBuyPrice().price < myOrders.buy[myOrderIterator].price) {
+  } else if (myOrders.buy[currentOrder].state === 'waiting') {
+    if (findHighestBuyPrice().price < myOrders.buy[currentOrder].price) {
 
       //console.log('Purchased!');
 
-      myOrders.buy[myOrderIterator].state = 'paused';
-      myOrders.sell[myOrderIterator].state = 'selling';
+      myOrders.buy[currentOrder].state = 'paused';
+      myOrders.sell[currentOrder].state = 'selling';
 
       return;
-    } else if (myOrders.buy[myOrderIterator].price) {
-      if (buyGapInfo()[0] > myOrders.buy[myOrderIterator].oldOrdersToGo &&
-        buyGapInfo()[1] > myOrders.buy[myOrderIterator].oldAmountToGo &&
-        (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[myOrderIterator].margin &&
-        filterBuyOrder().price > myOrders.buy[myOrderIterator].oldPrice) {
+    } else if (myOrders.buy[currentOrder].price) {
+      if (buyGapInfo()[0] > myOrders.buy[currentOrder].oldOrdersToGo &&
+        buyGapInfo()[1] > myOrders.buy[currentOrder].oldAmountToGo &&
+        (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[currentOrder].margin &&
+        filterBuyOrder().price > myOrders.buy[currentOrder].oldPrice) {
 
         orderUpdate = true;
 
-        myOrders.buy[myOrderIterator].oldOrdersToGo = buyGapInfo()[0];
-        myOrders.buy[myOrderIterator].oldAmountToGo = buyGapInfo()[1];
+        myOrders.buy[currentOrder].oldOrdersToGo = buyGapInfo()[0];
+        myOrders.buy[currentOrder].oldAmountToGo = buyGapInfo()[1];
 
-        myOrders.buy[myOrderIterator].margin = (findHighestBuyPrice().price / myOrders.buy[myOrderIterator].price);
+        myOrders.buy[currentOrder].margin = (findHighestBuyPrice().price / myOrders.buy[currentOrder].price);
 
-        myOrders.buy[myOrderIterator].oldPrice = parseFloat(myOrders.buy[myOrderIterator].price);
-        myOrders.buy[myOrderIterator].price = parseFloat(filterBuyOrder().price + 0.01);
+        myOrders.buy[currentOrder].oldPrice = parseFloat(myOrders.buy[currentOrder].price);
+        myOrders.buy[currentOrder].price = parseFloat(filterBuyOrder().price + 0.01);
 
         return;
       }
@@ -696,37 +696,37 @@ let placeSell = (() => {
     return;
   }
 
-  if (myOrders.sell[myOrderIterator].state === 'selling') {
+  if (myOrders.sell[currentOrder].state === 'selling') {
     placeTalk.sell = {
       placing: true,
       price: filterSellOrder().price,
       size: 20
     };
 
-    myOrders.sell[myOrderIterator] = filterSellOrder();
-    myOrders.sell[myOrderIterator].price = parseFloat(myOrders.sell[myOrderIterator].price - 0.01);
-    myOrders.sell[myOrderIterator].margin = parseFloat(myOrders.sell[myOrderIterator].price / myOrders.buy[myOrderIterator].price);
+    myOrders.sell[currentOrder] = filterSellOrder();
+    myOrders.sell[currentOrder].price = parseFloat(myOrders.sell[currentOrder].price - 0.01);
+    myOrders.sell[currentOrder].margin = parseFloat(myOrders.sell[currentOrder].price / myOrders.buy[currentOrder].price);
 
-    myOrders.sell[myOrderIterator].state = 'waiting';
+    myOrders.sell[currentOrder].state = 'waiting';
 
     return;
 
-  } else if (myOrders.sell[myOrderIterator].price) {
-    if (myOrders.sell[myOrderIterator].state === 'waiting') {
-      if (findLowestSellPrice().price > myOrders.sell[myOrderIterator].price) {
+  } else if (myOrders.sell[currentOrder].price) {
+    if (myOrders.sell[currentOrder].state === 'waiting') {
+      if (findLowestSellPrice().price > myOrders.sell[currentOrder].price) {
 
         //console.log('Sold!');
 
-        let buyAmount = myOrders.buy[myOrderIterator].price * 1.04;
-        myOrders.orderAmountMade[myOrderIterator] = parseFloat((myOrders.sell[myOrderIterator].price * 20) - (buyAmount * 20));
-        myOrders.sell[myOrderIterator] = {};
-        myOrders.sell[myOrderIterator].state = 'paused';
-        myOrders.buy[myOrderIterator] = {};
-        myOrders.buy[myOrderIterator].state = 'buying';
+        let buyAmount = myOrders.buy[currentOrder].price * 1.04;
+        myOrders.orderAmountMade[currentOrder] = parseFloat((myOrders.sell[currentOrder].price * 20) - (buyAmount * 20));
+        myOrders.sell[currentOrder] = {};
+        myOrders.sell[currentOrder].state = 'paused';
+        myOrders.buy[currentOrder] = {};
+        myOrders.buy[currentOrder].state = 'buying';
 
         return;
 
-      } else if (filterSellOrder().price < myOrders.sell[myOrderIterator].price) {
+      } else if (filterSellOrder().price < myOrders.sell[currentOrder].price) {
 
         //console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price);
 
@@ -750,11 +750,11 @@ let placeSell = (() => {
 //=============================================
 //=============================================
 let buyGapInfo = (() => {
-  if (!(myOrders.buy[myOrderIterator].price)) return false;
+  if (!(myOrders.buy[currentOrder].price)) return false;
   let buyCount = 0;
   let buyTotal = 0;
-  for (let i = 0; i < orderBook['buy'].length && myOrders.buy[myOrderIterator]; i++) {
-    if (orderBook['buy'][i].price <= myOrders.buy[myOrderIterator].price) {
+  for (let i = 0; i < orderBook['buy'].length && myOrders.buy[currentOrder]; i++) {
+    if (orderBook['buy'][i].price <= myOrders.buy[currentOrder].price) {
       break;
     } else {
       buyCount++;
@@ -775,11 +775,11 @@ let buyGapInfo = (() => {
 //=============================================
 //=============================================
 let sellGapInfo = (() => {
-  if (!(myOrders.sell[myOrderIterator].price)) return false;
+  if (!(myOrders.sell[currentOrder].price)) return false;
   let sellCount = 0;
   let sellTotal = 0;
-  for (let i = 0; i < orderBook['sell'].length && myOrders.sell[myOrderIterator]; i++) {
-    if (orderBook['sell'][i].price >= myOrders.sell[myOrderIterator].price) {
+  for (let i = 0; i < orderBook['sell'].length && myOrders.sell[currentOrder]; i++) {
+    if (orderBook['sell'][i].price >= myOrders.sell[currentOrder].price) {
       break;
     } else {
       sellCount++;
@@ -824,7 +824,7 @@ let filterGoodOrders = (() => {
   let goodOrderOp = (objectSide) => {
     for (let i = 0; i < orderBook[objectSide].length; i++) {
       let obj = orderBook[objectSide][i];
-      if ((obj.price * obj.size) > mySettings.realityCriteria[myOrderIterator]) {
+      if ((obj.price * obj.size) > mySettings.realityCriteria[currentOrder]) {
         obj.goodOrder = true;
       } else {
         obj.goodOrder = false;
@@ -844,7 +844,7 @@ let findGoodOrders = (() => {
   let goodOrderOp = (objectSide) => {
     for (let i = 0; i < orderBook[objectSide].length; i++) {
       let obj = orderBook[objectSide][i];
-      if ((obj.price * obj.size) > mySettings.realityCriteria[myOrderIterator]) good[objectSide]++;
+      if ((obj.price * obj.size) > mySettings.realityCriteria[currentOrder]) good[objectSide]++;
     }
   };
 
@@ -902,18 +902,18 @@ let checkVars = (() => {
   if (Number(findHighestBuyPrice().price)) findHighestBuyPrice().price = parseFloat(findHighestBuyPrice().price);
   if (Number(findLowestSellPrice().price)) findLowestSellPrice().price = parseFloat(findLowestSellPrice().price);
 
-  if (!myOrders.buy[myOrderIterator]) placeBuy();
-  if (!myOrders.sell[myOrderIterator]) placeSell();
+  if (!myOrders.buy[currentOrder]) placeBuy();
+  if (!myOrders.sell[currentOrder]) placeSell();
 
-  if (myOrders.buy[myOrderIterator].price) {
-    if (Number(myOrders.buy[myOrderIterator].price)) myOrders.buy[myOrderIterator].price = parseFloat(myOrders.buy[myOrderIterator].price);
+  if (myOrders.buy[currentOrder].price) {
+    if (Number(myOrders.buy[currentOrder].price)) myOrders.buy[currentOrder].price = parseFloat(myOrders.buy[currentOrder].price);
   }
-  if (myOrders.sell[myOrderIterator].price) {
-    if (Number(myOrders.sell[myOrderIterator].price)) myOrders.sell[myOrderIterator].price = parseFloat(myOrders.sell[myOrderIterator].price);
+  if (myOrders.sell[currentOrder].price) {
+    if (Number(myOrders.sell[currentOrder].price)) myOrders.sell[currentOrder].price = parseFloat(myOrders.sell[currentOrder].price);
   }
 
-  if (myOrders.orderAmountMade[myOrderIterator]) {
-    if (Number(myOrders.orderAmountMade[myOrderIterator])) myOrders.orderAmountMade[myOrderIterator] = parseFloat(myOrders.orderAmountMade[myOrderIterator]);
+  if (myOrders.orderAmountMade[currentOrder]) {
+    if (Number(myOrders.orderAmountMade[currentOrder])) myOrders.orderAmountMade[currentOrder] = parseFloat(myOrders.orderAmountMade[currentOrder]);
   }
 });
 //=============================================
@@ -957,7 +957,7 @@ function populateMySettings(num) {
 //=============================================
 let filterBuyOrder = (() => {
   return orderBook['buy'].find((data) => {
-    if (data.goodOrder && (findHighestBuyPrice().price / data.price) >= mySettings.realMargin[myOrderIterator]) return data;
+    if (data.goodOrder && (findHighestBuyPrice().price / data.price) >= mySettings.realMargin[currentOrder]) return data;
   });
 });
 //=============================================
@@ -973,7 +973,7 @@ let filterBuyOrder = (() => {
 //=============================================
 let filterSellOrder = (() => {
   return orderBook['sell'].find((data) => {
-    if (data.goodOrder && (data.price / myOrders.buy[myOrderIterator].price) >= ((mySettings.realMargin[myOrderIterator]) * 2) - 1) return data;
+    if (data.goodOrder && (data.price / myOrders.buy[currentOrder].price) >= ((mySettings.realMargin[currentOrder]) * 2) - 1) return data;
   });
 });
 //=============================================
@@ -1090,11 +1090,11 @@ function appendMyData() {
 //=============================================
 //=============================================
 let resetOrderInterval = ((countdown) => {
-  if (myOrderIterator < (mySettings.realityCriteria.length - 1)) {
-    myOrderIterator++;
+  if (currentOrder < (mySettings.realityCriteria.length - 1)) {
+    currentOrder++;
     clearInterval(countdown);
   } else {
-    myOrderIterator = 0;
+    currentOrder = 0;
     writeData();
     resetPlaceTalk();
     clearInterval(countdown);

@@ -483,7 +483,7 @@ body {
 
   let activate = (() => {
     popOrderPlacementData();
-    pageData.myOrderIterator % 2 === 0 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
+    pageData.currentOrder % 2 === 0 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
     popOtherMarketData();
     popEtcInfo();
     popBuyData();
@@ -511,24 +511,24 @@ body {
       ? docBuyStateID.innerHTML  = pageData.buyState.charAt(0).toUpperCase() + pageData.buyState.slice(1)
       : docBuyStateID.innerHTML  = 'N/A';
 
-    docBuyPriceID.innerHTML      = pageData.outPutLoggingEtc.placeTalk.buy.price
-      ? '$' + pageData.outPutLoggingEtc.placeTalk.buy.price.toFixed(2)
+    docBuyPriceID.innerHTML      = pageData.marketDataEtc.placeTalk.buy.price
+      ? '$' + pageData.marketDataEtc.placeTalk.buy.price.toFixed(2)
       : docBuyPriceID.innerHTML  = 'Not placing';
 
-    docBuySizeID.innerHTML       = pageData.outPutLoggingEtc.placeTalk.buy.size
-      ? '#' + pageData.outPutLoggingEtc.placeTalk.buy.size
+    docBuySizeID.innerHTML       = pageData.marketDataEtc.placeTalk.buy.size
+      ? '#' + pageData.marketDataEtc.placeTalk.buy.size
       : docBuySizeID.innerHTML   = 'Not placing';
 
     docSellStateID.innerHTML     = pageData.sellState
       ? pageData.sellState.charAt(0).toUpperCase() + pageData.sellState.slice(1)
       : docSellStateID.innerHTML = 'N/A';
 
-    docSellPriceID.innerHTML     = pageData.outPutLoggingEtc.placeTalk.sell.price
-      ? '$' + pageData.outPutLoggingEtc.placeTalk.sell.price.toFixed(2)
+    docSellPriceID.innerHTML     = pageData.marketDataEtc.placeTalk.sell.price
+      ? '$' + pageData.marketDataEtc.placeTalk.sell.price.toFixed(2)
       : docSellPriceID.innerHTML = 'Not placing';
 
-    docSellSizeID.innerHTML      = pageData.outPutLoggingEtc.placeTalk.sell.size
-      ? '#' + pageData.outPutLoggingEtc.placeTalk.sell.size
+    docSellSizeID.innerHTML      = pageData.marketDataEtc.placeTalk.sell.size
+      ? '#' + pageData.marketDataEtc.placeTalk.sell.size
       : docSellSizeID.innerHTML  = 'Not placing';
 
   });
@@ -568,14 +568,14 @@ body {
   //=============================================
   //=============================================
   let popLowCriteraMarketData = (() => {
-    let realSellPercent     = (((pageData.outPutLoggingGood.realSells / pageData.outPutLoggingGood.totalSells) * 10000) / 100);
-    let realBuyPercent      = (((pageData.outPutLoggingGood.realBuys / pageData.outPutLoggingGood.totalBuys) * 10000) / 100);
-    let realTotalPercent    = (100 - ((pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys) / (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) * 10000) / 100);
-    docRealSells[0].innerHTML        = pageData.outPutLoggingGood.realSells
-      ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
+    let realSellPercent     = (((pageData.marketData.realSells / pageData.marketData.totalSells) * 10000) / 100);
+    let realBuyPercent      = (((pageData.marketData.realBuys / pageData.marketData.totalBuys) * 10000) / 100);
+    let realTotalPercent    = (100 - ((pageData.marketData.realSells + pageData.marketData.realBuys) / (pageData.marketData.totalBuys + pageData.marketData.totalSells) * 10000) / 100);
+    docRealSells[0].innerHTML        = pageData.marketData.realSells
+      ? '#' + numberWithCommas(pageData.marketData.realSells)
       : 'Error loading Data';
-    docRealBuys[0].innerHTML         = pageData.outPutLoggingGood.realBuys
-      ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys)
+    docRealBuys[0].innerHTML         = pageData.marketData.realBuys
+      ? '#' + numberWithCommas(pageData.marketData.realBuys)
       : 'Error loading Data';
     docRealSellPercent[0].innerHTML  = realSellPercent.toFixed(2) + '%';
     docRealBuyPercent[0].innerHTML   = realBuyPercent.toFixed(2) + '%';
@@ -596,14 +596,14 @@ body {
   //=============================================
   //=============================================
   let popHighCriteriaMarketData = (() => {
-    let realSellPercent     = (((pageData.outPutLoggingGood.realSells / pageData.outPutLoggingGood.totalSells) * 10000) / 100);
-    let realBuyPercent      = (((pageData.outPutLoggingGood.realBuys / pageData.outPutLoggingGood.totalBuys) * 10000) / 100);
-    let realTotalPercent    = (100 - ((pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys) / (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) * 10000) / 100);
-    docRealSells[1].innerHTML        = pageData.outPutLoggingGood.realSells
-      ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
+    let realSellPercent     = (((pageData.marketData.realSells / pageData.marketData.totalSells) * 10000) / 100);
+    let realBuyPercent      = (((pageData.marketData.realBuys / pageData.marketData.totalBuys) * 10000) / 100);
+    let realTotalPercent    = (100 - ((pageData.marketData.realSells + pageData.marketData.realBuys) / (pageData.marketData.totalBuys + pageData.marketData.totalSells) * 10000) / 100);
+    docRealSells[1].innerHTML        = pageData.marketData.realSells
+      ? '#' + numberWithCommas(pageData.marketData.realSells)
       : 'Error loading Data';
-    docRealBuys[1].innerHTML         = pageData.outPutLoggingGood.realBuys
-      ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys)
+    docRealBuys[1].innerHTML         = pageData.marketData.realBuys
+      ? '#' + numberWithCommas(pageData.marketData.realBuys)
       : 'Error loading Data';
     docRealSellPercent[1].innerHTML  = realSellPercent.toFixed(2) + '%';
     docRealBuyPercent[1].innerHTML   = realBuyPercent.toFixed(2) + '%';
@@ -617,12 +617,12 @@ body {
   //=============================================
   //=============================================
   let popOtherMarketData = (() => {
-    docTotalBuys.innerHTML  = pageData.outPutLoggingGood.totalBuys
-      ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalBuys)
+    docTotalBuys.innerHTML  = pageData.marketData.totalBuys
+      ? '#' + numberWithCommas(pageData.marketData.totalBuys)
       : 'Error loading Data';
 
-    docTotalSells.innerHTML = pageData.outPutLoggingGood.totalSells
-      ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalSells)
+    docTotalSells.innerHTML = pageData.marketData.totalSells
+      ? '#' + numberWithCommas(pageData.marketData.totalSells)
       : 'Error loading Data';
   });
   //=============================================
@@ -646,12 +646,12 @@ body {
   let docCurrentOrder    = document.getElementsByClassName('currentOrder');
 
   let popEtcInfo = (() => {
-    docTotalAmountMade.innerHTML              = pageData.outPutLoggingEtc.totalAmountMade
-      ? '$' + pageData.outPutLoggingEtc.totalAmountMade.toFixed(2)
+    docTotalAmountMade.innerHTML              = pageData.marketDataEtc.totalAmountMade
+      ? '$' + pageData.marketDataEtc.totalAmountMade.toFixed(2)
       : docTotalAmountMade.innerHTML          = 'N/A';
 
-    docOrderAmountMade.innerHTML              = pageData.outPutLoggingEtc.amountMade
-      ? '$' + pageData.outPutLoggingEtc.amountMade.toFixed(2)
+    docOrderAmountMade.innerHTML              = pageData.marketDataEtc.amountMade
+      ? '$' + pageData.marketDataEtc.amountMade.toFixed(2)
       : docOrderAmountMade.innerHTML          = 'N/A';
 
     docLowestSellPrice.innerHTML               = pageData.lowestSellPrice
@@ -662,8 +662,8 @@ body {
       ? '$' + pageData.highestBuyPrice.toFixed(2)
       : docHighestBuyPrice.innerHTML = 'N/A';
 
-    docCurrentOrder[0].innerHTML = pageData.myOrderIterator != undefined
-      ? pageData.myOrderIterator + 1
+    docCurrentOrder[0].innerHTML = pageData.currentOrder != undefined
+      ? pageData.currentOrder + 1
       : docCurrentOrder[0].innerHTML = 'Restarting...';
   });
   //=============================================
@@ -693,46 +693,46 @@ body {
 
   let popBuyData = (() => {
 
-    docNewPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.orderUpdate
-      ? '$' + pageData.outPutLoggingBuy.myBuyOrder.price.toFixed(2)
+    docNewPriceUpdateBuy.innerHTML     = pageData.buyOrderData.orderUpdate
+      ? '$' + pageData.buyOrderData.myBuyOrder.price.toFixed(2)
       : docNewPriceUpdateBuy.innerHTML = 'No new update';
 
-    docOldPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.orderUpdate
-      ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2)
+    docOldPriceUpdateBuy.innerHTML     = pageData.buyOrderData.orderUpdate
+      ? '$' + pageData.buyOrderData.myBuyOrder.oldPrice.toFixed(2)
       : docOldPriceUpdateBuy.innerHTML = 'N/A';
 
-    docDifferenceBuy.innerHTML         = pageData.outPutLoggingBuy.orderUpdate
-      ? '$' + (pageData.outPutLoggingBuy.myBuyOrder.price - pageData.outPutLoggingBuy.myBuyOrder.oldPrice).toFixed(2)
+    docDifferenceBuy.innerHTML         = pageData.buyOrderData.orderUpdate
+      ? '$' + (pageData.buyOrderData.myBuyOrder.price - pageData.buyOrderData.myBuyOrder.oldPrice).toFixed(2)
       : docDifferenceBuy.innerHTML     = 'N/A';
 
 
-    if (pageData.outPutLoggingBuy.myBuyOrder) {
-      docMyBuyID.innerHTML           = pageData.outPutLoggingBuy.myBuyOrder.order_id
-        ? pageData.outPutLoggingBuy.myBuyOrder.order_id
+    if (pageData.buyOrderData.myBuyOrder) {
+      docMyBuyID.innerHTML           = pageData.buyOrderData.myBuyOrder.order_id
+        ? pageData.buyOrderData.myBuyOrder.order_id
         : docMyBuyID.innerHTML       = 'N/A';
 
-      docMyBuyPrice.innerHTML        = pageData.outPutLoggingBuy.myBuyOrder.price
-        ? '$' + pageData.outPutLoggingBuy.myBuyOrder.price.toFixed(2)
+      docMyBuyPrice.innerHTML        = pageData.buyOrderData.myBuyOrder.price
+        ? '$' + pageData.buyOrderData.myBuyOrder.price.toFixed(2)
         : docMyBuyPrice.innerHTML    = 'N/A';
 
-      docMyOldBuyPrice.innerHTML     = pageData.outPutLoggingBuy.myBuyOrder.oldPrice
-        ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2)
+      docMyOldBuyPrice.innerHTML     = pageData.buyOrderData.myBuyOrder.oldPrice
+        ? '$' + pageData.buyOrderData.myBuyOrder.oldPrice.toFixed(2)
         : docMyOldBuyPrice.innerHTML = 'N/A';
 
-      docMyBuyMargin.innerHTML       = pageData.outPutLoggingBuy.myBuyOrder.margin
-        ? pageData.outPutLoggingBuy.myBuyOrder.margin.toFixed(4) + '%'
+      docMyBuyMargin.innerHTML       = pageData.buyOrderData.myBuyOrder.margin
+        ? pageData.buyOrderData.myBuyOrder.margin.toFixed(4) + '%'
         : docMyBuyMargin.innerHTML   = 'N/A';
 
-      docOrderGapBuy.innerHTML       = pageData.outPutLoggingBuy.myBuyOrder.oldOrdersToGo
-        ? '#' + pageData.outPutLoggingBuy.myBuyOrder.oldOrdersToGo
+      docOrderGapBuy.innerHTML       = pageData.buyOrderData.myBuyOrder.oldOrdersToGo
+        ? '#' + pageData.buyOrderData.myBuyOrder.oldOrdersToGo
         : docOrderGapBuy.innerHTML   = 'N/A';
 
-      docDollarGapBuy.innerHTML      = pageData.outPutLoggingBuy.myBuyOrder.oldAmountToGo
-        ? '$' + numberWithCommas(pageData.outPutLoggingBuy.myBuyOrder.oldAmountToGo.toFixed(2))
+      docDollarGapBuy.innerHTML      = pageData.buyOrderData.myBuyOrder.oldAmountToGo
+        ? '$' + numberWithCommas(pageData.buyOrderData.myBuyOrder.oldAmountToGo.toFixed(2))
         : docDollarGapBuy.innerHTML  = 'N/A';
 
-      docTotalBuy.innerHTML          = 20 * pageData.outPutLoggingBuy.myBuyOrder.price
-        ? '$' + numberWithCommas((20 * pageData.outPutLoggingBuy.myBuyOrder.price).toFixed(2))
+      docTotalBuy.innerHTML          = 20 * pageData.buyOrderData.myBuyOrder.price
+        ? '$' + numberWithCommas((20 * pageData.buyOrderData.myBuyOrder.price).toFixed(2))
         : docTotalBuy.innerHTML      = 'N/A';
     } else {
       docMyBuyID.innerHTML       = 'No existing order';
@@ -766,29 +766,29 @@ body {
   let docTotalSell          = document.getElementById('sellTotal');
 
   let popSellData = (() => {
-    if (pageData.outPutLoggingSell.mySellOrder) {
-      docMySellID.innerHTML           = pageData.outPutLoggingSell.mySellOrder.order_id
-        ? pageData.outPutLoggingSell.mySellOrder.order_id
+    if (pageData.sellOrderData.mySellOrder) {
+      docMySellID.innerHTML           = pageData.sellOrderData.mySellOrder.order_id
+        ? pageData.sellOrderData.mySellOrder.order_id
         : docMySellID.innerHTML       = 'No existing order';
 
-      docMySellPrice.innerHTML        = pageData.outPutLoggingSell.mySellOrder.price
-        ? '$' + pageData.outPutLoggingSell.mySellOrder.price.toFixed(2)
+      docMySellPrice.innerHTML        = pageData.sellOrderData.mySellOrder.price
+        ? '$' + pageData.sellOrderData.mySellOrder.price.toFixed(2)
         : docMySellPrice.innerHTML    = 'N/A';
 
-      docMySellMargin.innerHTML       = pageData.outPutLoggingSell.mySellOrder.margin
-        ? pageData.outPutLoggingSell.mySellOrder.margin.toFixed(4) + '%'
+      docMySellMargin.innerHTML       = pageData.sellOrderData.mySellOrder.margin
+        ? pageData.sellOrderData.mySellOrder.margin.toFixed(4) + '%'
         : docMySellMargin.innerHTML   = 'N/A';
 
-      docOrderGapSell.innerHTML       = pageData.outPutLoggingSell.sellCount
-        ? '#' + pageData.outPutLoggingSell.sellCount
+      docOrderGapSell.innerHTML       = pageData.sellOrderData.sellCount
+        ? '#' + pageData.sellOrderData.sellCount
         : docOrderGapSell.innerHTML   = 'N/A';
 
-      docDollarGapSell.innerHTML      = pageData.outPutLoggingSell.sellTotal
-        ? '$' + numberWithCommas(pageData.outPutLoggingSell.sellTotal.toFixed(2))
+      docDollarGapSell.innerHTML      = pageData.sellOrderData.sellTotal
+        ? '$' + numberWithCommas(pageData.sellOrderData.sellTotal.toFixed(2))
         : docDollarGapSell.innerHTML  = 'N/A';
 
-      docTotalSell.innerHTML          = 20 * pageData.outPutLoggingSell.mySellOrder.price
-        ? '$' + numberWithCommas((20 * pageData.outPutLoggingSell.mySellOrder.price).toFixed(2))
+      docTotalSell.innerHTML          = 20 * pageData.sellOrderData.mySellOrder.price
+        ? '$' + numberWithCommas((20 * pageData.sellOrderData.mySellOrder.price).toFixed(2))
         : docTotalSell.innerHTML      = 'N/A';
     } else {
       docMySellID.innerHTML       = 'No existing order';
@@ -831,15 +831,15 @@ body {
   //=============================================
   //=============================================
   let marketData = (() => {
-    let realSellPercent     = (((pageData.outPutLoggingGood.realSells / (pageData.outPutLoggingGood.totalSells + pageData.outPutLoggingGood.totalBuys)) * 10000) / 100);
-    let realBuyPercent      = (((pageData.outPutLoggingGood.realBuys / (pageData.outPutLoggingGood.totalSells + pageData.outPutLoggingGood.totalBuys)) * 10000) / 100);
+    let realSellPercent     = (((pageData.marketData.realSells / (pageData.marketData.totalSells + pageData.marketData.totalBuys)) * 10000) / 100);
+    let realBuyPercent      = (((pageData.marketData.realBuys / (pageData.marketData.totalSells + pageData.marketData.totalBuys)) * 10000) / 100);
     let realTotalPercent    = (100 - (realSellPercent + realBuyPercent));
-    if (pageData.myOrderIterator % 2 === 0) document.querySelectorAll('.innerBuy')[0].style.width = realBuyPercent + '%';
-    if (pageData.myOrderIterator % 2 === 0) document.querySelectorAll('.innerSell')[0].style.width = realSellPercent + '%';
-    if (pageData.myOrderIterator % 2 === 0) document.querySelectorAll('.innerRest')[0].style.width = realTotalPercent + '%';
-    if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerBuy')[1].style.width = realBuyPercent + '%';
-    if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerSell')[1].style.width = realSellPercent + '%';
-    if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerRest')[1].style.width = realTotalPercent + '%';
+    if (pageData.currentOrder % 2 === 0) document.querySelectorAll('.innerBuy')[0].style.width = realBuyPercent + '%';
+    if (pageData.currentOrder % 2 === 0) document.querySelectorAll('.innerSell')[0].style.width = realSellPercent + '%';
+    if (pageData.currentOrder % 2 === 0) document.querySelectorAll('.innerRest')[0].style.width = realTotalPercent + '%';
+    if (pageData.currentOrder % 2) document.querySelectorAll('.innerBuy')[1].style.width = realBuyPercent + '%';
+    if (pageData.currentOrder % 2) document.querySelectorAll('.innerSell')[1].style.width = realSellPercent + '%';
+    if (pageData.currentOrder % 2) document.querySelectorAll('.innerRest')[1].style.width = realTotalPercent + '%';
   });
   //=============================================
   //=============================================
@@ -856,10 +856,10 @@ body {
   //=============================================
   //=============================================
   let makePie = (() => {
-    let buyPercent = pageData.outPutLoggingGood.realBuys;
-    let sellPercent = pageData.outPutLoggingGood.realSells;
-    let totalBadPercent = ((pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) - (pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys));
-    if (pageData.myOrderIterator % 2 === 0) {
+    let buyPercent = pageData.marketData.realBuys;
+    let sellPercent = pageData.marketData.realSells;
+    let totalBadPercent = ((pageData.marketData.totalBuys + pageData.marketData.totalSells) - (pageData.marketData.realSells + pageData.marketData.realBuys));
+    if (pageData.currentOrder % 2 === 0) {
       google.charts.load('current', {
         'packages': ['corechart']
       });
@@ -944,6 +944,6 @@ body {
   //=============================================
   //=============================================
   //=============================================
-  </script>
+</script>
 </body>
 </html>
