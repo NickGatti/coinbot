@@ -106,13 +106,13 @@ getWebSocketData();
 //=============================================
 //=============================================
 //=============================================
-function getOrderBook(level) {
+var getOrderBook = ((level) => {
   return getProductOrderBook({
     'level': level
   }).then(function(data) {
     return JSON.parse(data.body);
   });
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -124,7 +124,7 @@ function getOrderBook(level) {
 //=============================================
 //=============================================
 //=============================================
-function downloadOrderBook(flag) {
+var downloadOrderBook = ((flag) => {
   if (orderBook['buy'][0] && orderBook['sell'][0] || flag) {
 
     if (flag) resetPause = true;
@@ -182,7 +182,7 @@ function downloadOrderBook(flag) {
       console.log(err);
     });
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -223,7 +223,7 @@ function getWebSocketData() {
 //=============================================
 //=============================================
 //=============================================
-function catchWebSocketMessage(data) {
+var catchWebSocketMessage = ((data) => {
 
   if (dataIntegrityTest) console.log('DataIntegrityTesting');
   let objectSide = data.side;
@@ -425,7 +425,7 @@ function catchWebSocketMessage(data) {
   } else {
     console.log('Uncaught WebSocket type in feed: ', data.type);
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -437,7 +437,7 @@ function catchWebSocketMessage(data) {
 //=============================================
 //=============================================
 //=============================================
-function deDupe() {
+var deDupe = (() => {
   dataIntegrityTest = true;
   console.log('OrderBook Downloaded! de-Duping OrderBook!');
 
@@ -459,7 +459,7 @@ function deDupe() {
   //console.log('=============================================================================================================================================================================');
   dataIntegrityTest = false;
   runBenchmark = true;
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -471,7 +471,7 @@ function deDupe() {
 //=============================================
 //=============================================
 //=============================================
-function outPutLoggingGood() {
+var outPutLoggingGood = (() => {
   if (orderBook['buy'] && orderBook['sell'] && findGoodOrders()) {
     return {
       realBuys: findGoodOrders()['buy'] ? findGoodOrders()['buy'] : false,
@@ -484,22 +484,22 @@ function outPutLoggingGood() {
     };
   }
   return false;
-}
+});
 //=============================================
 //=============================================
 //=============================================
-function outPutLoggingEtc() {
+var outPutLoggingEtc = (() => {
   myOrders.orderAmountMade[myOrderIterator] = parseFloat(myOrders.orderAmountMade[myOrderIterator]);
   return {
     totalAmountMade: addTotalAmount() ? addTotalAmount() : false,
     amountMade: myOrders.orderAmountMade ? myOrders.orderAmountMade[myOrderIterator] : false,
     placeTalk: placeTalk ? placeTalk : false
   };
-}
+});
 //=============================================
 //=============================================
 //=============================================
-function outPutLoggingBuy() {
+var outPutLoggingBuy = (() => {
   if (!buyGapInfo()) return 'noBuyInfo';
   if (!myOrders.buy[myOrderIterator]) return 'noBuyOrder';
   if (myOrders.buy[myOrderIterator] && buyGapInfo()) {
@@ -514,11 +514,11 @@ function outPutLoggingBuy() {
     };
   }
   return false;
-}
+});
 //=============================================
 //=============================================
 //=============================================
-function outPutLoggingSell() {
+var outPutLoggingSell = (() => {
   if (!sellGapInfo()) return 'noSellInfo';
   if (!myOrders.sell[myOrderIterator]) return 'noSellOrder';
   if (myOrders.sell[myOrderIterator] && sellGapInfo()) {
@@ -529,7 +529,7 @@ function outPutLoggingSell() {
     };
   }
   return false;
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -583,7 +583,7 @@ if (lisenPort === 'c9') {
 //=============================================
 //=============================================
 //=============================================
-function findRealisticOrders() {
+var findRealisticOrders = (() => {
   if (resetFlag) return;
   if (runBenchmark && !resetFlag) {
 
@@ -610,7 +610,7 @@ function findRealisticOrders() {
 
     resetOrderInterval(countdown);
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -622,7 +622,7 @@ function findRealisticOrders() {
 //=============================================
 //=============================================
 //=============================================
-function placeBuy() {
+var placeBuy = (() => {
   if (!filterBuyOrder(findHighestBuyPrice())) {
     //console.log('Wait what? This should\'t happen!');
     return;
@@ -685,7 +685,7 @@ function placeBuy() {
       }
     }
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
@@ -697,7 +697,7 @@ function placeBuy() {
 //=============================================
 //=============================================
 //=============================================
-function placeSell() {
+var placeSell = (() => {
   if (!filterSellOrder()) {
     //console.log('Bubble?');
     return;
@@ -745,7 +745,7 @@ function placeSell() {
       }
     }
   }
-}
+});
 //=============================================
 //=============================================
 //=============================================
