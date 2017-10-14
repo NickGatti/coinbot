@@ -1,7 +1,7 @@
 var google = '';
-var pageData = {};
-var oReq = new XMLHttpRequest();
-var myAPIurl = 'http://localhost:3000/api';
+let pageData = {};
+let oReq = new XMLHttpRequest();
+let myAPIurl = 'http://localhost:3000/api';
 
 loadScript('https://www.gstatic.com/charts/loader.js', (() => {
   return;
@@ -25,12 +25,12 @@ setInterval(() => {
   });
 }, 400);
 
-var reqListener = (() => {
+let reqListener = (() => {
   pageData = JSON.parse(this.responseText);
   oReq.removeEventListener('load', reqListener);
 });
 
-var activate = (() => {
+let activate = (() => {
   popOrderPlacementData();
   pageData.myOrderIterator % 2 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
   popOtherMarketData();
@@ -48,14 +48,14 @@ var activate = (() => {
 //=============================================
 //=============================================
 //=============================================
-var docBuyStateID  = document.getElementById('placingBuy');
-var docBuyPriceID  = document.getElementById('placingPriceBuy');
-var docBuySizeID   = document.getElementById('placingSizeBuy');
-var docSellStateID = document.getElementById('placingSell');
-var docSellPriceID = document.getElementById('placingPriceSell');
-var docSellSizeID  = document.getElementById('placingSizeSell');
+let docBuyStateID  = document.getElementById('placingBuy');
+let docBuyPriceID  = document.getElementById('placingPriceBuy');
+let docBuySizeID   = document.getElementById('placingSizeBuy');
+let docSellStateID = document.getElementById('placingSell');
+let docSellPriceID = document.getElementById('placingPriceSell');
+let docSellSizeID  = document.getElementById('placingSizeSell');
 
-var popOrderPlacementData = (() => {
+let popOrderPlacementData = (() => {
   docBuyStateID.innerHTML      = pageData.buyState
     ? docBuyStateID.innerHTML  = pageData.buyState.charAt(0).toUpperCase() + pageData.buyState.slice(1)
     : docBuyStateID.innerHTML  = 'N/A';
@@ -95,13 +95,13 @@ var popOrderPlacementData = (() => {
 //=============================================
 //=============================================
 //=============================================
-var docRealSells        = document.querySelectorAll('.realSells');
-var docRealBuys         = document.querySelectorAll('.realBuys');
-var docRealSellPercent  = document.querySelectorAll('.realSellPercent');
-var docRealBuyPercent   = document.querySelectorAll('.realBuyPercent');
-var docRealTotalPercent = document.querySelectorAll('.realTotalPercent');
-var docTotalSells       = document.getElementById('totalSells');
-var docTotalBuys        = document.getElementById('totalBuys');
+let docRealSells        = document.querySelectorAll('.realSells');
+let docRealBuys         = document.querySelectorAll('.realBuys');
+let docRealSellPercent  = document.querySelectorAll('.realSellPercent');
+let docRealBuyPercent   = document.querySelectorAll('.realBuyPercent');
+let docRealTotalPercent = document.querySelectorAll('.realTotalPercent');
+let docTotalSells       = document.getElementById('totalSells');
+let docTotalBuys        = document.getElementById('totalBuys');
 //=============================================
 //=============================================
 //=============================================
@@ -116,7 +116,7 @@ var docTotalBuys        = document.getElementById('totalBuys');
 //=============================================
 //=============================================
 //=============================================
-var popLowCriteraMarketData = (() => {
+let popLowCriteraMarketData = (() => {
   docRealSells[0].innerHTML        = pageData.outPutLoggingGood.realSells
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
     : 'Error loading Data';
@@ -147,7 +147,7 @@ var popLowCriteraMarketData = (() => {
 //=============================================
 //=============================================
 //=============================================
-var popHighCriteriaMarketData = (() => {
+let popHighCriteriaMarketData = (() => {
   docRealSells[1].innerHTML        = pageData.outPutLoggingGood.realSells
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
     : 'Error loading Data';
@@ -169,7 +169,7 @@ var popHighCriteriaMarketData = (() => {
     : 'Error loading Data';
 });
 
-var popOtherMarketData = (() => {
+let popOtherMarketData = (() => {
   docTotalBuys.innerHTML  = pageData.outPutLoggingGood.totalSells
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalSells)
     : 'Error loading Data';
@@ -198,7 +198,7 @@ let docLowestSellPrice = document.getElementById('printSell');
 let docHighestBuyPrice = document.getElementById('printBuy');
 let docCurrentOrder    = document.getElementsByClassName('currentOrder');
 
-var popEtcInfo = (() => {
+let popEtcInfo = (() => {
   docTotalAmountMade.innerHTML              = pageData.outPutLoggingEtc.totalAmountMade
     ? '$' + pageData.outPutLoggingEtc.totalAmountMade.toFixed(2)
     : docTotalAmountMade.innerHTML          = 'N/A';
@@ -233,18 +233,18 @@ var popEtcInfo = (() => {
 //=============================================
 //=============================================
 //=============================================
-var docNewPriceUpdateBuy = document.getElementById('newPriceUpdateBuy');
-var docOldPriceUpdateBuy = document.getElementById('oldPriceUpdateBuy');
-var docDifferenceBuy     = document.getElementById('differenceBuy');
-var docMyBuyID           = document.getElementById('myBuyID');
-var docMyBuyPrice        = document.getElementById('myBuyPrice');
-var docMyOldBuyPrice     = document.getElementById('myOldBuyPrice');
-var docMyBuyMargin       = document.getElementById('buyMargin');
-var docOrderGapBuy       = document.getElementById('orderGapBuy');
-var docDollarGapBuy      = document.getElementById('dollarGapBuy');
-var docTotalBuy          = document.getElementById('buyTotal');
+let docNewPriceUpdateBuy = document.getElementById('newPriceUpdateBuy');
+let docOldPriceUpdateBuy = document.getElementById('oldPriceUpdateBuy');
+let docDifferenceBuy     = document.getElementById('differenceBuy');
+let docMyBuyID           = document.getElementById('myBuyID');
+let docMyBuyPrice        = document.getElementById('myBuyPrice');
+let docMyOldBuyPrice     = document.getElementById('myOldBuyPrice');
+let docMyBuyMargin       = document.getElementById('buyMargin');
+let docOrderGapBuy       = document.getElementById('orderGapBuy');
+let docDollarGapBuy      = document.getElementById('dollarGapBuy');
+let docTotalBuy          = document.getElementById('buyTotal');
 
-var popBuyData = (() => {
+let popBuyData = (() => {
 
   docNewPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.difference
     ? '$' + pageData.outPutLoggingBuy.newPriceUpdate.toFixed(2)
@@ -311,15 +311,15 @@ var popBuyData = (() => {
 //=============================================
 //=============================================
 //=============================================
-var docMySellID           = document.getElementById('mySellID');
-var docMySellPrice        = document.getElementById('mySellPrice');
-var docMyOldSellPrice     = document.getElementById('myOldSellPrice');
-var docMySellMargin       = document.getElementById('sellMargin');
-var docOrderGapSell       = document.getElementById('orderGapSell');
-var docDollarGapSell      = document.getElementById('dollarGapSell');
-var docTotalSell          = document.getElementById('sellTotal');
+let docMySellID           = document.getElementById('mySellID');
+let docMySellPrice        = document.getElementById('mySellPrice');
+let docMyOldSellPrice     = document.getElementById('myOldSellPrice');
+let docMySellMargin       = document.getElementById('sellMargin');
+let docOrderGapSell       = document.getElementById('orderGapSell');
+let docDollarGapSell      = document.getElementById('dollarGapSell');
+let docTotalSell          = document.getElementById('sellTotal');
 
-var popSellData = (() => {
+let popSellData = (() => {
   if (pageData.outPutLoggingSell.mySellOrder) {
     docMySellID.innerHTML           = pageData.outPutLoggingSell.mySellOrder.order_id
       ? pageData.outPutLoggingSell.mySellOrder.order_id
@@ -372,7 +372,7 @@ var popSellData = (() => {
 //=============================================
 //=============================================
 //=============================================
-var numberWithCommas = ((x) => {
+let numberWithCommas = ((x) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 });
 //=============================================
@@ -389,7 +389,7 @@ var numberWithCommas = ((x) => {
 //=============================================
 //=============================================
 //=============================================
-var marketData = (() => {
+let marketData = (() => {
   if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerBuy')[0].style.width = pageData.outPutLoggingGood.goodBuyPercent + '%';
   if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerSell')[0].style.width = pageData.outPutLoggingGood.goodSellPercent + '%';
   if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerRest')[0].style.width = pageData.outPutLoggingGood.totalBadPercent + '%';
@@ -411,7 +411,7 @@ var marketData = (() => {
 //=============================================
 //=============================================
 //=============================================
-var makePie = (() => {
+let makePie = (() => {
   if (pageData.myOrderIterator % 2) {
     google.charts.load('current', {
       'packages': ['corechart']
@@ -428,18 +428,18 @@ var makePie = (() => {
     let firstBuyPercent = pageData.outPutLoggingGood.goodBuyPercent;
     let firstSellPercent = pageData.outPutLoggingGood.goodSellPercent;
     let firstTotalBadPercent = pageData.outPutLoggingGood.totalBadPercent;
-    var data = google.visualization.arrayToDataTable([
+    let data = google.visualization.arrayToDataTable([
       ['Task', 'Orders valued over 400 USD'],
       ['Good Buys', firstBuyPercent],
       ['Good Sells', firstSellPercent],
       ['Ignored orders', firstTotalBadPercent]
     ]);
 
-    var options = {
+    let options = {
       title: 'Orders valued over 400 USD'
     };
 
-    var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+    let chart = new google.visualization.PieChart(document.getElementById('piechart1'));
 
     chart.draw(data, options);
   });
@@ -448,18 +448,18 @@ var makePie = (() => {
     let secondBuyPercent = pageData.outPutLoggingGood.goodBuyPercent;
     let secondSellPercent = pageData.outPutLoggingGood.goodSellPercent;
     let secondTotalBadPercent = pageData.outPutLoggingGood.totalBadPercent;
-    var data = google.visualization.arrayToDataTable([
+    let data = google.visualization.arrayToDataTable([
       ['Task', 'Orders valued over 6000 USD'],
       ['Good Buys', secondBuyPercent],
       ['Good Sells', secondSellPercent],
       ['Ignored orders', secondTotalBadPercent]
     ]);
 
-    var options = {
+    let options = {
       title: 'Orders valued over 6000 USD'
     };
 
-    var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
+    let chart = new google.visualization.PieChart(document.getElementById('piechart2'));
 
     chart.draw(data, options);
   });
