@@ -106,7 +106,7 @@ getWebSocketData();
 //=============================================
 //=============================================
 //=============================================
-var getOrderBook = ((level) => {
+let getOrderBook = ((level) => {
   return getProductOrderBook({
     'level': level
   }).then(function(data) {
@@ -120,11 +120,11 @@ var getOrderBook = ((level) => {
 //=============================================
 //=============================================
 //=============================================
-//START>> Call GDAX function for ASYNC variable
+//START>> Call GDAX function for ASYNC letiable
 //=============================================
 //=============================================
 //=============================================
-var downloadOrderBook = ((flag) => {
+let downloadOrderBook = ((flag) => {
   if (orderBook['buy'][0] && orderBook['sell'][0] || flag) {
 
     if (flag) resetPause = true;
@@ -223,7 +223,7 @@ function getWebSocketData() {
 //=============================================
 //=============================================
 //=============================================
-var catchWebSocketMessage = ((data) => {
+let catchWebSocketMessage = ((data) => {
 
   if (dataIntegrityTest) console.log('DataIntegrityTesting');
   let objectSide = data.side;
@@ -437,7 +437,7 @@ var catchWebSocketMessage = ((data) => {
 //=============================================
 //=============================================
 //=============================================
-var deDupe = (() => {
+let deDupe = (() => {
   dataIntegrityTest = true;
   console.log('OrderBook Downloaded! de-Duping OrderBook!');
 
@@ -471,7 +471,7 @@ var deDupe = (() => {
 //=============================================
 //=============================================
 //=============================================
-var outPutLoggingGood = (() => {
+let outPutLoggingGood = (() => {
   if (orderBook['buy'] && orderBook['sell'] && findGoodOrders()) {
     return {
       realBuys: findGoodOrders()['buy'] ? findGoodOrders()['buy'] : false,
@@ -488,7 +488,7 @@ var outPutLoggingGood = (() => {
 //=============================================
 //=============================================
 //=============================================
-var outPutLoggingEtc = (() => {
+let outPutLoggingEtc = (() => {
   myOrders.orderAmountMade[myOrderIterator] = parseFloat(myOrders.orderAmountMade[myOrderIterator]);
   return {
     totalAmountMade: addTotalAmount() ? addTotalAmount() : false,
@@ -499,7 +499,7 @@ var outPutLoggingEtc = (() => {
 //=============================================
 //=============================================
 //=============================================
-var outPutLoggingBuy = (() => {
+let outPutLoggingBuy = (() => {
   if (!buyGapInfo()) return 'noBuyInfo';
   if (!myOrders.buy[myOrderIterator]) return 'noBuyOrder';
   if (myOrders.buy[myOrderIterator] && buyGapInfo()) {
@@ -518,7 +518,7 @@ var outPutLoggingBuy = (() => {
 //=============================================
 //=============================================
 //=============================================
-var outPutLoggingSell = (() => {
+let outPutLoggingSell = (() => {
   if (!sellGapInfo()) return 'noSellInfo';
   if (!myOrders.sell[myOrderIterator]) return 'noSellOrder';
   if (myOrders.sell[myOrderIterator] && sellGapInfo()) {
@@ -542,7 +542,7 @@ var outPutLoggingSell = (() => {
 //=============================================
 //=============================================
 console.log('Starting server...');
-var app = express();
+let app = express();
 app.use(function(err, req, res, next){
   res.status(err.status || 500);
   res.send({
@@ -583,7 +583,7 @@ if (lisenPort === 'c9') {
 //=============================================
 //=============================================
 //=============================================
-var findRealisticOrders = (() => {
+let findRealisticOrders = (() => {
   if (resetFlag) return;
   if (runBenchmark && !resetFlag) {
 
@@ -622,7 +622,7 @@ var findRealisticOrders = (() => {
 //=============================================
 //=============================================
 //=============================================
-var placeBuy = (() => {
+let placeBuy = (() => {
   if (!filterBuyOrder(findHighestBuyPrice())) {
     //console.log('Wait what? This should\'t happen!');
     return;
@@ -697,7 +697,7 @@ var placeBuy = (() => {
 //=============================================
 //=============================================
 //=============================================
-var placeSell = (() => {
+let placeSell = (() => {
   if (!filterSellOrder()) {
     //console.log('Bubble?');
     return;
@@ -757,7 +757,7 @@ var placeSell = (() => {
 //=============================================
 //=============================================
 //=============================================
-var buyGapInfo = (() => {
+let buyGapInfo = (() => {
   if (!(myOrders.buy[myOrderIterator].price)) return false;
   let buyCount = 0;
   let buyTotal = 0;
@@ -782,7 +782,7 @@ var buyGapInfo = (() => {
 //=============================================
 //=============================================
 //=============================================
-var sellGapInfo = (() => {
+let sellGapInfo = (() => {
   if (!(myOrders.sell[myOrderIterator].price)) return false;
   let sellCount = 0;
   let sellTotal = 0;
@@ -807,7 +807,7 @@ var sellGapInfo = (() => {
 //=============================================
 //=============================================
 //=============================================
-var sortBothSides = (() => {
+let sortBothSides = (() => {
   orderBook['buy']
     .sort((a, b) => {
       return b.price - a.price;
@@ -828,7 +828,7 @@ var sortBothSides = (() => {
 //=============================================
 //=============================================
 //=============================================
-var filterGoodOrders = (() => {
+let filterGoodOrders = (() => {
   let goodOrderOp = (objectSide) => {
     for (let i = 0; i < orderBook[objectSide].length; i++) {
       let obj = orderBook[objectSide][i];
@@ -843,7 +843,7 @@ var filterGoodOrders = (() => {
   goodOrderOp('sell');
 });
 //=============================================
-var findGoodOrders = (() => {
+let findGoodOrders = (() => {
   let good = {
     'buy': 0,
     'sell': 0
@@ -872,7 +872,7 @@ var findGoodOrders = (() => {
 //=============================================
 //=============================================
 //=============================================
-var findHighestBuyPrice = (() => {
+let findHighestBuyPrice = (() => {
   return orderBook['buy']
     .find((data) => {
       if (data.price) return data;
@@ -889,7 +889,7 @@ var findHighestBuyPrice = (() => {
 //=============================================
 //=============================================
 //=============================================
-var findLowestSellPrice = (() => {
+let findLowestSellPrice = (() => {
   return orderBook['sell']
     .find((data) => {
       if (data.price) return data;
@@ -906,7 +906,7 @@ var findLowestSellPrice = (() => {
 //=============================================
 //=============================================
 //=============================================
-var checkVars = (() => {
+let checkVars = (() => {
   if (Number(findHighestBuyPrice().price)) findHighestBuyPrice().price = parseFloat(findHighestBuyPrice().price);
   if (Number(findLowestSellPrice().price)) findLowestSellPrice().price = parseFloat(findLowestSellPrice().price);
 
@@ -963,7 +963,7 @@ function populateMySettings(num) {
 //=============================================
 //=============================================
 //=============================================
-var filterBuyOrder = (() => {
+let filterBuyOrder = (() => {
   return orderBook['buy'].find((data) => {
     if (data.goodOrder && (findHighestBuyPrice().price / data.price) >= mySettings.realMargin[myOrderIterator]) return data;
   });
@@ -979,7 +979,7 @@ var filterBuyOrder = (() => {
 //=============================================
 //=============================================
 //=============================================
-var filterSellOrder = (() => {
+let filterSellOrder = (() => {
   return orderBook['sell'].find((data) => {
     if (data.goodOrder && (data.price / myOrders.buy[myOrderIterator].price) >= ((mySettings.realMargin[myOrderIterator]) * 2) - 1) return data;
   });
@@ -995,7 +995,7 @@ var filterSellOrder = (() => {
 //=============================================
 //=============================================
 //=============================================
-var addTotalAmount = (() => {
+let addTotalAmount = (() => {
   return myOrders.orderAmountMade.reduce((init, data) => {
     return init + data;
   });
@@ -1012,7 +1012,7 @@ var addTotalAmount = (() => {
 //=============================================
 //=============================================
 //=============================================
-var resetPlaceTalk = (() => {
+let resetPlaceTalk = (() => {
   if (placeTalk.buy.placing) placeTalk.buy = {
     placing: false,
     price: false,
@@ -1035,7 +1035,7 @@ var resetPlaceTalk = (() => {
 //=============================================
 //=============================================
 //=============================================
-var writeData = (() => {
+let writeData = (() => {
   fs.open('storage.json', 'wx', (err) => {
     if (err) {
       if (err.code === 'EEXIST') {
@@ -1065,14 +1065,14 @@ function readData() {
   });
 }
 //=============================================
-var writeMyData = (() => {
+let writeMyData = (() => {
   fs.writeFile('storage.json', JSON.stringify(myOrders), (err) => {
     if (err) throw err;
     //console.log('The "data to append" was appended to file!');
   });
 });
 //=============================================
-var readMyData = (() => {
+let readMyData = (() => {
   fs.readFile('storage.json', 'utf8', (err, data) => {
     if (err) throw err;
     myOrders = JSON.parse(data);
@@ -1097,7 +1097,7 @@ function appendMyData() {
 //=============================================
 //=============================================
 //=============================================
-var resetOrderInterval = ((countdown) => {
+let resetOrderInterval = ((countdown) => {
   if (myOrderIterator < (mySettings.realityCriteria.length - 1)) {
     myOrderIterator++;
     clearInterval(countdown);
