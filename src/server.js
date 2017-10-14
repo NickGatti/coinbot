@@ -497,8 +497,8 @@ let outPutLoggingEtc = (() => {
 //=============================================
 //=============================================
 let outPutLoggingBuy = (() => {
-  if (!myOrders.buy[myOrderIterator]) return 'noBuyOrder';
-  if (!buyGapInfo()) return 'noBuyInfo';
+  if (!myOrders.buy[myOrderIterator].price) return false;
+  if (!buyGapInfo()) return false;
   if (myOrders.buy[myOrderIterator] && buyGapInfo()) {
     return {
       talkAboutUpdating: talkAboutUpdating ? talkAboutUpdating : false,
@@ -513,8 +513,8 @@ let outPutLoggingBuy = (() => {
 //=============================================
 //=============================================
 let outPutLoggingSell = (() => {
-  if (!myOrders.sell[myOrderIterator]) return 'noSellOrder';
-  if (!sellGapInfo()) return 'noSellInfo';
+  if (!myOrders.sell[myOrderIterator].price) return false;
+  if (!sellGapInfo()) return false;
   if (myOrders.sell[myOrderIterator] && sellGapInfo()) {
     return {
       mySellOrder: myOrders.sell[myOrderIterator] ? myOrders.sell[myOrderIterator] : false,
