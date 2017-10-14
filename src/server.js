@@ -33,19 +33,22 @@ let populateMySettings = ((num) => {
 //=============================================
 //=============================================
 //=============================================
-let websocketConnected = true;
 let websocketTimeout = new Date().getTime();
+let lostConnection = false;
 setInterval(() => {
   if ((new Date().getTime() - websocketTimeout) > 10000) {
     console.log('WebSocket Connection Lost...');
-    websocketConnected = false;
-    websocket.on('close', () => {
+    lostConnection = true;
+    websocket.on('open', () => {
     });
-    reconnect();
   }
 }, 1000);
 let getWebSocketData = (() => {
   websocket.on('message', ((data) => {
+    if (lostConnection) {
+      resetFlag = true;
+      lostConnection = false;
+    }
     //if (data.type === 'match') data.size === 'sell' ? console.log('Up tick!') : console.log('Down tick!')
 
     if (data.type === 'ticker' || data.type === 'snapshot' || data.type === 'l2update' || data.type === 'heartbeat' || data.type === 'subscribe' || data.type === 'unsubscribe' || data.type === 'subscriptions') {
@@ -59,7 +62,10 @@ let getWebSocketData = (() => {
       console.log('Error on WebSocket Feed data.type not sell or buy data.type === ', data.side);
       return;
     }
-    if (catchWebSocketMessage(data)) websocketTimeout = new Date().getTime();
+    if (catchWebSocketMessage(data)) {
+      websocketTimeout = new Date().getTime();
+      lostConnection = false;
+    }
   }));
 });
 //=============================================
@@ -217,6 +223,7 @@ let getOrderBook = ((level) => {
 //=============================================
 //=============================================
 //=============================================
+let orderBookTimeout = null;
 let downloadOrderBook = ((flag) => {
   if (orderBook['buy'][0] && orderBook['sell'][0] || flag) {
 
@@ -227,7 +234,7 @@ let downloadOrderBook = ((flag) => {
 
     let savedTime = new Date().getTime();
     let timeDown = 0;
-    let countdown = setInterval(() => {
+    orderBookTimeout = setInterval(() => {
       timeDown = (new Date().getTime() - savedTime);
       let output = ('Orderbook re-download timeout: ' + (timeDown)).toString();
       console.log(output.slice(0, -3));
@@ -236,7 +243,7 @@ let downloadOrderBook = ((flag) => {
     getOrderBook(3).then(((value) => {
 
       if (timeDown > 30000) {
-        clearInterval(countdown);
+        clearInterval(orderBookTimeout);
         console.log('Orderbook re-download connection lost...');
         return;
       }
@@ -261,7 +268,7 @@ let downloadOrderBook = ((flag) => {
       populateOrders('sell');
 
       deDupe(); //how do i run dedupe while the rest of it runs?
-      clearInterval(countdown);
+      clearInterval(orderBookTimeout);
 
       if (resetFlag) {
         resetFlag = false;
@@ -512,7 +519,7 @@ let catchWebSocketMessage = ((data) => {
 //=============================================
 let deDupe = (() => {
   dataIntegrityTest = true;
-  console.log('OrderBook Downloaded! de-Duping OrderBook!');
+  console.log('OrderBook Downloaded!');
 
   // let funt = (objectSide) => {
   //     for (let i = 0; i < orderBook[objectSide].length; i++) {
@@ -1113,18 +1120,3 @@ let resetOrderInterval = (() => {
 //=============================================
 //=============================================
 //=============================================
-let reconnect = (() => {
-  if (!websocketConnected) {
-    console.log('Connecting...');
-    websocketConnected = true;
-    pauseOrderBook = false;
-    resetFlag = false;
-    runBenchmark = false;
-    resetPause = false;
-    dataIntegrityTest = false;
-    websocketTimeout = new Date().getTime();
-    websocket.on('open', () => {
-    });
-    getWebSocketData();
-  }
-});
