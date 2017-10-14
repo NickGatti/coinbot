@@ -34,12 +34,20 @@ var activate = (() => {
   popOrderPlacementData();
   pageData.myOrderIterator % 2 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
   popOtherMarketData();
-  popData();
   popEtcInfo();
+  popBuyData();
+  popSellData();
   marketData();
-  makePie();  
+  makePie();
 });
 
+//=============================================
+//=============================================
+//=============================================
+//NEW ORDER DATA
+//=============================================
+//=============================================
+//=============================================
 var docBuyStateID  = document.getElementById('placingBuy');
 var docBuyPriceID  = document.getElementById('placingPriceBuy');
 var docBuySizeID   = document.getElementById('placingSizeBuy');
@@ -73,7 +81,20 @@ var popOrderPlacementData = (() => {
     : docSellSizeID.innerHTML  = 'Not placing';
 
 });
-
+//=============================================
+//=============================================
+//=============================================
+//NEW ORDER DATA
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//CRITERIA DATA
+//=============================================
+//=============================================
+//=============================================
 var docRealSells        = document.querySelectorAll('.realSells');
 var docRealBuys         = document.querySelectorAll('.realBuys');
 var docRealSellPercent  = document.querySelectorAll('.realSellPercent');
@@ -81,7 +102,20 @@ var docRealBuyPercent   = document.querySelectorAll('.realBuyPercent');
 var docRealTotalPercent = document.querySelectorAll('.realTotalPercent');
 var docTotalSells       = document.getElementById('totalSells');
 var docTotalBuys        = document.getElementById('totalBuys');
-
+//=============================================
+//=============================================
+//=============================================
+//CRITERIA DATA
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//LOW CRITERIA DATA
+//=============================================
+//=============================================
+//=============================================
 var popLowCriteraMarketData = (() => {
   docRealSells[0].innerHTML        = pageData.outPutLoggingGood.realSells
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
@@ -99,7 +133,20 @@ var popLowCriteraMarketData = (() => {
     ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%'
     : 'Error loading Data';
 });
-
+//=============================================
+//=============================================
+//=============================================
+//LOW CRITERIA DATA
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//HIGH CRITERIA DATA
+//=============================================
+//=============================================
+//=============================================
 var popHighCriteriaMarketData = (() => {
   docRealSells[1].innerHTML        = pageData.outPutLoggingGood.realSells
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
@@ -131,7 +178,20 @@ var popOtherMarketData = (() => {
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalBuys)
     : 'Error loading Data';
 });
-
+//=============================================
+//=============================================
+//=============================================
+//HIGH CRITERIA DATA
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//ETC INFO
+//=============================================
+//=============================================
+//=============================================
 let docTotalAmountMade = document.getElementById('totalAmountMade');
 let docOrderAmountMade = document.getElementById('amountMade');
 let docLowestSellPrice = document.getElementById('printSell');
@@ -159,78 +219,199 @@ var popEtcInfo = (() => {
     ? pageData.myOrderIterator + 1
     : docCurrentOrder[0].innerHTML = 'Restarting...';
 });
+//=============================================
+//=============================================
+//=============================================
+//ETC INFO
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//BUYS
+//=============================================
+//=============================================
+//=============================================
+var docNewPriceUpdateBuy = document.getElementById('newPriceUpdateBuy');
+var docOldPriceUpdateBuy = document.getElementById('oldPriceUpdateBuy');
+var docDifferenceBuy     = document.getElementById('differenceBuy');
+var docMyBuyID           = document.getElementById('myBuyID');
+var docMyBuyPrice        = document.getElementById('myBuyPrice');
+var docMyOldBuyPrice     = document.getElementById('myOldBuyPrice');
+var docMyBuyMargin       = document.getElementById('buyMargin');
+var docOrderGapBuy       = document.getElementById('orderGapBuy');
+var docDollarGapBuy      = document.getElementById('dollarGapBuy');
+var docTotalBuy          = document.getElementById('buyTotal');
 
-var popData = (() => {
+var popBuyData = (() => {
 
-  //BUY ORDER
-  //document.getElementById('talkAboutUpdatingBuy').innerHTML = pageData.outPutLoggingBuy.talkAboutUpdating ? pageData.outPutLoggingBuy.talkAboutUpdating : document.getElementById('talkAboutUpdatingBuy').innerHTML = 'Hasn\'t Changed Price Yet';
-  document.getElementById('newPriceUpdateBuy').innerHTML = pageData.outPutLoggingBuy.difference ? '$' + pageData.outPutLoggingBuy.newPriceUpdate.toFixed(2) : document.getElementById('newPriceUpdateBuy').innerHTML = 'No new update';
-  document.getElementById('oldPriceUpdateBuy').innerHTML = pageData.outPutLoggingBuy.difference ? '$' + pageData.outPutLoggingBuy.oldPriceUpdate.toFixed(2) : document.getElementById('oldPriceUpdateBuy').innerHTML = 'N/A';
-  document.getElementById('differenceBuy').innerHTML = pageData.outPutLoggingBuy.difference ? '$' + pageData.outPutLoggingBuy.difference.toFixed(2) : document.getElementById('differenceBuy').innerHTML = 'N/A';
+  docNewPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.difference
+    ? '$' + pageData.outPutLoggingBuy.newPriceUpdate.toFixed(2)
+    : docNewPriceUpdateBuy.innerHTML = 'No new update';
+
+  docOldPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.difference
+    ? '$' + pageData.outPutLoggingBuy.oldPriceUpdate.toFixed(2)
+    : docOldPriceUpdateBuy.innerHTML = 'N/A';
+
+  docDifferenceBuy.innerHTML         = pageData.outPutLoggingBuy.difference
+    ? '$' + pageData.outPutLoggingBuy.difference.toFixed(2)
+    : docDifferenceBuy.innerHTML     = 'N/A';
+
+
   if (pageData.outPutLoggingBuy.myBuyOrder) {
-    document.getElementById('myBuyID').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.order_id ? pageData.outPutLoggingBuy.myBuyOrder.order_id : document.getElementById('myBuyID').innerHTML = 'N/A';
-    document.getElementById('myBuyPrice').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.price ? '$' + pageData.outPutLoggingBuy.myBuyOrder.price.toFixed(2) : document.getElementById('myBuyPrice').innerHTML = 'N/A';
-    document.getElementById('myOldBuyPrice').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldPrice ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2) : document.getElementById('myOldBuyPrice').innerHTML = 'N/A';
-    document.getElementById('buyMargin').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldMargin ? pageData.outPutLoggingBuy.myBuyOrder.oldMargin.toFixed(4) + '%' : document.getElementById('buyMargin').innerHTML = 'N/A';
-    document.getElementById('orderGapBuy').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldOrdersToGo ? '#' + pageData.outPutLoggingBuy.myBuyOrder.oldOrdersToGo : document.getElementById('orderGapBuy').innerHTML = 'N/A';
-    document.getElementById('dollarGapBuy').innerHTML = pageData.outPutLoggingBuy.myBuyOrder.oldAmountToGo ? '$' + numberWithCommas(pageData.outPutLoggingBuy.myBuyOrder.oldAmountToGo.toFixed(2)) : document.getElementById('dollarGapBuy').innerHTML = 'N/A';
-    document.getElementById('buyTotal').innerHTML = 20 * pageData.outPutLoggingBuy.myBuyOrder.price ? '$' + numberWithCommas((20 * pageData.outPutLoggingBuy.myBuyOrder.price).toFixed(2)) : document.getElementById('buyTotal').innerHTML = 'N/A';
-  } else {
-    document.getElementById('myBuyID').innerHTML = 'No existing order';
-    document.getElementById('myBuyPrice').innerHTML = 'No existing order';
-    document.getElementById('myOldBuyPrice').innerHTML = 'No existing order';
-    document.getElementById('buyMargin').innerHTML = 'No existing order';
-    document.getElementById('orderGapBuy').innerHTML = 'No existing order';
-    document.getElementById('dollarGapBuy').innerHTML = 'No existing order';
-    document.getElementById('buyTotal').innerHTML = 'No existing order';
-  }
-  //BUY ORDER
+    docMyBuyID.innerHTML           = pageData.outPutLoggingBuy.myBuyOrder.order_id
+      ? pageData.outPutLoggingBuy.myBuyOrder.order_id
+      : docMyBuyID.innerHTML       = 'N/A';
 
-  //SELL ORDER
-  if (pageData.outPutLoggingSell.mySellOrder) {
-    document.getElementById('mySellID').innerHTML = pageData.outPutLoggingSell.mySellOrder.order_id ? pageData.outPutLoggingSell.mySellOrder.order_id : document.getElementById('mySellID').innerHTML = 'No existing order';
-    document.getElementById('mySellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.price ? '$' + pageData.outPutLoggingSell.mySellOrder.price.toFixed(2) : document.getElementById('mySellPrice').innerHTML = 'N/A';
-    document.getElementById('myOldSellPrice').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldPrice ? '$' + pageData.outPutLoggingSell.mySellOrder.oldPrice.toFixed(2) : document.getElementById('myOldSellPrice').innerHTML = 'N/A';
-    document.getElementById('sellMargin').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldMargin ? pageData.outPutLoggingSell.mySellOrder.oldMargin.toFixed(4) + '%' : document.getElementById('sellMargin').innerHTML = 'N/A';
-    document.getElementById('orderGapSell').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldOrdersToGo ? '#' + pageData.outPutLoggingSell.mySellOrder.oldOrdersToGo : document.getElementById('orderGapSell').innerHTML = 'N/A';
-    document.getElementById('dollarGapSell').innerHTML = pageData.outPutLoggingSell.mySellOrder.oldAmountToGo ? '$' + numberWithCommas(pageData.outPutLoggingSell.mySellOrder.oldAmountToGo.toFixed(2)) : document.getElementById('dollarGapSell').innerHTML = 'N/A';
-    document.getElementById('sellTotal').innerHTML = 20 * pageData.outPutLoggingSell.mySellOrder.price ? '$' + numberWithCommas((20 * pageData.outPutLoggingSell.mySellOrder.price).toFixed(2)) : document.getElementById('sellTotal').innerHTML = 'N/A';
+    docMyBuyPrice.innerHTML        = pageData.outPutLoggingBuy.myBuyOrder.price
+      ? '$' + pageData.outPutLoggingBuy.myBuyOrder.price.toFixed(2)
+      : docMyBuyPrice.innerHTML    = 'N/A';
+
+    docMyOldBuyPrice.innerHTML     = pageData.outPutLoggingBuy.myBuyOrder.oldPrice
+      ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2)
+      : docMyOldBuyPrice.innerHTML = 'N/A';
+
+    docMyBuyMargin.innerHTML       = pageData.outPutLoggingBuy.myBuyOrder.oldMargin
+      ? pageData.outPutLoggingBuy.myBuyOrder.oldMargin.toFixed(4) + '%'
+      : docMyBuyMargin.innerHTML   = 'N/A';
+
+    docOrderGapBuy.innerHTML       = pageData.outPutLoggingBuy.myBuyOrder.oldOrdersToGo
+      ? '#' + pageData.outPutLoggingBuy.myBuyOrder.oldOrdersToGo
+      : docOrderGapBuy.innerHTML   = 'N/A';
+
+    docDollarGapBuy.innerHTML      = pageData.outPutLoggingBuy.myBuyOrder.oldAmountToGo
+      ? '$' + numberWithCommas(pageData.outPutLoggingBuy.myBuyOrder.oldAmountToGo.toFixed(2))
+      : docDollarGapBuy.innerHTML  = 'N/A';
+
+    docTotalBuy.innerHTML          = 20 * pageData.outPutLoggingBuy.myBuyOrder.price
+      ? '$' + numberWithCommas((20 * pageData.outPutLoggingBuy.myBuyOrder.price).toFixed(2))
+      : docTotalBuy.innerHTML      = 'N/A';
   } else {
-    document.getElementById('mySellID').innerHTML = 'No existing order';
-    document.getElementById('mySellPrice').innerHTML = 'No existing order';
-    document.getElementById('myOldSellPrice').innerHTML = 'No existing order';
-    document.getElementById('sellMargin').innerHTML = 'No existing order';
-    document.getElementById('orderGapSell').innerHTML = 'No existing order';
-    document.getElementById('dollarGapSell').innerHTML = 'No existing order';
-    document.getElementById('sellTotal').innerHTML = 'No existing order';
+    docMyBuyID.innerHTML       = 'No existing order';
+    docMyBuyPrice.innerHTML    = 'No existing order';
+    docMyOldBuyPrice.innerHTML = 'No existing order';
+    docMyBuyMargin.innerHTML   = 'No existing order';
+    docOrderGapBuy.innerHTM    = 'No existing order';
+    docDollarGapBuy.innerHTML  = 'No existing order';
+    docTotalBuy.innerHTML      = 'No existing order';
   }
-  //SELL ORDER
 });
+//=============================================
+//=============================================
+//=============================================
+//BUYS
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//SELLS
+//=============================================
+//=============================================
+//=============================================
+var docMySellID           = document.getElementById('mySellID');
+var docMySellPrice        = document.getElementById('mySellPrice');
+var docMyOldSellPrice     = document.getElementById('myOldSellPrice');
+var docMySellMargin       = document.getElementById('sellMargin');
+var docOrderGapSell       = document.getElementById('orderGapSell');
+var docDollarGapSell      = document.getElementById('dollarGapSell');
+var docTotalSell          = document.getElementById('sellTotal');
 
-//START>> Number with commas
+var popSellData = (() => {
+  if (pageData.outPutLoggingSell.mySellOrder) {
+    docMySellID.innerHTML           = pageData.outPutLoggingSell.mySellOrder.order_id
+      ? pageData.outPutLoggingSell.mySellOrder.order_id
+      : docMySellID.innerHTML       = 'No existing order';
+
+    docMySellPrice.innerHTML        = pageData.outPutLoggingSell.mySellOrder.price
+      ? '$' + pageData.outPutLoggingSell.mySellOrder.price.toFixed(2)
+      : docMySellPrice.innerHTML    = 'N/A';
+
+    docMyOldSellPrice.innerHTML     = pageData.outPutLoggingSell.mySellOrder.oldPrice
+      ? '$' + pageData.outPutLoggingSell.mySellOrder.oldPrice.toFixed(2)
+      : docMyOldSellPrice.innerHTML = 'N/A';
+
+    docMySellMargin.innerHTML       = pageData.outPutLoggingSell.mySellOrder.oldMargin
+      ? pageData.outPutLoggingSell.mySellOrder.oldMargin.toFixed(4) + '%'
+      : docMySellMargin.innerHTML   = 'N/A';
+
+    docOrderGapSell.innerHTML       = pageData.outPutLoggingSell.mySellOrder.oldOrdersToGo
+      ? '#' + pageData.outPutLoggingSell.mySellOrder.oldOrdersToGo
+      : docOrderGapSell.innerHTML   = 'N/A';
+
+    docDollarGapSell.innerHTML      = pageData.outPutLoggingSell.mySellOrder.oldAmountToGo
+      ? '$' + numberWithCommas(pageData.outPutLoggingSell.mySellOrder.oldAmountToGo.toFixed(2))
+      : docDollarGapSell.innerHTML  = 'N/A';
+
+    docTotalSell.innerHTML          = 20 * pageData.outPutLoggingSell.mySellOrder.price
+      ? '$' + numberWithCommas((20 * pageData.outPutLoggingSell.mySellOrder.price).toFixed(2))
+      : docTotalSell.innerHTML      = 'N/A';
+  } else {
+    docMySellID.innerHTML       = 'No existing order';
+    docMySellPrice.innerHTML    = 'No existing order';
+    docMyOldSellPrice.innerHTML = 'No existing order';
+    docMySellMargin.innerHTML   = 'No existing order';
+    docOrderGapSell.innerHTML   = 'No existing order';
+    docDollarGapSell.innerHTML  = 'No existing order';
+    docTotalSell.innerHTML      = 'No existing order';
+  }
+});
 //=============================================
 //=============================================
 //=============================================
-function numberWithCommas(x) {
+//SELLS
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//NUMBERS WITH COMMAS
+//=============================================
+//=============================================
+//=============================================
+var numberWithCommas = ((x) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
+});
 //=============================================
 //=============================================
 //=============================================
-//END>> Number with Commas
+//NUMBERS WITH COMMAS
 //=============================================
 //=============================================
 //=============================================
-function marketData() {
+//=============================================
+//=============================================
+//=============================================
+//BAR GRAPHS
+//=============================================
+//=============================================
+//=============================================
+var marketData = (() => {
   if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerBuy')[0].style.width = pageData.outPutLoggingGood.goodBuyPercent + '%';
   if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerSell')[0].style.width = pageData.outPutLoggingGood.goodSellPercent + '%';
   if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerRest')[0].style.width = pageData.outPutLoggingGood.totalBadPercent + '%';
   if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerBuy')[1].style.width = pageData.outPutLoggingGood.goodBuyPercent + '%';
   if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerSell')[1].style.width = pageData.outPutLoggingGood.goodSellPercent + '%';
   if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerRest')[1].style.width = pageData.outPutLoggingGood.totalBadPercent + '%';
-}
-
-function makePie() {
+});
+//=============================================
+//=============================================
+//=============================================
+//BAR GRAPHS
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//PIE CHARTS
+//=============================================
+//=============================================
+//=============================================
+var makePie = (() => {
   if (pageData.myOrderIterator % 2) {
     google.charts.load('current', {
       'packages': ['corechart']
@@ -243,7 +424,7 @@ function makePie() {
     google.charts.setOnLoadCallback(drawChart2);
   }
 
-  function drawChart1() {
+  var drawChart1 = (() => {
     let firstBuyPercent = pageData.outPutLoggingGood.goodBuyPercent;
     let firstSellPercent = pageData.outPutLoggingGood.goodSellPercent;
     let firstTotalBadPercent = pageData.outPutLoggingGood.totalBadPercent;
@@ -261,9 +442,9 @@ function makePie() {
     var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
 
     chart.draw(data, options);
-  }
+  });
 
-  function drawChart2() {
+  var drawChart2 = (() => {
     let secondBuyPercent = pageData.outPutLoggingGood.goodBuyPercent;
     let secondSellPercent = pageData.outPutLoggingGood.goodSellPercent;
     let secondTotalBadPercent = pageData.outPutLoggingGood.totalBadPercent;
@@ -281,10 +462,23 @@ function makePie() {
     var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
 
     chart.draw(data, options);
-  }
-}
-
-function loadScript(url, callback) {
+  });
+});
+//=============================================
+//=============================================
+//=============================================
+//PIE CHARTS
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//SCRIPT LOADER
+//=============================================
+//=============================================
+//=============================================
+function loadScript (url, callback) {
 
   var script = document.createElement('script');
   script.type = 'text/javascript';
@@ -306,3 +500,10 @@ function loadScript(url, callback) {
   script.src = url;
   document.getElementsByTagName('head')[0].appendChild(script);
 }
+//=============================================
+//=============================================
+//=============================================
+//SCRIPT LOADER
+//=============================================
+//=============================================
+//=============================================

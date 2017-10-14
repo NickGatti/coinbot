@@ -3,12 +3,16 @@
 //=============================================
 //START>> Global Var Dec's
 //=============================================
+//================SERVER PORT==================
+// Number for localhost
+// String 'c9' for cloudnine.io
+var lisenPort = 3000;
 //=============================================
 //=============================================
 const Gdax = require('gdax');
 const util = require('util');
-var fs = require('fs');
-var express = require('express');
+const fs = require('fs');
+const express = require('express');
 const publicClient = new Gdax.PublicClient('ETH-USD');
 const websocket = new Gdax.WebsocketClient(['ETH-USD']);
 const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind(publicClient));
@@ -985,8 +989,11 @@ app.get('/api', function(req, res) {
     sellState: myOrders.sell[myOrderIterator].state ? myOrders.sell[myOrderIterator].state : false
   });
 });
-
-app.listen(3000); //(process.env.PORT, process.env.IP)  ; //3000 Normal //process.env.PORT, process.env.IP for C9.io
+if (lisenPort === 'c9') {
+  app.listen(process.env.PORT, process.env.IP);
+} else {
+  app.listen(lisenPort);
+}
 //=============================================
 //=============================================
 //=============================================
