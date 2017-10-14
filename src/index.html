@@ -693,15 +693,15 @@ body {
 
   let popBuyData = (() => {
 
-    docNewPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.talkAboutUpdating
+    docNewPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.orderUpdate
       ? '$' + pageData.outPutLoggingBuy.myBuyOrder.price.toFixed(2)
       : docNewPriceUpdateBuy.innerHTML = 'No new update';
 
-    docOldPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.talkAboutUpdating
+    docOldPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.orderUpdate
       ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2)
       : docOldPriceUpdateBuy.innerHTML = 'N/A';
 
-    docDifferenceBuy.innerHTML         = pageData.outPutLoggingBuy.talkAboutUpdating
+    docDifferenceBuy.innerHTML         = pageData.outPutLoggingBuy.orderUpdate
       ? '$' + (pageData.outPutLoggingBuy.myBuyOrder.price - pageData.outPutLoggingBuy.myBuyOrder.oldPrice).toFixed(2)
       : docDifferenceBuy.innerHTML     = 'N/A';
 

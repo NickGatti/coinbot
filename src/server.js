@@ -59,7 +59,7 @@ let orderBook = {
 };
 
 let myOrderIterator = 0;
-let talkAboutUpdating = false;
+let orderUpdate = false;
 let placeTalk = {
   buy: {
     placing: false,
@@ -501,7 +501,7 @@ let outPutLoggingBuy = (() => {
   if (!buyGapInfo()) return false;
   if (myOrders.buy[myOrderIterator] && buyGapInfo()) {
     return {
-      talkAboutUpdating: talkAboutUpdating ? talkAboutUpdating : false,
+      orderUpdate: orderUpdate ? orderUpdate : false,
       myBuyOrder: myOrders.buy[myOrderIterator] ? myOrders.buy[myOrderIterator] : false,
       buyCount: buyGapInfo()[0] ? buyGapInfo()[0] : false,
       buyTotal: buyGapInfo()[1] ? buyGapInfo()[1] : false
@@ -617,6 +617,7 @@ let findRealisticOrders = (() => {
 //=============================================
 //=============================================
 let placeBuy = (() => {
+  orderUpdate = false;
   if (!filterBuyOrder(findHighestBuyPrice())) {
     //console.log('Wait what? This should\'t happen!');
     return;
@@ -663,7 +664,7 @@ let placeBuy = (() => {
         (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[myOrderIterator].margin &&
         filterBuyOrder().price > myOrders.buy[myOrderIterator].oldPrice) {
 
-        talkAboutUpdating = true;
+        orderUpdate = true;
 
         myOrders.buy[myOrderIterator].oldOrdersToGo = buyGapInfo()[0];
         myOrders.buy[myOrderIterator].oldAmountToGo = buyGapInfo()[1];
