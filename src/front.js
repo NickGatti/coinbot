@@ -1,6 +1,44 @@
 var google = '';
 let pageData = {};
 let oReq = new XMLHttpRequest();
+
+//=============================================
+//=============================================
+//=============================================
+//SCRIPT LOADER
+//=============================================
+//=============================================
+//=============================================
+let loadScript = ((url, callback) => {
+
+  let script = document.createElement('script');
+  script.type = 'text/javascript';
+
+  if (script.readyState) { //IE
+    script.onreadystatechange = (() => {
+      if (script.readyState === 'loaded' ||
+        script.readyState === 'complete') {
+        script.onreadystatechange = null;
+        callback();
+      }
+    });
+  } else { //Others
+    script.onload = (() => {
+      callback();
+    });
+  }
+
+  script.src = url;
+  document.getElementsByTagName('head')[0].appendChild(script);
+});
+//=============================================
+//=============================================
+//=============================================
+//SCRIPT LOADER
+//=============================================
+//=============================================
+//=============================================
+
 //local for localhost | c9 for cloudnine
 let myAPIurl = 'local';
 
@@ -13,20 +51,16 @@ if (myAPIurl === 'c9') {
   myAPIurl = false;
 }
 
-loadScript('https://www.gstatic.com/charts/loader.js', (() => {
-  return;
-}));
-
 if (myAPIurl) setInterval(() => {
   fetch(myAPIurl, {
     method: 'GET'
-  }).then(function(data) {
+  }).then(((data) => {
     return data.json();
-  }).then(function(data) {
+  })).then(((data) => {
     //console.log('Yes')
     pageData = data;
     activate();
-  }).catch(() => {
+  })).catch(() => {
     //console.log('No')
     oReq.addEventListener('load', reqListener);
     oReq.open('GET', myAPIurl);
@@ -418,6 +452,15 @@ let makePie = (() => {
   let buyPercent = pageData.marketData.realBuys;
   let sellPercent = pageData.marketData.realSells;
   let totalBadPercent = ((pageData.marketData.totalBuys + pageData.marketData.totalSells) - (pageData.marketData.realSells + pageData.marketData.realBuys));
+  let drawChart1 = ((data, options) => {
+    let chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+    chart.draw(data, options);
+  });
+
+  let drawChart2 = ((data, options) => {
+    let chart = new google.visualization.PieChart(document.getElementById('piechart2'));
+    chart.draw(data, options);
+  });
   if (pageData.currentOrder % 2 === 0) {
     google.charts.load('current', {
       'packages': ['corechart']
@@ -449,16 +492,6 @@ let makePie = (() => {
     };
     google.charts.setOnLoadCallback(drawChart2(data, options));
   }
-
-  function drawChart1(data, options) {
-    let chart = new google.visualization.PieChart(document.getElementById('piechart1'));
-    chart.draw(data, options);
-  }
-
-  function drawChart2(data, options) {
-    let chart = new google.visualization.PieChart(document.getElementById('piechart2'));
-    chart.draw(data, options);
-  }
 });
 //=============================================
 //=============================================
@@ -467,39 +500,6 @@ let makePie = (() => {
 //=============================================
 //=============================================
 //=============================================
-//=============================================
-//=============================================
-//=============================================
-//SCRIPT LOADER
-//=============================================
-//=============================================
-//=============================================
-function loadScript (url, callback) {
-
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-
-  if (script.readyState) { //IE
-    script.onreadystatechange = function() {
-      if (script.readyState === 'loaded' ||
-        script.readyState === 'complete') {
-        script.onreadystatechange = null;
-        callback();
-      }
-    };
-  } else { //Others
-    script.onload = function() {
-      callback();
-    };
-  }
-
-  script.src = url;
-  document.getElementsByTagName('head')[0].appendChild(script);
-}
-//=============================================
-//=============================================
-//=============================================
-//SCRIPT LOADER
-//=============================================
-//=============================================
-//=============================================
+loadScript('https://www.gstatic.com/charts/loader.js', (() => {
+  return;
+}));
