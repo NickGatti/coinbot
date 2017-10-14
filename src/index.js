@@ -1,12 +1,12 @@
 //=============================================
 //=============================================
 //=============================================
-//START>> Global Var Dec's
+//START>> Global let Dec's
 //=============================================
 //================SERVER PORT==================
 // Number for localhost
 // String 'c9' for cloudnine.io
-var lisenPort = 3000;
+let lisenPort = 3000;
 //=============================================
 //=============================================
 const Gdax = require('gdax');
@@ -44,7 +44,7 @@ const mySettings = {
     1.0250 // 20
   ]
 };
-var myOrders = {
+let myOrders = {
   'buy': [],
   'sell': [],
   'orderAmountMade': []
@@ -53,14 +53,14 @@ populateMySettings(10);
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
-var orderBook = {
+let orderBook = {
   'buy': [],
   'sell': []
 };
 
-var myOrderIterator = 0;
-var talkAboutUpdating = false;
-var placeTalk = {
+let myOrderIterator = 0;
+let talkAboutUpdating = false;
+let placeTalk = {
   buy: {
     placing: false,
     price: false,
@@ -76,7 +76,7 @@ readData();
 //=============================================
 //=============================================
 //=============================================
-//END>> Global Var Dec's
+//END>> Global let Dec's
 //=============================================
 //=============================================
 //=============================================
@@ -85,11 +85,11 @@ readData();
 //=============================================
 //=============================================
 //console.log('Conneting WebSocket...');
-var pauseOrderBook = false;
-var resetFlag = false;
-var runBenchmark = false;
-var resetPause = false;
-var dataIntegrityTest = false;
+let pauseOrderBook = false;
+let resetFlag = false;
+let runBenchmark = false;
+let resetPause = false;
+let dataIntegrityTest = false;
 setInterval(() => {
   clearInterval(findRealisticOrders);
   resetFlag = true;
