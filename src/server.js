@@ -60,7 +60,7 @@ let orderBook = {
 
 let currentOrder = 0;
 let orderUpdate = false;
-let placeTalk = {
+let newOrder = {
   buy: {
     placing: false,
     price: false,
@@ -480,7 +480,7 @@ let marketData = (() => {
       totalSells: orderBook['sell'].length ? orderBook['sell'].length : false,
       totalAmountMade: addTotalAmount() ? addTotalAmount() : false,
       amountMade: myOrders.orderAmountMade ? myOrders.orderAmountMade[currentOrder] : false,
-      placeTalk: placeTalk ? placeTalk : false
+      newOrder: newOrder ? newOrder : false
     };
   }
   return false;
@@ -544,12 +544,12 @@ app.get('/api', function(req, res) {
   res.json({
     highestBuyPrice: findHighestBuyPrice() ? findHighestBuyPrice().price : false,
     lowestSellPrice: findLowestSellPrice() ? findLowestSellPrice().price : false,
-    marketData: marketData() ? marketData() : false,
-    buyOrderData: buyOrderData() ? buyOrderData() : false,
-    sellOrderData: sellOrderData() ? sellOrderData() : false,
     currentOrder: currentOrder ? currentOrder : false,
     buyState: myOrders.buy[currentOrder].state ? myOrders.buy[currentOrder].state : false,
-    sellState: myOrders.sell[currentOrder].state ? myOrders.sell[currentOrder].state : false
+    sellState: myOrders.sell[currentOrder].state ? myOrders.sell[currentOrder].state : false,
+    marketData: marketData() ? marketData() : false,
+    buyOrderData: buyOrderData() ? buyOrderData() : false,
+    sellOrderData: sellOrderData() ? sellOrderData() : false
   });
 });
 if (lisenPort === 'c9') {
@@ -616,7 +616,7 @@ let placeBuy = (() => {
 
   if (myOrders.buy[currentOrder].state === 'buying') {
 
-    placeTalk.buy = {
+    newOrder.buy = {
       placing: true,
       price: filterBuyOrder().price,
       size: 20
@@ -688,7 +688,7 @@ let placeSell = (() => {
   }
 
   if (myOrders.sell[currentOrder].state === 'selling') {
-    placeTalk.sell = {
+    newOrder.sell = {
       placing: true,
       price: filterSellOrder().price,
       size: 20
@@ -991,17 +991,17 @@ let addTotalAmount = (() => {
 //=============================================
 //=============================================
 //=============================================
-//START>> Reset placeTalk
+//START>> Reset newOrder
 //=============================================
 //=============================================
 //=============================================
-let resetPlaceTalk = (() => {
-  if (placeTalk.buy.placing) placeTalk.buy = {
+let resetnewOrder = (() => {
+  if (newOrder.buy.placing) newOrder.buy = {
     placing: false,
     price: false,
     size: false
   };
-  if (placeTalk.sell.placing) placeTalk.sell = {
+  if (newOrder.sell.placing) newOrder.sell = {
     placing: false,
     price: false,
     size: false
@@ -1087,7 +1087,7 @@ let resetOrderInterval = ((countdown) => {
   } else {
     currentOrder = 0;
     writeData();
-    resetPlaceTalk();
+    resetnewOrder();
     clearInterval(countdown);
   }
 });
