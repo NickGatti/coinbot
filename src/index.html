@@ -70,22 +70,7 @@ body {
 #inBuy {
   height: 40px;
   width: 200px;
-  background: salmon;
-  color: black;
-  float: left;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 6px;
-}
-.innerBuy {
-  height: 80px;
-  background: salmon;
-}
-#inSell {
-  height: 40px;
-  width: 200px;
-  background: skyblue;
+  background: #ed3b3f;
   color: black;
   float: left;
   display: flex;
@@ -94,10 +79,27 @@ body {
   margin-left: 6px;
   margin-right: 6px;
   margin-bottom: 6px;
+  color: white;
+}
+.innerBuy {
+  height: 80px;
+  background: #ed3b3f;
+}
+#inSell {
+  height: 40px;
+  width: 200px;
+  background: #4885ed;
+  color: black;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 6px;
+  color: white;
 }
 .innerSell {
   height: 80px;
-  background: skyblue;
+  background: #4885ed;
 }
 #inRest {
   height: 40px;
@@ -109,6 +111,7 @@ body {
   justify-content: center;
   align-items: center;
   margin-bottom: 6px;
+  color: white;
 }
 .innerRest {
   height: 80px;
@@ -395,11 +398,11 @@ body {
 
 <div id='chartWrapper'>
   <div>
-    <div id="inBuy">
-      Good Buys
-    </div>
     <div id="inSell">
       Good Sells
+    </div>
+    <div id="inBuy">
+      Good Buys
     </div>
     <div id="inRest">
       Ignored Orders
@@ -407,9 +410,9 @@ body {
   </div>
   <br><br><br>
     <div class='outerChart' >
-      <div class='innerBuy'>
-      </div>
       <div class='innerSell'>
+      </div>
+      <div class='innerBuy'>
       </div>
       <div class='innerRest'>
       </div>
@@ -419,9 +422,9 @@ body {
     </div>
 
     <div class='outerChart'>
-      <div class='innerBuy'>
-      </div>
       <div class='innerSell'>
+      </div>
+      <div class='innerBuy'>
       </div>
       <div class='innerRest'>
       </div>
@@ -470,7 +473,7 @@ body {
 
   let activate = (() => {
     popOrderPlacementData();
-    pageData.myOrderIterator % 2 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
+    pageData.myOrderIterator % 2 === 0 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
     popOtherMarketData();
     popEtcInfo();
     popBuyData();
@@ -825,9 +828,9 @@ body {
     if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerBuy')[0].style.width = pageData.outPutLoggingGood.goodBuyPercent + '%';
     if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerSell')[0].style.width = pageData.outPutLoggingGood.goodSellPercent + '%';
     if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerRest')[0].style.width = pageData.outPutLoggingGood.totalBadPercent + '%';
-    if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerBuy')[1].style.width = pageData.outPutLoggingGood.goodBuyPercent + '%';
-    if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerSell')[1].style.width = pageData.outPutLoggingGood.goodSellPercent + '%';
-    if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerRest')[1].style.width = pageData.outPutLoggingGood.totalBadPercent + '%';
+    if (pageData.myOrderIterator % 2 === 0) document.querySelectorAll('.innerBuy')[1].style.width = pageData.outPutLoggingGood.goodBuyPercent + '%';
+    if (pageData.myOrderIterator % 2 === 0) document.querySelectorAll('.innerSell')[1].style.width = pageData.outPutLoggingGood.goodSellPercent + '%';
+    if (pageData.myOrderIterator % 2 === 0) document.querySelectorAll('.innerRest')[1].style.width = pageData.outPutLoggingGood.totalBadPercent + '%';
   });
   //=============================================
   //=============================================
@@ -844,7 +847,7 @@ body {
   //=============================================
   //=============================================
   let makePie = (() => {
-    if (pageData.myOrderIterator % 2) {
+    if (pageData.myOrderIterator % 2 === 0) {
       google.charts.load('current', {
         'packages': ['corechart']
       });
@@ -853,8 +856,8 @@ body {
       let totalBadPercent = (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells);
       let data = google.visualization.arrayToDataTable([
         ['Task', 'Orders valued over 400 USD'],
-        ['Good Buys', buyPercent],
         ['Good Sells', sellPercent],
+        ['Good Buys', buyPercent],
         ['Ignored orders', totalBadPercent]
       ]);
       let options = {
@@ -872,8 +875,8 @@ body {
       let totalBadPercent = (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells);
       let data = google.visualization.arrayToDataTable([
         ['Task', 'Orders valued over 6000 USD'],
-        ['Good Buys', buyPercent],
         ['Good Sells', sellPercent],
+        ['Good Buys', buyPercent],
         ['Ignored orders', totalBadPercent]
       ]);
       let options = {
