@@ -33,14 +33,15 @@ let populateMySettings = ((num) => {
 //=============================================
 //=============================================
 //=============================================
-let websocketConnected = false;
+let websocketConnected = true;
 let websocketTimeout = new Date().getTime();
 setInterval(() => {
   if ((new Date().getTime() - websocketTimeout) > 10000) {
     console.log('WebSocket Connection Lost...');
     websocketConnected = false;
+    websocket.on('close', () => {
+    });
     reconnect();
-    resetFlag = true;
   }
 }, 1000);
 let getWebSocketData = (() => {
@@ -1122,6 +1123,8 @@ let reconnect = (() => {
     resetPause = false;
     dataIntegrityTest = false;
     websocketTimeout = new Date().getTime();
+    websocket.on('open', () => {
+    });
     getWebSocketData();
   }
 });
