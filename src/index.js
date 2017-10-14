@@ -134,7 +134,7 @@ let downloadOrderBook = ((flag) => {
 
     let savedTime = new Date().getTime();
     let timeDown = 0;
-    var countdown = setInterval(() => {
+    let countdown = setInterval(() => {
       timeDown = (new Date().getTime() - savedTime);
       let output = ('Orderbook re-download timeout: ' + (timeDown)).toString();
       console.log(output.slice(0, -3));
@@ -589,7 +589,7 @@ let findRealisticOrders = (() => {
 
     let savedTime = new Date().getTime();
     let timeDown = 0;
-    var countdown = setInterval(() => {
+    let countdown = setInterval(() => {
       timeDown = (new Date().getTime() - savedTime);
       let output = timeDown.toString();
       console.log('Order took: ' + output.slice(0, -2) + 'ms');
