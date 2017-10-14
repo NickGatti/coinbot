@@ -46,6 +46,7 @@ setInterval(() => {
 let getWebSocketData = (() => {
   websocket.on('message', ((data) => {
     if (lostConnection) {
+      clearInterval(findRealisticOrders);
       resetFlag = true;
       lostConnection = false;
     }
