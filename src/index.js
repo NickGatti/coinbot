@@ -477,10 +477,7 @@ let outPutLoggingGood = (() => {
       realBuys: findGoodOrders()['buy'] ? findGoodOrders()['buy'] : false,
       realSells: findGoodOrders()['sell'] ? findGoodOrders()['sell'] : false,
       totalBuys: orderBook['buy'].length ? orderBook['buy'].length : false,
-      totalSells: orderBook['sell'].length ? orderBook['sell'].length : false,
-      goodBuyPercent: parseFloat(orderBook['buy'].length / findGoodOrders()['buy']) ? parseFloat(orderBook['buy'].length / findGoodOrders()['buy']) : false,
-      goodSellPercent: parseFloat(orderBook['sell'].length / findGoodOrders()['sell']) ? parseFloat(orderBook['sell'].length / findGoodOrders()['sell']) : false,
-      totalBadPercent: parseFloat(100 - (parseFloat(orderBook['buy'].length / findGoodOrders()['buy']) + parseFloat(orderBook['sell'].length / findGoodOrders()['sell']))) ? parseFloat(100 - (parseFloat(orderBook['buy'].length / findGoodOrders()['buy']) + parseFloat(orderBook['sell'].length / findGoodOrders()['sell']))) : false
+      totalSells: orderBook['sell'].length ? orderBook['sell'].length : false
     };
   }
   return false;

@@ -32,7 +32,7 @@ let reqListener = (() => {
 
 let activate = (() => {
   popOrderPlacementData();
-  pageData.myOrderIterator % 2 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
+  pageData.myOrderIterator % 2 === 0 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
   popOtherMarketData();
   popEtcInfo();
   popBuyData();
@@ -117,21 +117,18 @@ let docTotalBuys        = document.getElementById('totalBuys');
 //=============================================
 //=============================================
 let popLowCriteraMarketData = (() => {
+  let realSellPercent     = (((pageData.outPutLoggingGood.realSells / pageData.outPutLoggingGood.totalSells) * 10000) / 100);
+  let realBuyPercent      = (((pageData.outPutLoggingGood.realBuys / pageData.outPutLoggingGood.totalBuys) * 10000) / 100);
+  let realTotalPercent    = (((pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys) / (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) * 10000) / 100);
   docRealSells[0].innerHTML        = pageData.outPutLoggingGood.realSells
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
     : 'Error loading Data';
-  docRealBuys[0].innerHTML = pageData.outPutLoggingGood.realBuys
+  docRealBuys[0].innerHTML         = pageData.outPutLoggingGood.realBuys
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys)
     : 'Error loading Data';
-  docRealSellPercent[0].innerHTML  = pageData.outPutLoggingGood.goodSellPercent
-    ? pageData.outPutLoggingGood.goodSellPercent.toFixed(2) + '%'
-    : 'Error loading Data';
-  docRealBuyPercent[0].innerHTML   = pageData.outPutLoggingGood.goodBuyPercent
-    ? pageData.outPutLoggingGood.goodBuyPercent.toFixed(2) + '%'
-    : 'Error loading Data';
-  docRealTotalPercent[0].innerHTML = pageData.outPutLoggingGood.totalBadPercent
-    ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%'
-    : 'Error loading Data';
+  docRealSellPercent[0].innerHTML  = realSellPercent.toFixed(2) + '%';
+  docRealBuyPercent[0].innerHTML   = realBuyPercent.toFixed(2) + '%';
+  docRealTotalPercent[0].innerHTML = realTotalPercent.toFixed(2) + '%';
 });
 //=============================================
 //=============================================
@@ -148,34 +145,33 @@ let popLowCriteraMarketData = (() => {
 //=============================================
 //=============================================
 let popHighCriteriaMarketData = (() => {
+  let realSellPercent     = (((pageData.outPutLoggingGood.realSells / pageData.outPutLoggingGood.totalSells) * 10000) / 100);
+  let realBuyPercent      = (((pageData.outPutLoggingGood.realBuys / pageData.outPutLoggingGood.totalBuys) * 10000) / 100);
+  let realTotalPercent    = (((pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys) / (pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) * 10000) / 100);
   docRealSells[1].innerHTML        = pageData.outPutLoggingGood.realSells
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.realSells)
     : 'Error loading Data';
-
   docRealBuys[1].innerHTML         = pageData.outPutLoggingGood.realBuys
     ? '#' + numberWithCommas(pageData.outPutLoggingGood.realBuys)
     : 'Error loading Data';
-
-  docRealSellPercent[1].innerHTML  = pageData.outPutLoggingGood.goodSellPercent
-    ? pageData.outPutLoggingGood.goodSellPercent.toFixed(2) + '%'
-    : 'Error loading Data';
-
-  docRealBuyPercent[1].innerHTML   = pageData.outPutLoggingGood.goodBuyPercent
-    ? pageData.outPutLoggingGood.goodBuyPercent.toFixed(2) + '%'
-    : 'Error loading Data';
-
-  docRealTotalPercent[1].innerHTML = pageData.outPutLoggingGood.totalBadPercent
-    ? pageData.outPutLoggingGood.totalBadPercent.toFixed(2) + '%'
-    : 'Error loading Data';
+  docRealSellPercent[1].innerHTML  = realSellPercent.toFixed(2) + '%';
+  docRealBuyPercent[1].innerHTML   = realBuyPercent.toFixed(2) + '%';
+  docRealTotalPercent[1].innerHTML = realTotalPercent.toFixed(2) + '%';
 });
-
+//=============================================
+//=============================================
+//=============================================
+//OTHER DATA
+//=============================================
+//=============================================
+//=============================================
 let popOtherMarketData = (() => {
-  docTotalBuys.innerHTML  = pageData.outPutLoggingGood.totalSells
-    ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalSells)
+  docTotalBuys.innerHTML  = pageData.outPutLoggingGood.totalBuys
+    ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalBuys)
     : 'Error loading Data';
 
-  docTotalSells.innerHTML = pageData.outPutLoggingGood.totalBuys
-    ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalBuys)
+  docTotalSells.innerHTML = pageData.outPutLoggingGood.totalSells
+    ? '#' + numberWithCommas(pageData.outPutLoggingGood.totalSells)
     : 'Error loading Data';
 });
 //=============================================
@@ -246,16 +242,16 @@ let docTotalBuy          = document.getElementById('buyTotal');
 
 let popBuyData = (() => {
 
-  docNewPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.difference
-    ? '$' + pageData.outPutLoggingBuy.newPriceUpdate.toFixed(2)
+  docNewPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.talkAboutUpdating
+    ? '$' + pageData.outPutLoggingBuy.myBuyOrder.price.toFixed(2)
     : docNewPriceUpdateBuy.innerHTML = 'No new update';
 
-  docOldPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.difference
-    ? '$' + pageData.outPutLoggingBuy.oldPriceUpdate.toFixed(2)
+  docOldPriceUpdateBuy.innerHTML     = pageData.outPutLoggingBuy.talkAboutUpdating
+    ? '$' + pageData.outPutLoggingBuy.myBuyOrder.oldPrice.toFixed(2)
     : docOldPriceUpdateBuy.innerHTML = 'N/A';
 
-  docDifferenceBuy.innerHTML         = pageData.outPutLoggingBuy.difference
-    ? '$' + pageData.outPutLoggingBuy.difference.toFixed(2)
+  docDifferenceBuy.innerHTML         = pageData.outPutLoggingBuy.talkAboutUpdating
+    ? '$' + (pageData.outPutLoggingBuy.myBuyOrder.price - pageData.outPutLoggingBuy.myBuyOrder.oldPrice).toFixed(2)
     : docDifferenceBuy.innerHTML     = 'N/A';
 
 
@@ -384,12 +380,15 @@ let numberWithCommas = ((x) => {
 //=============================================
 //=============================================
 let marketData = (() => {
-  if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerBuy')[0].style.width = pageData.outPutLoggingGood.goodBuyPercent + '%';
-  if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerSell')[0].style.width = pageData.outPutLoggingGood.goodSellPercent + '%';
-  if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerRest')[0].style.width = pageData.outPutLoggingGood.totalBadPercent + '%';
-  if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerBuy')[1].style.width = pageData.outPutLoggingGood.goodBuyPercent + '%';
-  if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerSell')[1].style.width = pageData.outPutLoggingGood.goodSellPercent + '%';
-  if (!(pageData.myOrderIterator % 2)) document.querySelectorAll('.innerRest')[1].style.width = pageData.outPutLoggingGood.totalBadPercent + '%';
+  let realSellPercent     = (((pageData.outPutLoggingGood.realSells / (pageData.outPutLoggingGood.totalSells + pageData.outPutLoggingGood.totalBuys)) * 10000) / 100);
+  let realBuyPercent      = (((pageData.outPutLoggingGood.realBuys / (pageData.outPutLoggingGood.totalSells + pageData.outPutLoggingGood.totalBuys)) * 10000) / 100);
+  let realTotalPercent    = (100 - (realSellPercent + realBuyPercent));
+  if (pageData.myOrderIterator % 2 === 0) document.querySelectorAll('.innerBuy')[0].style.width = realBuyPercent + '%';
+  if (pageData.myOrderIterator % 2 === 0) document.querySelectorAll('.innerSell')[0].style.width = realSellPercent + '%';
+  if (pageData.myOrderIterator % 2 === 0) document.querySelectorAll('.innerRest')[0].style.width = realTotalPercent + '%';
+  if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerBuy')[1].style.width = realBuyPercent + '%';
+  if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerSell')[1].style.width = realSellPercent + '%';
+  if (pageData.myOrderIterator % 2) document.querySelectorAll('.innerRest')[1].style.width = realTotalPercent + '%';
 });
 //=============================================
 //=============================================
@@ -409,14 +408,14 @@ let makePie = (() => {
   let buyPercent = pageData.outPutLoggingGood.realBuys;
   let sellPercent = pageData.outPutLoggingGood.realSells;
   let totalBadPercent = ((pageData.outPutLoggingGood.totalBuys + pageData.outPutLoggingGood.totalSells) - (pageData.outPutLoggingGood.realSells + pageData.outPutLoggingGood.realBuys));
-  if (pageData.myOrderIterator % 2) {
+  if (pageData.myOrderIterator % 2 === 0) {
     google.charts.load('current', {
       'packages': ['corechart']
     });
     let data = google.visualization.arrayToDataTable([
       ['Task', 'Orders valued over 400 USD'],
-      ['Good Buys', buyPercent],
       ['Good Sells', sellPercent],
+      ['Good Buys', buyPercent],
       ['Ignored orders', totalBadPercent]
     ]);
     let options = {
@@ -431,8 +430,8 @@ let makePie = (() => {
     });
     let data = google.visualization.arrayToDataTable([
       ['Task', 'Orders valued over 6000 USD'],
-      ['Good Buys', buyPercent],
       ['Good Sells', sellPercent],
+      ['Good Buys', buyPercent],
       ['Ignored orders', totalBadPercent]
     ]);
     let options = {
