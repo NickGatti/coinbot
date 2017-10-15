@@ -35,16 +35,33 @@ let populateMySettings = ((num) => {
 //=============================================
 let websocketTimeout = new Date().getTime();
 let lostConnection = false;
-setInterval(() => {
-  if ((new Date().getTime() - websocketTimeout) > 10000) {
-    console.log('WebSocket Connection Lost...');
-    lostConnection = true;
-    websocket.on('open', () => {
-    });
-  }
-}, 1000);
 let getWebSocketData = (() => {
-  websocket.on('message', ((data) => {
+  setInterval(() => {
+    if ((new Date().getTime() - websocketTimeout) > 10000) {
+      console.log('WebSocket Connection Lost...');
+      orderBook = {
+        'buy': [],
+        'sell': []
+      };
+      lostConnection = true;
+      websocketTimeout = new Date().getTime();
+      websocket.on('close', destroy);
+      websocket.on('open', report);
+      websocket.on('message', socket);
+    }
+  }, 1000);
+  websocket.on('close', destroy);
+  websocket.on('open', report);
+  websocket.on('message', socket);
+  function destroy() {
+    websocket.removeListener('close', destroy);
+    websocket.removeListener('open', report);
+    websocket.removeListener('message', socket);
+  }
+  function report() {
+    console.log('WebSocket Connected!');
+  }
+  function socket(data) {
     if (lostConnection) {
       clearInterval(findRealisticOrders);
       resetFlag = true;
@@ -67,7 +84,8 @@ let getWebSocketData = (() => {
       websocketTimeout = new Date().getTime();
       lostConnection = false;
     }
-  }));
+
+  }
 });
 //=============================================
 //=============================================
@@ -231,7 +249,7 @@ let downloadOrderBook = ((flag) => {
     if (flag) resetPause = true;
 
     pauseOrderBook = true;
-    resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('WebSocket Connected! Downloading OrderBook...');
+    resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('Downloading OrderBook...');
 
     let savedTime = new Date().getTime();
     let timeDown = 0;
@@ -958,6 +976,7 @@ let findLowestSellPrice = (() => {
 //=============================================
 //=============================================
 let checkVars = (() => {
+  if (lostConnection) return;
   if (Number(findHighestBuyPrice().price)) findHighestBuyPrice().price = parseFloat(findHighestBuyPrice().price);
   if (Number(findLowestSellPrice().price)) findLowestSellPrice().price = parseFloat(findLowestSellPrice().price);
 
