@@ -36,34 +36,21 @@ let populateMySettings = ((num) => {
 let websocketTimeout = new Date().getTime();
 let lostConnection = false;
 let getWebSocketData = (() => {
-  setInterval(() => {
-    if ((new Date().getTime() - websocketTimeout) > 10000) {
-      console.log('WebSocket Connection Lost...');
-      orderBook = {
-        'buy': [],
-        'sell': []
-      };
-      lostConnection = true;
-      websocketTimeout = new Date().getTime();
-      websocket.on('close', destroy);
-      websocket.on('open', report);
-      websocket.on('message', socket);
-    }
-  }, 1000);
-  websocket.on('close', destroy);
-  websocket.on('open', report);
-  websocket.on('message', socket);
-  function destroy() {
+  let destroy = (() => {
     console.log('WebSocket Closed!');
     websocket.removeListener('close', destroy);
     websocket.removeListener('open', report);
+    websocket.removeListener('error', reportErr);
     websocket.removeListener('message', socket);
     websocket = new Gdax.WebsocketClient(['ETH-USD']);
-  }
-  function report() {
+  });
+  let report = (() => {
     console.log('WebSocket Connected!');
-  }
-  function socket(data) {
+  });
+  let reportErr = ((err) => {
+    console.log('Websocket Error! =>' + err.message);
+  });
+  let socket = ((data) => {
     if (lostConnection) {
       clearInterval(findRealisticOrders);
       resetFlag = true;
@@ -86,8 +73,26 @@ let getWebSocketData = (() => {
       websocketTimeout = new Date().getTime();
       lostConnection = false;
     }
-
-  }
+  });
+  setInterval(() => {
+    if ((new Date().getTime() - websocketTimeout) > 10000) {
+      console.log('WebSocket Connection Lost...');
+      orderBook = {
+        'buy': [],
+        'sell': []
+      };
+      lostConnection = true;
+      websocketTimeout = new Date().getTime();
+      websocket.on('close', destroy);
+      websocket.on('open', report);
+      websocket.on('error', reportErr);
+      websocket.on('message', socket);
+    }
+  }, 1000);
+  websocket.on('close', destroy);
+  websocket.on('open', report);
+  websocket.on('error', reportErr);
+  websocket.on('message', socket);
 });
 //=============================================
 //=============================================
@@ -134,7 +139,7 @@ const util = require('util');
 const fs = require('fs');
 const express = require('express');
 const publicClient = new Gdax.PublicClient('ETH-USD');
-var websocket = new Gdax.WebsocketClient(['ETH-USD']);
+let websocket = new Gdax.WebsocketClient(['ETH-USD']);
 const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind(publicClient));
 //=============================================
 //==============REALITY CRITERIA===============
