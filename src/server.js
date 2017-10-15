@@ -54,9 +54,11 @@ let getWebSocketData = (() => {
   websocket.on('open', report);
   websocket.on('message', socket);
   function destroy() {
+    console.log('WebSocket Closed!');
     websocket.removeListener('close', destroy);
     websocket.removeListener('open', report);
     websocket.removeListener('message', socket);
+    websocket = new Gdax.WebsocketClient(['ETH-USD']);
   }
   function report() {
     console.log('WebSocket Connected!');
@@ -132,7 +134,7 @@ const util = require('util');
 const fs = require('fs');
 const express = require('express');
 const publicClient = new Gdax.PublicClient('ETH-USD');
-const websocket = new Gdax.WebsocketClient(['ETH-USD']);
+var websocket = new Gdax.WebsocketClient(['ETH-USD']);
 const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind(publicClient));
 //=============================================
 //==============REALITY CRITERIA===============
@@ -255,17 +257,12 @@ let downloadOrderBook = ((flag) => {
     let timeDown = 0;
     orderBookTimeout = setInterval(() => {
       timeDown = (new Date().getTime() - savedTime);
-      let output = ('Orderbook re-download timeout: ' + (timeDown)).toString();
-      console.log(output.slice(0, -3));
-    }, 1000);
+    }, 10);
 
     getOrderBook(3).then(((value) => {
 
-      if (timeDown > 30000) {
-        clearInterval(orderBookTimeout);
-        console.log('Orderbook re-download connection lost...');
-        return;
-      }
+      console.log('Orderbook downloaded in: ' + timeDown + 'ms');
+      clearInterval(orderBookTimeout);
 
       let rawOrderBookData = {
         'buy': value.bids,
@@ -287,7 +284,6 @@ let downloadOrderBook = ((flag) => {
       populateOrders('sell');
 
       deDupe(); //how do i run dedupe while the rest of it runs?
-      clearInterval(orderBookTimeout);
 
       if (resetFlag) {
         resetFlag = false;

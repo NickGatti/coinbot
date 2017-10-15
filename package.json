@@ -12,7 +12,6 @@
   "devDependencies": {
     "eslint": "^4.8.0",
     "gdax": "^0.4.2",
-    "ping": "^0.2.2",
     "util": "^0.10.3"
   },
   "dependencies": {
