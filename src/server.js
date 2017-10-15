@@ -7,19 +7,24 @@
 //=============================================
 let populateMySettings = ((num) => {
   for (let i = 0; i < num; i++) {
-    mySettings.realityCriteria.push(400);
-    mySettings.realityCriteria.push(6000);
+    mySettings.realityCriteria
+      .push(400);
+    mySettings.realityCriteria
+      .push(6000);
   }
   for (let i = 0; i < num * 2; i++) {
-    myOrders.buy.push({
-      price: false,
-      state: 'buying'
-    });
-    myOrders.sell.push({
-      price: false,
-      state: 'paused'
-    });
-    myOrders.orderAmountMade.push(0);
+    myOrders.buy
+      .push({
+        price: false,
+        state: 'buying'
+      });
+    myOrders.sell
+      .push({
+        price: false,
+        state: 'paused'
+      });
+    myOrders.orderAmountMade
+      .push(0);
   }
 });
 //=============================================
@@ -58,15 +63,27 @@ let getWebSocketData = (() => {
     }
     //if (data.type === 'match') data.size === 'sell' ? console.log('Up tick!') : console.log('Down tick!')
 
-    if (data.type === 'ticker' || data.type === 'snapshot' || data.type === 'l2update' || data.type === 'heartbeat' || data.type === 'subscribe' || data.type === 'unsubscribe' || data.type === 'subscriptions') {
-      console.log('Error on WebSocket Feed data.type === ', data.type);
+    if (data.type === 'ticker' ||
+      data.type === 'snapshot' ||
+      data.type === 'l2update' ||
+      data.type === 'heartbeat' ||
+      data.type === 'subscribe' ||
+      data.type === 'unsubscribe' ||
+      data.type === 'subscriptions') {
+      console.log('Error on WebSocket Feed data.type === ' +
+        data.type);
       return;
     } else if (data.type === 'error') {
-      console.log('Error on WebSocket Feed data.type === ', data.type);
-      console.log('Error on WebSocket Feed data.message === ', data.message);
+      console.log('Error on WebSocket Feed data.type === ' +
+        data.type);
+      console.log('Error on WebSocket Feed data.message === ' +
+        data.message);
       return;
-    } else if (data.side !== 'buy' && data.side !== 'sell' && data.side) {
-      console.log('Error on WebSocket Feed data.type not sell or buy data.type === ', data.side);
+    } else if (data.side !== 'buy' &&
+      data.side !== 'sell' &&
+      data.side) {
+      console.log('Error on WebSocket Feed data.type not sell or buy data.type === ' +
+        data.side);
       return;
     }
     if (catchWebSocketMessage(data)) {
@@ -109,31 +126,39 @@ let readData = (() => {
   fs.open('storage.json', 'r', (err) => {
     if (err) {
       if (err.code === 'ENOENT') {
-        console.error('Storage file does not exist...');
+        console.log('Storage file does not exist...');
         return;
       }
 
       throw err;
     }
-    console.error('Loading from storage file...');
+    console.log('Loading from storage file...');
     readMyData();
   });
 });
 //=============================================
 //=============================================
 //=============================================
-// Load datafile
 //=============================================
 //=============================================
 //=============================================
-// Global let Dec's
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
 //=============================================
 //================SERVER PORT==================
 // Number for localhost
 // String 'c9' for cloudnine.io
 let lisenPort = 3000;
-//=============================================
-//=============================================
+//================SERVER PORT==================
 const Gdax = require('gdax');
 const util = require('util');
 const fs = require('fs');
@@ -141,6 +166,34 @@ const express = require('express');
 const publicClient = new Gdax.PublicClient('ETH-USD');
 let websocket = new Gdax.WebsocketClient(['ETH-USD']);
 const getProductOrderBook = util.promisify(publicClient.getProductOrderBook.bind(publicClient));
+let myOrders = {
+  'buy': [],
+  'sell': [],
+  'orderAmountMade': []
+};
+let orderBook = {
+  'buy': [],
+  'sell': []
+};
+let currentOrder = 0;
+let orderUpdate = false;
+let newOrder = {
+  buy: {
+    placing: false,
+    price: false,
+    size: false
+  },
+  sell: {
+    placing: false,
+    price: false,
+    size: false
+  }
+};
+let pauseOrderBook = false;
+let resetFlag = false;
+let runBenchmark = false;
+let resetPause = false;
+let dataIntegrityTest = false;
 //=============================================
 //==============REALITY CRITERIA===============
 //=============================================
@@ -169,61 +222,29 @@ const mySettings = {
     1.0250 // 20
   ]
 };
-let myOrders = {
-  'buy': [],
-  'sell': [],
-  'orderAmountMade': []
-};
-populateMySettings(10);
-//=============================================
-//==============REALITY CRITERIA===============
-//=============================================
-let orderBook = {
-  'buy': [],
-  'sell': []
-};
-
-let currentOrder = 0;
-let orderUpdate = false;
-let newOrder = {
-  buy: {
-    placing: false,
-    price: false,
-    size: false
-  },
-  sell: {
-    placing: false,
-    price: false,
-    size: false
-  }
-};
-readData();
-//=============================================
-//=============================================
-//=============================================
-// Global let Dec's
-//=============================================
-//=============================================
-//=============================================
-// Run Our Program
-//=============================================
-//=============================================
-//=============================================
-//console.log('Conneting WebSocket...');
-let pauseOrderBook = false;
-let resetFlag = false;
-let runBenchmark = false;
-let resetPause = false;
-let dataIntegrityTest = false;
 setInterval(() => {
   clearInterval(findRealisticOrders);
   resetFlag = true;
 }, 1500000);
+populateMySettings(10);
+readData();
 getWebSocketData();
 //=============================================
 //=============================================
 //=============================================
-// Run Our Program
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
+//=============================================
 //=============================================
 //=============================================
 //=============================================
@@ -251,12 +272,16 @@ let getOrderBook = ((level) => {
 //=============================================
 let orderBookTimeout = null;
 let downloadOrderBook = ((flag) => {
-  if (orderBook['buy'][0] && orderBook['sell'][0] || flag) {
+  if (orderBook['buy'][0] &&
+    orderBook['sell'][0] ||
+    flag) {
 
     if (flag) resetPause = true;
 
     pauseOrderBook = true;
-    resetFlag ? console.log('Refreshing OrderBook! Downloading OrderBook...') : console.log('Downloading OrderBook...');
+    resetFlag ?
+      console.log('Refreshing OrderBook! Downloading OrderBook...') :
+      console.log('Downloading OrderBook...');
 
     let savedTime = new Date().getTime();
     let timeDown = 0;
@@ -279,7 +304,8 @@ let downloadOrderBook = ((flag) => {
           let data = rawOrderBookData[objectSide][i];
           orderBook[objectSide][i] = {
             price: parseFloat(data[0]),
-            size: Number(data[1]) ? Number(data[1]) : parseFloat(data[1]),
+            size: Number(data[1]) ?
+              Number(data[1]) : parseFloat(data[1]),
             order_id: data[2]
           };
         }
@@ -319,7 +345,9 @@ let catchWebSocketMessage = ((data) => {
   if (dataIntegrityTest) console.log('DataIntegrityTesting');
   let objectSide = data.side;
 
-  if (resetFlag && !resetPause && !dataIntegrityTest) {
+  if (resetFlag &&
+    !resetPause &&
+    !dataIntegrityTest) {
     //console.log('Stopping to download orderbook again...');
     orderBook = {
       'buy': [],
@@ -353,7 +381,8 @@ let catchWebSocketMessage = ((data) => {
         sequence: data.sequence,
         order_id: data.order_id,
         price: parseFloat(data.price),
-        size: Number(data.remaining_size) ? Number(data.remaining_size) : parseFloat(data.remaining_size),
+        size: Number(data.remaining_size) ?
+          Number(data.remaining_size) : parseFloat(data.remaining_size),
         side: data.side
       });
     if (!pauseOrderBook) downloadOrderBook(false);
@@ -379,12 +408,14 @@ let catchWebSocketMessage = ((data) => {
             "side": "sell"
         }
         */
-    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
-      return data.maker_order_id !== item.order_id;
-    });
-    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
-      return data.taker_order_id !== item.order_id;
-    });
+    orderBook[objectSide] = orderBook[objectSide]
+      .filter((item) => {
+        return data.maker_order_id !== item.order_id;
+      });
+    orderBook[objectSide] = orderBook[objectSide]
+      .filter((item) => {
+        return data.taker_order_id !== item.order_id;
+      });
     return true;
   } else if (data.type === 'received') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Received Order!');
@@ -436,7 +467,9 @@ let catchWebSocketMessage = ((data) => {
         */
     for (let i = 0; i < orderBook[objectSide.length]; i++) {
       if (orderBook[objectSide].order_id === data.order_id) {
-        orderBook[objectSide][i].size = Number(data.new_size) ? Number(data.new_size) : parseFloat(data.new_size);
+        orderBook[objectSide][i].size = Number(data.new_size) ?
+          Number(data.new_size) :
+          parseFloat(data.new_size);
         orderBook[objectSide][i].price = parseFloat(data.price);
         break;
       }
@@ -462,9 +495,10 @@ let catchWebSocketMessage = ((data) => {
             "remaining_size": "0"
         }
         */
-    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
-      return data.order_id !== item.order_id;
-    });
+    orderBook[objectSide] = orderBook[objectSide]
+      .filter((item) => {
+        return data.order_id !== item.order_id;
+      });
     return true;
   } else if (data.type === 'activate') {
     if (dataIntegrityTest) console.log('DataIntegrityTesting: Activated Order!');
@@ -556,7 +590,6 @@ let deDupe = (() => {
   // funt('sell');
 
   //console.log('OrderBook De-duped! Running program...');
-  //console.log('=============================================================================================================================================================================');
   dataIntegrityTest = false;
   runBenchmark = true;
 });
@@ -572,15 +605,24 @@ let deDupe = (() => {
 //=============================================
 //=============================================
 let marketData = (() => {
-  if (orderBook['buy'] && orderBook['sell'] && findGoodOrders()) {
+  if (orderBook['buy'] &&
+    orderBook['sell'] &&
+    findGoodOrders()) {
     return {
-      realBuys: findGoodOrders()['buy'] ? findGoodOrders()['buy'] : false,
-      realSells: findGoodOrders()['sell'] ? findGoodOrders()['sell'] : false,
-      totalBuys: orderBook['buy'].length ? orderBook['buy'].length : false,
-      totalSells: orderBook['sell'].length ? orderBook['sell'].length : false,
-      totalAmountMade: addTotalAmount() ? addTotalAmount() : false,
-      amountMade: myOrders.orderAmountMade ? myOrders.orderAmountMade[currentOrder] : false,
-      newOrder: newOrder ? newOrder : false
+      realBuys: findGoodOrders()['buy'] ?
+        findGoodOrders()['buy'] : false,
+      realSells: findGoodOrders()['sell'] ?
+        findGoodOrders()['sell'] : false,
+      totalBuys: orderBook['buy'].length ?
+        orderBook['buy'].length : false,
+      totalSells: orderBook['sell'].length ?
+        orderBook['sell'].length : false,
+      totalAmountMade: addTotalAmount() ?
+        addTotalAmount() : false,
+      amountMade: myOrders.orderAmountMade ?
+        myOrders.orderAmountMade[currentOrder] : false,
+      newOrder: newOrder ?
+        newOrder : false
     };
   }
   return false;
@@ -591,12 +633,17 @@ let marketData = (() => {
 let buyOrderData = (() => {
   if (!myOrders.buy[currentOrder].price) return false;
   if (!buyGapInfo()) return false;
-  if (myOrders.buy[currentOrder] && buyGapInfo()) {
+  if (myOrders.buy[currentOrder] &&
+    buyGapInfo()) {
     return {
-      orderUpdate: orderUpdate ? orderUpdate : false,
-      myBuyOrder: myOrders.buy[currentOrder] ? myOrders.buy[currentOrder] : false,
-      buyCount: buyGapInfo()[0] ? buyGapInfo()[0] : false,
-      buyTotal: buyGapInfo()[1] ? buyGapInfo()[1] : false
+      orderUpdate: orderUpdate ?
+        orderUpdate : false,
+      myBuyOrder: myOrders.buy[currentOrder] ?
+        myOrders.buy[currentOrder] : false,
+      buyCount: buyGapInfo()[0] ?
+        buyGapInfo()[0] : false,
+      buyTotal: buyGapInfo()[1] ?
+        buyGapInfo()[1] : false
     };
   }
   return false;
@@ -607,11 +654,15 @@ let buyOrderData = (() => {
 let sellOrderData = (() => {
   if (!myOrders.sell[currentOrder].price) return false;
   if (!sellGapInfo()) return false;
-  if (myOrders.sell[currentOrder] && sellGapInfo()) {
+  if (myOrders.sell[currentOrder] &&
+    sellGapInfo()) {
     return {
-      mySellOrder: myOrders.sell[currentOrder] ? myOrders.sell[currentOrder] : false,
-      sellCount: sellGapInfo()[0] ? sellGapInfo()[0] : false,
-      sellTotal: sellGapInfo()[1] ? sellGapInfo()[1] : false
+      mySellOrder: myOrders.sell[currentOrder] ?
+        myOrders.sell[currentOrder] : false,
+      sellCount: sellGapInfo()[0] ?
+        sellGapInfo()[0] : false,
+      sellTotal: sellGapInfo()[1] ?
+        sellGapInfo()[1] : false
     };
   }
   return false;
@@ -642,14 +693,22 @@ app.get('/', ((req, res) => {
 }));
 app.get('/api', ((req, res) => {
   res.json({
-    highestBuyPrice: findHighestBuyPrice() ? findHighestBuyPrice().price : false,
-    lowestSellPrice: findLowestSellPrice() ? findLowestSellPrice().price : false,
-    currentOrder: currentOrder ? currentOrder : false,
-    buyState: myOrders.buy[currentOrder].state ? myOrders.buy[currentOrder].state : false,
-    sellState: myOrders.sell[currentOrder].state ? myOrders.sell[currentOrder].state : false,
-    marketData: marketData() ? marketData() : false,
-    buyOrderData: buyOrderData() ? buyOrderData() : false,
-    sellOrderData: sellOrderData() ? sellOrderData() : false
+    highestBuyPrice: findHighestBuyPrice() ?
+      findHighestBuyPrice().price : false,
+    lowestSellPrice: findLowestSellPrice() ?
+      findLowestSellPrice().price : false,
+    currentOrder: currentOrder ?
+      currentOrder : false,
+    buyState: myOrders.buy[currentOrder].state ?
+      myOrders.buy[currentOrder].state : false,
+    sellState: myOrders.sell[currentOrder].state ?
+      myOrders.sell[currentOrder].state : false,
+    marketData: marketData() ?
+      marketData() : false,
+    buyOrderData: buyOrderData() ?
+      buyOrderData() : false,
+    sellOrderData: sellOrderData() ?
+      sellOrderData() : false
   });
 }));
 if (lisenPort === 'c9') {
@@ -669,17 +728,15 @@ if (lisenPort === 'c9') {
 //=============================================
 //=============================================
 let findRealisticOrders = (() => {
+  if (lostConnection) return;
   if (resetFlag) return;
-  if (runBenchmark && !resetFlag) {
-
+  if (runBenchmark &&
+    !resetFlag) {
     sortBothSides();
     filterGoodOrders();
-
     checkVars();
-
     placeBuy();
     placeSell();
-
     resetOrderInterval();
   }
 });
@@ -697,7 +754,7 @@ let findRealisticOrders = (() => {
 let placeBuy = (() => {
   orderUpdate = false;
   if (!filterBuyOrder(findHighestBuyPrice())) {
-    //console.log('Wait what? This should\'t happen!');
+    console.log('Wait what? This should\'t happen!');
     return;
   }
 
@@ -770,7 +827,7 @@ let placeBuy = (() => {
 //=============================================
 let placeSell = (() => {
   if (!filterSellOrder()) {
-    //console.log('Bubble?');
+    console.log('Bubble?');
     return;
   }
 
@@ -805,12 +862,6 @@ let placeSell = (() => {
         return;
 
       } else if (filterSellOrder().price < myOrders.sell[currentOrder].price) {
-
-        //console.log('Updating sell price! Good order? ' + sellOrder.goodOrder + ' Price: ' + fakeSellId.price);
-
-        //fakeSellId = sellOrder;
-        //fakeSellId.price = parseFloat(fakeSellId.price) - 0.01;
-
         return;
       }
     }
@@ -831,7 +882,8 @@ let buyGapInfo = (() => {
   if (!(myOrders.buy[currentOrder].price)) return false;
   let buyCount = 0;
   let buyTotal = 0;
-  for (let i = 0; i < orderBook['buy'].length && myOrders.buy[currentOrder]; i++) {
+  for (let i = 0; i < orderBook['buy'].length &&
+    myOrders.buy[currentOrder]; i++) {
     if (orderBook['buy'][i].price <= myOrders.buy[currentOrder].price) {
       break;
     } else {
@@ -856,7 +908,8 @@ let sellGapInfo = (() => {
   if (!(myOrders.sell[currentOrder].price)) return false;
   let sellCount = 0;
   let sellTotal = 0;
-  for (let i = 0; i < orderBook['sell'].length && myOrders.sell[currentOrder]; i++) {
+  for (let i = 0; i < orderBook['sell'].length &&
+    myOrders.sell[currentOrder]; i++) {
     if (orderBook['sell'][i].price >= myOrders.sell[currentOrder].price) {
       break;
     } else {
@@ -918,17 +971,14 @@ let findGoodOrders = (() => {
     'buy': 0,
     'sell': 0
   };
-
   let goodOrderOp = (objectSide) => {
     for (let i = 0; i < orderBook[objectSide].length; i++) {
       let obj = orderBook[objectSide][i];
       if ((obj.price * obj.size) > mySettings.realityCriteria[currentOrder]) good[objectSide]++;
     }
   };
-
   goodOrderOp('buy');
   goodOrderOp('sell');
-
   return good;
 });
 //=============================================
@@ -980,17 +1030,14 @@ let checkVars = (() => {
   if (lostConnection) return;
   if (Number(findHighestBuyPrice().price)) findHighestBuyPrice().price = parseFloat(findHighestBuyPrice().price);
   if (Number(findLowestSellPrice().price)) findLowestSellPrice().price = parseFloat(findLowestSellPrice().price);
-
   if (!myOrders.buy[currentOrder]) placeBuy();
   if (!myOrders.sell[currentOrder]) placeSell();
-
   if (myOrders.buy[currentOrder].price) {
     if (Number(myOrders.buy[currentOrder].price)) myOrders.buy[currentOrder].price = parseFloat(myOrders.buy[currentOrder].price);
   }
   if (myOrders.sell[currentOrder].price) {
     if (Number(myOrders.sell[currentOrder].price)) myOrders.sell[currentOrder].price = parseFloat(myOrders.sell[currentOrder].price);
   }
-
   if (myOrders.orderAmountMade[currentOrder]) {
     if (Number(myOrders.orderAmountMade[currentOrder])) myOrders.orderAmountMade[currentOrder] = parseFloat(myOrders.orderAmountMade[currentOrder]);
   }
@@ -1007,9 +1054,11 @@ let checkVars = (() => {
 //=============================================
 //=============================================
 let filterBuyOrder = (() => {
-  return orderBook['buy'].find((data) => {
-    if (data.goodOrder && (findHighestBuyPrice().price / data.price) >= mySettings.realMargin[currentOrder]) return data;
-  });
+  return orderBook['buy']
+    .find((data) => {
+      if (data.goodOrder &&
+        (findHighestBuyPrice().price / data.price) >= mySettings.realMargin[currentOrder]) return data;
+    });
 });
 //=============================================
 //=============================================
@@ -1023,9 +1072,11 @@ let filterBuyOrder = (() => {
 //=============================================
 //=============================================
 let filterSellOrder = (() => {
-  return orderBook['sell'].find((data) => {
-    if (data.goodOrder && (data.price / myOrders.buy[currentOrder].price) >= ((mySettings.realMargin[currentOrder]) * 2) - 1) return data;
-  });
+  return orderBook['sell']
+    .find((data) => {
+      if (data.goodOrder &&
+        (data.price / myOrders.buy[currentOrder].price) >= ((mySettings.realMargin[currentOrder]) * 2) - 1) return data;
+    });
 });
 //=============================================
 //=============================================
@@ -1039,9 +1090,10 @@ let filterSellOrder = (() => {
 //=============================================
 //=============================================
 let addTotalAmount = (() => {
-  return myOrders.orderAmountMade.reduce((init, data) => {
-    return init + data;
-  });
+  return myOrders.orderAmountMade
+    .reduce((init, data) => {
+      return init + data;
+    });
 });
 //=============================================
 //=============================================
