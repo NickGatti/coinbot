@@ -991,13 +991,15 @@
 
       var ws = new WebSocket('ws://localhost:3030', 'wsbotdata');
 
-      ws.addEventListener("message", function(e) {
-        // The data is simply the message that we're sending back
-        var msg = e.data;
-
-        // Append the message
-        console.log(msg)
+      ws.addEventListener("message", function(message) {
+        console.log(message.data)
       });
+
+      ws.addEventListener("open", function() {
+        ws.send('open');
+      });
+
+
     </script>
   </body>
 

@@ -7,24 +7,13 @@
 //=============================================
 let populateMySettings = ((num) => {
   for (let i = 0; i < num; i++) {
-    mySettings.realityCriteria
-      .push(400);
-    mySettings.realityCriteria
-      .push(6000);
+    mySettings.realityCriteria.push(400);
+    mySettings.realityCriteria.push(6000);
   }
   for (let i = 0; i < num * 2; i++) {
-    myOrders.buy
-      .push({
-        price: false,
-        state: 'buying'
-      });
-    myOrders.sell
-      .push({
-        price: false,
-        state: 'paused'
-      });
-    myOrders.orderAmountMade
-      .push(0);
+    myOrders.buy.push({price: false, state: 'buying'});
+    myOrders.sell.push({price: false, state: 'paused'});
+    myOrders.orderAmountMade.push(0);
   }
 });
 //=============================================
@@ -63,27 +52,15 @@ let getWebSocketData = (() => {
     }
     //if (data.type === 'match') data.size === 'sell' ? console.log('Up tick!') : console.log('Down tick!')
 
-    if (data.type === 'ticker' ||
-      data.type === 'snapshot' ||
-      data.type === 'l2update' ||
-      data.type === 'heartbeat' ||
-      data.type === 'subscribe' ||
-      data.type === 'unsubscribe' ||
-      data.type === 'subscriptions') {
-      console.log('Error on WebSocket Feed data.type === ' +
-        data.type);
+    if (data.type === 'ticker' || data.type === 'snapshot' || data.type === 'l2update' || data.type === 'heartbeat' || data.type === 'subscribe' || data.type === 'unsubscribe' || data.type === 'subscriptions') {
+      console.log('Error on WebSocket Feed data.type === ' + data.type);
       return;
     } else if (data.type === 'error') {
-      console.log('Error on WebSocket Feed data.type === ' +
-        data.type);
-      console.log('Error on WebSocket Feed data.message === ' +
-        data.message);
+      console.log('Error on WebSocket Feed data.type === ' + data.type);
+      console.log('Error on WebSocket Feed data.message === ' + data.message);
       return;
-    } else if (data.side !== 'buy' &&
-      data.side !== 'sell' &&
-      data.side) {
-      console.log('Error on WebSocket Feed data.type not sell or buy data.type === ' +
-        data.side);
+    } else if (data.side !== 'buy' && data.side !== 'sell' && data.side) {
+      console.log('Error on WebSocket Feed data.type not sell or buy data.type === ' + data.side);
       return;
     }
     if (catchWebSocketMessage(data)) {
@@ -254,9 +231,7 @@ getWebSocketData();
 //=============================================
 //=============================================
 let getOrderBook = ((level) => {
-  return getProductOrderBook({
-    'level': level
-  }).then(((data) => {
+  return getProductOrderBook({'level': level}).then(((data) => {
     return JSON.parse(data.body);
   }));
 });
@@ -273,16 +248,15 @@ let getOrderBook = ((level) => {
 //=============================================
 let orderBookTimeout = null;
 let downloadOrderBook = ((flag) => {
-  if (orderBook['buy'][0] &&
-    orderBook['sell'][0] ||
-    flag) {
+  if (orderBook['buy'][0] && orderBook['sell'][0] || flag) {
 
-    if (flag) resetPause = true;
+    if (flag)
+      resetPause = true;
 
     pauseOrderBook = true;
-    resetFlag ?
-      console.log('Refreshing OrderBook! Downloading OrderBook...') :
-      console.log('Downloading OrderBook...');
+    resetFlag
+      ? console.log('Refreshing OrderBook! Downloading OrderBook...')
+      : console.log('Downloading OrderBook...');
 
     let savedTime = new Date().getTime();
     let timeDown = 0;
@@ -305,8 +279,9 @@ let downloadOrderBook = ((flag) => {
           let data = rawOrderBookData[objectSide][i];
           orderBook[objectSide][i] = {
             price: parseFloat(data[0]),
-            size: Number(data[1]) ?
-              Number(data[1]) : parseFloat(data[1]),
+            size: Number(data[1])
+              ? Number(data[1])
+              : parseFloat(data[1]),
             order_id: data[2]
           };
         }
@@ -343,12 +318,11 @@ let downloadOrderBook = ((flag) => {
 //=============================================
 let catchWebSocketMessage = ((data) => {
 
-  if (dataIntegrityTest) console.log('DataIntegrityTesting');
+  if (dataIntegrityTest)
+    console.log('DataIntegrityTesting');
   let objectSide = data.side;
 
-  if (resetFlag &&
-    !resetPause &&
-    !dataIntegrityTest) {
+  if (resetFlag && !resetPause && !dataIntegrityTest) {
     //console.log('Stopping to download orderbook again...');
     orderBook = {
       'buy': [],
@@ -374,22 +348,25 @@ let catchWebSocketMessage = ((data) => {
             "side": "sell"
         }
         */
-    orderBook[objectSide]
-      .push({
-        type: data.type,
-        time: data.time,
-        product_id: data.product_id,
-        sequence: data.sequence,
-        order_id: data.order_id,
-        price: parseFloat(data.price),
-        size: Number(data.remaining_size) ?
-          Number(data.remaining_size) : parseFloat(data.remaining_size),
-        side: data.side
-      });
-    if (!pauseOrderBook) downloadOrderBook(false);
+    orderBook[objectSide].push({
+      type: data.type,
+      time: data.time,
+      product_id: data.product_id,
+      sequence: data.sequence,
+      order_id: data.order_id,
+      price: parseFloat(data.price),
+      size: Number(data.remaining_size)
+        ? Number(data.remaining_size)
+        : parseFloat(data.remaining_size),
+      side: data.side
+    });
+    if (!pauseOrderBook)
+      downloadOrderBook(false);
     return true;
   } else if (data.type === 'match') {
-    if (dataIntegrityTest) console.log('DataIntegrityTesting: Trade Match!');
+    if (dataIntegrityTest)
+      console.log('DataIntegrityTesting: Trade Match!');
+
     /*
         A trade occurred between two orders.
         The aggressor or taker order is the one executing immediately after being received and the maker order is a resting order on the book.
@@ -409,17 +386,17 @@ let catchWebSocketMessage = ((data) => {
             "side": "sell"
         }
         */
-    orderBook[objectSide] = orderBook[objectSide]
-      .filter((item) => {
-        return data.maker_order_id !== item.order_id;
-      });
-    orderBook[objectSide] = orderBook[objectSide]
-      .filter((item) => {
-        return data.taker_order_id !== item.order_id;
-      });
+    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
+      return data.maker_order_id !== item.order_id;
+    });
+    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
+      return data.taker_order_id !== item.order_id;
+    });
     return true;
   } else if (data.type === 'received') {
-    if (dataIntegrityTest) console.log('DataIntegrityTesting: Received Order!');
+    if (dataIntegrityTest)
+      console.log('DataIntegrityTesting: Received Order!');
+
     /*
         A valid order has been received and is now active.
         This message is emitted for every single valid order as soon as the matching engine receives it whether it fills immediately or not.
@@ -444,7 +421,9 @@ let catchWebSocketMessage = ((data) => {
         */
     return true;
   } else if (data.type === 'change') {
-    if (dataIntegrityTest) console.log('DataIntegrityTesting: Changed Order!');
+    if (dataIntegrityTest)
+      console.log('DataIntegrityTesting: Changed Order!');
+
     /*
             An order has changed.
             This is the result of self-trade prevention adjusting the order size or available funds.
@@ -468,16 +447,18 @@ let catchWebSocketMessage = ((data) => {
         */
     for (let i = 0; i < orderBook[objectSide.length]; i++) {
       if (orderBook[objectSide].order_id === data.order_id) {
-        orderBook[objectSide][i].size = Number(data.new_size) ?
-          Number(data.new_size) :
-          parseFloat(data.new_size);
+        orderBook[objectSide][i].size = Number(data.new_size)
+          ? Number(data.new_size)
+          : parseFloat(data.new_size);
         orderBook[objectSide][i].price = parseFloat(data.price);
         break;
       }
     }
     return true;
   } else if (data.type === 'done') {
-    if (dataIntegrityTest) console.log('DataIntegrityTesting: Done Order!');
+    if (dataIntegrityTest)
+      console.log('DataIntegrityTesting: Done Order!');
+
     /*
         The order is no longer on the order book.
         Sent for all orders for which there was a received message.
@@ -496,13 +477,14 @@ let catchWebSocketMessage = ((data) => {
             "remaining_size": "0"
         }
         */
-    orderBook[objectSide] = orderBook[objectSide]
-      .filter((item) => {
-        return data.order_id !== item.order_id;
-      });
+    orderBook[objectSide] = orderBook[objectSide].filter((item) => {
+      return data.order_id !== item.order_id;
+    });
     return true;
   } else if (data.type === 'activate') {
-    if (dataIntegrityTest) console.log('DataIntegrityTesting: Activated Order!');
+    if (dataIntegrityTest)
+      console.log('DataIntegrityTesting: Activated Order!');
+
     /*
         An activate message is sent when a stop order is placed.
         When the stop is triggered the order will be placed and go through the order lifecycle.
@@ -524,7 +506,9 @@ let catchWebSocketMessage = ((data) => {
         */
     return true;
   } else if (data.type === 'margin_profile_update') {
-    if (dataIntegrityTest) console.log('DataIntegrityTesting: Margin Profile Update!');
+    if (dataIntegrityTest)
+      console.log('DataIntegrityTesting: Margin Profile Update!');
+
     /*
         This feed message will only be received if you are authenticated with a margin profile.
         {
@@ -606,24 +590,29 @@ let deDupe = (() => {
 //=============================================
 //=============================================
 let marketData = (() => {
-  if (orderBook['buy'] &&
-    orderBook['sell'] &&
-    findGoodOrders()) {
+  if (orderBook['buy'] && orderBook['sell'] && findGoodOrders()) {
     return {
-      realBuys: findGoodOrders()['buy'] ?
-        findGoodOrders()['buy'] : false,
-      realSells: findGoodOrders()['sell'] ?
-        findGoodOrders()['sell'] : false,
-      totalBuys: orderBook['buy'].length ?
-        orderBook['buy'].length : false,
-      totalSells: orderBook['sell'].length ?
-        orderBook['sell'].length : false,
-      totalAmountMade: addTotalAmount() ?
-        addTotalAmount() : false,
-      amountMade: myOrders.orderAmountMade ?
-        myOrders.orderAmountMade[currentOrder] : false,
-      newOrder: newOrder ?
-        newOrder : false
+      realBuys: findGoodOrders()['buy']
+        ? findGoodOrders()['buy']
+        : false,
+      realSells: findGoodOrders()['sell']
+        ? findGoodOrders()['sell']
+        : false,
+      totalBuys: orderBook['buy'].length
+        ? orderBook['buy'].length
+        : false,
+      totalSells: orderBook['sell'].length
+        ? orderBook['sell'].length
+        : false,
+      totalAmountMade: addTotalAmount()
+        ? addTotalAmount()
+        : false,
+      amountMade: myOrders.orderAmountMade
+        ? myOrders.orderAmountMade[currentOrder]
+        : false,
+      newOrder: newOrder
+        ? newOrder
+        : false
     };
   }
   return false;
@@ -632,19 +621,24 @@ let marketData = (() => {
 //=============================================
 //=============================================
 let buyOrderData = (() => {
-  if (!myOrders.buy[currentOrder].price) return false;
-  if (!buyGapInfo()) return false;
-  if (myOrders.buy[currentOrder] &&
-    buyGapInfo()) {
+  if (!myOrders.buy[currentOrder].price)
+    return false;
+  if (!buyGapInfo())
+    return false;
+  if (myOrders.buy[currentOrder] && buyGapInfo()) {
     return {
-      orderUpdate: orderUpdate ?
-        orderUpdate : false,
-      myBuyOrder: myOrders.buy[currentOrder] ?
-        myOrders.buy[currentOrder] : false,
-      buyCount: buyGapInfo()[0] ?
-        buyGapInfo()[0] : false,
-      buyTotal: buyGapInfo()[1] ?
-        buyGapInfo()[1] : false
+      orderUpdate: orderUpdate
+        ? orderUpdate
+        : false,
+      myBuyOrder: myOrders.buy[currentOrder]
+        ? myOrders.buy[currentOrder]
+        : false,
+      buyCount: buyGapInfo()[0]
+        ? buyGapInfo()[0]
+        : false,
+      buyTotal: buyGapInfo()[1]
+        ? buyGapInfo()[1]
+        : false
     };
   }
   return false;
@@ -653,17 +647,21 @@ let buyOrderData = (() => {
 //=============================================
 //=============================================
 let sellOrderData = (() => {
-  if (!myOrders.sell[currentOrder].price) return false;
-  if (!sellGapInfo()) return false;
-  if (myOrders.sell[currentOrder] &&
-    sellGapInfo()) {
+  if (!myOrders.sell[currentOrder].price)
+    return false;
+  if (!sellGapInfo())
+    return false;
+  if (myOrders.sell[currentOrder] && sellGapInfo()) {
     return {
-      mySellOrder: myOrders.sell[currentOrder] ?
-        myOrders.sell[currentOrder] : false,
-      sellCount: sellGapInfo()[0] ?
-        sellGapInfo()[0] : false,
-      sellTotal: sellGapInfo()[1] ?
-        sellGapInfo()[1] : false
+      mySellOrder: myOrders.sell[currentOrder]
+        ? myOrders.sell[currentOrder]
+        : false,
+      sellCount: sellGapInfo()[0]
+        ? sellGapInfo()[0]
+        : false,
+      sellTotal: sellGapInfo()[1]
+        ? sellGapInfo()[1]
+        : false
     };
   }
   return false;
@@ -683,10 +681,7 @@ console.log('Starting server...');
 let app = express();
 app.use(((err, req, res, next) => {
   res.status(err.status || 500);
-  res.send({
-    message: err.message,
-    error: err
-  });
+  res.send({message: err.message, error: err});
   return;
 }));
 app.get('/', ((req, res) => {
@@ -694,22 +689,30 @@ app.get('/', ((req, res) => {
 }));
 app.get('/api', ((req, res) => {
   res.json({
-    highestBuyPrice: findHighestBuyPrice() ?
-      findHighestBuyPrice().price : false,
-    lowestSellPrice: findLowestSellPrice() ?
-      findLowestSellPrice().price : false,
-    currentOrder: currentOrder ?
-      currentOrder : false,
-    buyState: myOrders.buy[currentOrder].state ?
-      myOrders.buy[currentOrder].state : false,
-    sellState: myOrders.sell[currentOrder].state ?
-      myOrders.sell[currentOrder].state : false,
-    marketData: marketData() ?
-      marketData() : false,
-    buyOrderData: buyOrderData() ?
-      buyOrderData() : false,
-    sellOrderData: sellOrderData() ?
-      sellOrderData() : false
+    highestBuyPrice: findHighestBuyPrice()
+      ? findHighestBuyPrice().price
+      : false,
+    lowestSellPrice: findLowestSellPrice()
+      ? findLowestSellPrice().price
+      : false,
+    currentOrder: currentOrder
+      ? currentOrder
+      : false,
+    buyState: myOrders.buy[currentOrder].state
+      ? myOrders.buy[currentOrder].state
+      : false,
+    sellState: myOrders.sell[currentOrder].state
+      ? myOrders.sell[currentOrder].state
+      : false,
+    marketData: marketData()
+      ? marketData()
+      : false,
+    buyOrderData: buyOrderData()
+      ? buyOrderData()
+      : false,
+    sellOrderData: sellOrderData()
+      ? sellOrderData()
+      : false
   });
 }));
 if (lisenPort === 'c9') {
@@ -729,10 +732,11 @@ if (lisenPort === 'c9') {
 //=============================================
 //=============================================
 let findRealisticOrders = (() => {
-  if (lostConnection) return;
-  if (resetFlag) return;
-  if (runBenchmark &&
-    !resetFlag) {
+  if (lostConnection)
+    return;
+  if (resetFlag)
+    return;
+  if (runBenchmark && !resetFlag) {
     sortBothSides();
     filterGoodOrders();
     checkVars();
@@ -795,10 +799,7 @@ let placeBuy = (() => {
 
       return;
     } else if (myOrders.buy[currentOrder].price) {
-      if (buyGapInfo()[0] > myOrders.buy[currentOrder].oldOrdersToGo &&
-        buyGapInfo()[1] > myOrders.buy[currentOrder].oldAmountToGo &&
-        (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[currentOrder].margin &&
-        filterBuyOrder().price > myOrders.buy[currentOrder].oldPrice) {
+      if (buyGapInfo()[0] > myOrders.buy[currentOrder].oldOrdersToGo && buyGapInfo()[1] > myOrders.buy[currentOrder].oldAmountToGo && (findHighestBuyPrice().price / filterBuyOrder().price) > myOrders.buy[currentOrder].margin && filterBuyOrder().price > myOrders.buy[currentOrder].oldPrice) {
 
         orderUpdate = true;
 
@@ -880,11 +881,11 @@ let placeSell = (() => {
 //=============================================
 //=============================================
 let buyGapInfo = (() => {
-  if (!(myOrders.buy[currentOrder].price)) return false;
+  if (!(myOrders.buy[currentOrder].price))
+    return false;
   let buyCount = 0;
   let buyTotal = 0;
-  for (let i = 0; i < orderBook['buy'].length &&
-    myOrders.buy[currentOrder]; i++) {
+  for (let i = 0; i < orderBook['buy'].length && myOrders.buy[currentOrder]; i++) {
     if (orderBook['buy'][i].price <= myOrders.buy[currentOrder].price) {
       break;
     } else {
@@ -906,11 +907,11 @@ let buyGapInfo = (() => {
 //=============================================
 //=============================================
 let sellGapInfo = (() => {
-  if (!(myOrders.sell[currentOrder].price)) return false;
+  if (!(myOrders.sell[currentOrder].price))
+    return false;
   let sellCount = 0;
   let sellTotal = 0;
-  for (let i = 0; i < orderBook['sell'].length &&
-    myOrders.sell[currentOrder]; i++) {
+  for (let i = 0; i < orderBook['sell'].length && myOrders.sell[currentOrder]; i++) {
     if (orderBook['sell'][i].price >= myOrders.sell[currentOrder].price) {
       break;
     } else {
@@ -932,14 +933,12 @@ let sellGapInfo = (() => {
 //=============================================
 //=============================================
 let sortBothSides = (() => {
-  orderBook['buy']
-    .sort((a, b) => {
-      return b.price - a.price;
-    });
-  orderBook['sell']
-    .sort((a, b) => {
-      return a.price - b.price;
-    });
+  orderBook['buy'].sort((a, b) => {
+    return b.price - a.price;
+  });
+  orderBook['sell'].sort((a, b) => {
+    return a.price - b.price;
+  });
 });
 //=============================================
 //=============================================
@@ -975,9 +974,10 @@ let findGoodOrders = (() => {
   let goodOrderOp = (objectSide) => {
     for (let i = 0; i < orderBook[objectSide].length; i++) {
       let obj = orderBook[objectSide][i];
-      if ((obj.price * obj.size) > mySettings.realityCriteria[currentOrder]) good[objectSide]++;
-    }
-  };
+      if ((obj.price * obj.size) > mySettings.realityCriteria[currentOrder])
+        good[objectSide]++;
+      }
+    };
   goodOrderOp('buy');
   goodOrderOp('sell');
   return good;
@@ -994,10 +994,11 @@ let findGoodOrders = (() => {
 //=============================================
 //=============================================
 let findHighestBuyPrice = (() => {
-  return orderBook['buy']
-    .find((data) => {
-      if (data.price) return data;
-    });
+  return orderBook['buy'].find((data) => {
+    if (data.price)
+      return data;
+    }
+  );
 });
 //=============================================
 //=============================================
@@ -1011,10 +1012,11 @@ let findHighestBuyPrice = (() => {
 //=============================================
 //=============================================
 let findLowestSellPrice = (() => {
-  return orderBook['sell']
-    .find((data) => {
-      if (data.price) return data;
-    });
+  return orderBook['sell'].find((data) => {
+    if (data.price)
+      return data;
+    }
+  );
 });
 //=============================================
 //=============================================
@@ -1028,21 +1030,29 @@ let findLowestSellPrice = (() => {
 //=============================================
 //=============================================
 let checkVars = (() => {
-  if (lostConnection) return;
-  if (Number(findHighestBuyPrice().price)) findHighestBuyPrice().price = parseFloat(findHighestBuyPrice().price);
-  if (Number(findLowestSellPrice().price)) findLowestSellPrice().price = parseFloat(findLowestSellPrice().price);
-  if (!myOrders.buy[currentOrder]) placeBuy();
-  if (!myOrders.sell[currentOrder]) placeSell();
+  if (lostConnection)
+    return;
+  if (Number(findHighestBuyPrice().price))
+    findHighestBuyPrice().price = parseFloat(findHighestBuyPrice().price);
+  if (Number(findLowestSellPrice().price))
+    findLowestSellPrice().price = parseFloat(findLowestSellPrice().price);
+  if (!myOrders.buy[currentOrder])
+    placeBuy();
+  if (!myOrders.sell[currentOrder])
+    placeSell();
   if (myOrders.buy[currentOrder].price) {
-    if (Number(myOrders.buy[currentOrder].price)) myOrders.buy[currentOrder].price = parseFloat(myOrders.buy[currentOrder].price);
-  }
+    if (Number(myOrders.buy[currentOrder].price))
+      myOrders.buy[currentOrder].price = parseFloat(myOrders.buy[currentOrder].price);
+    }
   if (myOrders.sell[currentOrder].price) {
-    if (Number(myOrders.sell[currentOrder].price)) myOrders.sell[currentOrder].price = parseFloat(myOrders.sell[currentOrder].price);
-  }
+    if (Number(myOrders.sell[currentOrder].price))
+      myOrders.sell[currentOrder].price = parseFloat(myOrders.sell[currentOrder].price);
+    }
   if (myOrders.orderAmountMade[currentOrder]) {
-    if (Number(myOrders.orderAmountMade[currentOrder])) myOrders.orderAmountMade[currentOrder] = parseFloat(myOrders.orderAmountMade[currentOrder]);
-  }
-});
+    if (Number(myOrders.orderAmountMade[currentOrder]))
+      myOrders.orderAmountMade[currentOrder] = parseFloat(myOrders.orderAmountMade[currentOrder]);
+    }
+  });
 //=============================================
 //=============================================
 //=============================================
@@ -1055,11 +1065,11 @@ let checkVars = (() => {
 //=============================================
 //=============================================
 let filterBuyOrder = (() => {
-  return orderBook['buy']
-    .find((data) => {
-      if (data.goodOrder &&
-        (findHighestBuyPrice().price / data.price) >= mySettings.realMargin[currentOrder]) return data;
-    });
+  return orderBook['buy'].find((data) => {
+    if (data.goodOrder && (findHighestBuyPrice().price / data.price) >= mySettings.realMargin[currentOrder])
+      return data;
+    }
+  );
 });
 //=============================================
 //=============================================
@@ -1073,11 +1083,11 @@ let filterBuyOrder = (() => {
 //=============================================
 //=============================================
 let filterSellOrder = (() => {
-  return orderBook['sell']
-    .find((data) => {
-      if (data.goodOrder &&
-        (data.price / myOrders.buy[currentOrder].price) >= ((mySettings.realMargin[currentOrder]) * 2) - 1) return data;
-    });
+  return orderBook['sell'].find((data) => {
+    if (data.goodOrder && (data.price / myOrders.buy[currentOrder].price) >= ((mySettings.realMargin[currentOrder]) * 2) - 1)
+      return data;
+    }
+  );
 });
 //=============================================
 //=============================================
@@ -1091,10 +1101,9 @@ let filterSellOrder = (() => {
 //=============================================
 //=============================================
 let addTotalAmount = (() => {
-  return myOrders.orderAmountMade
-    .reduce((init, data) => {
-      return init + data;
-    });
+  return myOrders.orderAmountMade.reduce((init, data) => {
+    return init + data;
+  });
 });
 //=============================================
 //=============================================
@@ -1109,16 +1118,18 @@ let addTotalAmount = (() => {
 //=============================================
 //=============================================
 let resetnewOrder = (() => {
-  if (newOrder.buy.placing) newOrder.buy = {
-    placing: false,
-    price: false,
-    size: false
-  };
-  if (newOrder.sell.placing) newOrder.sell = {
-    placing: false,
-    price: false,
-    size: false
-  };
+  if (newOrder.buy.placing)
+    newOrder.buy = {
+      placing: false,
+      price: false,
+      size: false
+    };
+  if (newOrder.sell.placing)
+    newOrder.sell = {
+      placing: false,
+      price: false,
+      size: false
+    };
 });
 //=============================================
 //=============================================
@@ -1148,14 +1159,17 @@ let writeData = (() => {
 //=============================================
 let writeMyData = (() => {
   fs.writeFile('storage.json', JSON.stringify(myOrders), (err) => {
-    if (err) throw err;
-    //console.log('The "data to append" was appended to file!');
-  });
+    if (err)
+      throw err;
+      //console.log('The "data to append" was appended to file!');
+    }
+  );
 });
 //=============================================
 let readMyData = (() => {
   fs.readFile('storage.json', 'utf8', (err, data) => {
-    if (err) throw err;
+    if (err)
+      throw err;
     myOrders = JSON.parse(data);
   });
 });
@@ -1236,16 +1250,39 @@ wsServer.on('request', ((request) => {
     console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
     return;
   }
-
   let connection = request.accept('wsbotdata', request.origin);
   console.log((new Date()) + ' Connection accepted.');
-  connection.on('connect', updateClient());
+  connection.on('message', ((msg) => {
+    console.log('Recieved message ' + msg.utf8Data);
+    setInterval(() => {
+      connection.send({
+        realBuys: findGoodOrders()['buy']
+          ? findGoodOrders()['buy']
+          : false,
+        realSells: findGoodOrders()['sell']
+          ? findGoodOrders()['sell']
+          : false,
+        totalBuys: orderBook['buy'].length
+          ? orderBook['buy'].length
+          : false,
+        totalSells: orderBook['sell'].length
+          ? orderBook['sell'].length
+          : false,
+        totalAmountMade: addTotalAmount()
+          ? addTotalAmount()
+          : false,
+        amountMade: myOrders.orderAmountMade
+          ? myOrders.orderAmountMade[currentOrder]
+          : false,
+        newOrder: newOrder
+          ? newOrder
+          : false
+      });
+    }, 400);
+  }));
   connection.on('close', ((reasonCode, description) => {
     console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected. Reason: ' + reasonCode + '  Description:' + description);
   }));
-  let updateClient = (() => {
-    connection.sendUTF('test');
-  });
 }));
 //=============================================
 //=============================================
