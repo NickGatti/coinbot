@@ -12,7 +12,8 @@
   "devDependencies": {
     "eslint": "^4.8.0",
     "gdax": "^0.4.2",
-    "util": "^0.10.3"
+    "util": "^0.10.3",
+    "websocket": "^1.0.24"
   },
   "dependencies": {
     "express": "^4.16.1"
