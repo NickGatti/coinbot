@@ -158,6 +158,7 @@ let readData = (() => {
 // Number for localhost
 // String 'c9' for cloudnine.io
 let lisenPort = 3000;
+let serverListenPort = 3030;
 //================SERVER PORT==================
 const Gdax = require('gdax');
 const util = require('util');
@@ -1200,10 +1201,52 @@ let resetOrderInterval = (() => {
 //=============================================
 //=============================================
 //=============================================
+let updateClient = ((connection, message) => {
+  connection.sendUTF(message);
+});
+let WebSocketServer = require('websocket').server;
+let http = require('http');
 
+let server = http.createServer((request, response) => {
+  console.log((new Date()) + ' Received request for ' + request.url);
+  response.writeHead(404);
+  response.end();
+});
+server.listen(serverListenPort, (() => {
+  console.log((new Date()) + ' Server is listening on port' + serverListenPort);
+}));
 
+let wsServer = new WebSocketServer({
+  httpServer: server,
+  // You should not use autoAcceptConnections for production
+  // applications, as it defeats all standard cross-origin protection
+  // facilities built into the protocol and the browser.  You should
+  // *always* verify the connection's origin and decide whether or not
+  // to accept it.
+  autoAcceptConnections: false
+});
 
+let originIsAllowed = ((origin) => {
+  // put logic here to detect whether the specified origin is allowed.
+  console.log((new Date()) + ' Connection from origin ' + origin + ' accepted.');
+  return true;
+});
 
+wsServer.on('request', ((request) => {
+  if (!originIsAllowed(request.origin)) {
+    // Make sure we only accept requests from an allowed origin
+    request.reject();
+    console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
+    return;
+  }
+
+  let connection = request.accept('wsbotdata', request.origin);
+  console.log((new Date()) + ' Connection accepted.');
+  connection.on('connect', updateClient(connection));
+  connection.on('close', ((reasonCode, description) => {
+    console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected. Reason: ' + reasonCode + '  Description:' + description);
+  }));
+}));
 //=============================================
 //=============================================
 //=============================================
