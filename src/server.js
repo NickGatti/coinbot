@@ -1201,9 +1201,6 @@ let resetOrderInterval = (() => {
 //=============================================
 //=============================================
 //=============================================
-let updateClient = ((connection, message) => {
-  connection.sendUTF(message);
-});
 let WebSocketServer = require('websocket').server;
 let http = require('http');
 
@@ -1242,10 +1239,13 @@ wsServer.on('request', ((request) => {
 
   let connection = request.accept('wsbotdata', request.origin);
   console.log((new Date()) + ' Connection accepted.');
-  connection.on('connect', updateClient(connection));
+  connection.on('connect', updateClient());
   connection.on('close', ((reasonCode, description) => {
     console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected. Reason: ' + reasonCode + '  Description:' + description);
   }));
+  let updateClient = (() => {
+    connection.sendUTF('test');
+  });
 }));
 //=============================================
 //=============================================
