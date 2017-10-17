@@ -1255,29 +1255,33 @@ wsServer.on('request', ((request) => {
   connection.on('message', ((msg) => {
     console.log('Recieved message ' + msg.utf8Data);
     setInterval(() => {
-      connection.send({
-        realBuys: findGoodOrders()['buy']
-          ? findGoodOrders()['buy']
+      let obj = JSON.stringify({
+        highestBuyPrice: findHighestBuyPrice()
+          ? findHighestBuyPrice().price
           : false,
-        realSells: findGoodOrders()['sell']
-          ? findGoodOrders()['sell']
+        lowestSellPrice: findLowestSellPrice()
+          ? findLowestSellPrice().price
           : false,
-        totalBuys: orderBook['buy'].length
-          ? orderBook['buy'].length
+        currentOrder: currentOrder
+          ? currentOrder
           : false,
-        totalSells: orderBook['sell'].length
-          ? orderBook['sell'].length
+        buyState: myOrders.buy[currentOrder].state
+          ? myOrders.buy[currentOrder].state
           : false,
-        totalAmountMade: addTotalAmount()
-          ? addTotalAmount()
+        sellState: myOrders.sell[currentOrder].state
+          ? myOrders.sell[currentOrder].state
           : false,
-        amountMade: myOrders.orderAmountMade
-          ? myOrders.orderAmountMade[currentOrder]
+        marketData: marketData()
+          ? marketData()
           : false,
-        newOrder: newOrder
-          ? newOrder
+        buyOrderData: buyOrderData()
+          ? buyOrderData()
+          : false,
+        sellOrderData: sellOrderData()
+          ? sellOrderData()
           : false
       });
+      connection.sendUTF(obj);
     }, 400);
   }));
   connection.on('close', ((reasonCode, description) => {
