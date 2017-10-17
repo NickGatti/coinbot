@@ -682,9 +682,10 @@ app.use(((err, req, res, next) => {
   });
   return;
 }));
+app.use('/', express.static(__dirname + '/public/home/'))
 app.get('/', ((req, res) => {
-  //res.sendFile(__dirname + '/index.html');
-  res.tgz('./public/', 'home.tar.gz', false);
+  res.sendFile(__dirname + '/public/home/index.html');
+  //res.tgz('./public/', 'home.tar.gz', false);
 }));
 app.get('/api', ((req, res) => {
   res.json({
