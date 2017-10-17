@@ -1,4 +1,4 @@
-store: {
+µstore: {
   api: {
     nicksinfoforcoinbase: {
       key: value
@@ -24,9 +24,11 @@ cust_id: {
       buy_end_time: 0,
       sell_start_time: 0,
       sell_end_time: 0,
-      buy_price: 0,
+      buy_start_price: 0,
+      buy_end_price: 0,
       buy_margin: 0,
-      sell_price: 0,
+      sell_start_price: 0,
+      sell_end_price: 0,
       sell_margin: 0,
       buy_start_gap_count: 0,
       buy_start_gap_dollars: 0,
@@ -46,9 +48,11 @@ cust_id: {
       buy_end_time: 0,
       sell_start_time: 0,
       sell_end_time: 0,
-      buy_price: 0,
+      buy_start_price: 0,
+      buy_end_price: 0,
       buy_margin: 0,
-      sell_price: 0,
+      sell_start_price: 0,
+      sell_end_price: 0,
       sell_margin: 0,
       buy_start_gap_count: 0,
       buy_start_gap_dollars: 0,
