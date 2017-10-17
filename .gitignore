@@ -4,3 +4,6 @@ node_modules
 .eslintrc.js
 package-lock.json
 *.log
+./data/db/journal
+/data/db/journal
+data/db/journal
