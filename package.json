@@ -1,22 +1,24 @@
 {
-  "name": "workspace",
+  "name": "Blkchainbot",
   "version": "1.0.0",
-  "description": ",-----.,--.                  ,--. ,---.   ,--.,------.  ,------.     '  .--./|  | ,---. ,--.,--. ,-|  || o   \\  |  ||  .-.  \\ |  .---'     |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \\  :|  `--,      '  '--'\\|  |' '-' ''  ''  '\\ `-' | .'  /   |  ||  '--'  /|  `---.      `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'     -----------------------------------------------------------------",
-  "main": "index.js",
+  "description": "Blkchainbot",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/server.js"
+    "start": "node ./server/server.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^4.8.0",
+    "eslint": "^4.9.0",
+    "express-tgz": "0.0.3",
     "gdax": "^0.4.2",
     "http": "0.0.0",
+    "mongoose": "^4.12.3",
     "util": "^0.10.3",
     "websocket": "^1.0.24"
   },
   "dependencies": {
-    "express": "^4.16.1"
+    "express": "^4.16.2"
   }
 }

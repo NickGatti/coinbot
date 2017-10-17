@@ -39,6 +39,7 @@ let loadScript = ((url, callback) => {
 //=============================================
 //=============================================
 
+/*
 //local for localhost | c9 for cloudnine
 let myAPIurl = 'local';
 
@@ -73,7 +74,7 @@ let reqListener = (() => {
   pageData = JSON.parse(this.responseText);
   oReq.removeEventListener('load', reqListener);
 });
-
+*/
 let activate = (() => {
   popOrderPlacementData();
   pageData.currentOrder % 2 === 0 ? popLowCriteraMarketData() : popHighCriteriaMarketData();
@@ -503,4 +504,15 @@ let makePie = (() => {
 loadScript('https://www.gstatic.com/charts/loader.js', (() => {
   return;
 }));
-// FORCE FIX
+
+
+var ws = new WebSocket('ws://localhost:3030', 'wsbotdata');
+
+ws.addEventListener("message", function(message) {
+  pageData = JSON.parse(message.data);
+  activate();
+});
+
+ws.addEventListener("open", function() {
+  ws.send('open');
+});

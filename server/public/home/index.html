@@ -1,0 +1,288 @@
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  </<head>
+
+  <body>
+    <div id='title'>
+      <h1>Blkchainbot</h1>
+      <div>
+        <div class="fr currentOrder" id='innerTitle'></div>
+        <h3>Current Order #</h3>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="wrapper">
+
+      <div class="infoBox">
+
+        <h2>Market Info</h2>
+
+        <div class="bottom">
+          <div id='printSell' class="fr"></div>
+          <p class="statement">Current Lowest Sell Price:</p>
+        </div>
+
+        <div class="bottom">
+          <div id='printBuy' class="fr"></div>
+          <p class="statement">Current Highest Buy Price:</p>
+        </div>
+
+        <div class="bottom">
+          <div id='totalSells' class="fr"></div>
+          <p class="statement">Total Number of Sell Orders:</p>
+        </div>
+
+        <div class="bottom">
+          <div id='totalBuys' class="fr"></div>
+          <p class="statement">Total Number of Buy Orders:</p>
+        </div>
+
+        <div class="bottom">
+          <div class='fr'></div>
+          <p class="statement">Orders Valued Over 400 USD:</p>
+        </div>
+
+        <div class="tight">
+          <div class='realSells fr'></div>
+          <p class="fontStand">Real Sell Orders:</p>
+        </div>
+
+        <div class="tight">
+          <div class='realBuys fr'></div>
+          <p class="fontStand">Real Buy Orders:</p>
+        </div>
+
+        <div class="tight">
+          <div class='realSellPercent fr'></div>
+          <p class="fontStand">Percent Real Sells:</p>
+        </div>
+
+        <div class="tight">
+          <div class='realBuyPercent fr'></div>
+          <p class="fontStand">Percent Real Buys:</p>
+        </div>
+
+        <div class='bottom'>
+          <div class='realTotalPercent fr'></div>
+          <p class="fontStand">Total Percent Bad Orders:</p>
+        </div>
+
+        <div class="bottom">
+          <div class='fr'></div>
+          <p class="statement">Orders Valued Over 6000 USD:</p>
+        </div>
+
+        <div class="tight">
+          <div class='realSells fr'></div>
+          <p class="fontStand">Real Sell Orders:</p>
+        </div>
+
+        <div class="tight">
+          <div class='realBuys fr'></div>
+          <p class="fontStand">Real Buy Orders:</p>
+        </div>
+
+        <div class="tight">
+          <div class='realSellPercent fr'></div>
+          <p class="fontStand">Percent Real Sells:</p>
+        </div>
+
+        <div class="tight">
+          <div class='realBuyPercent fr'></div>
+          <p class="fontStand">Percent Real Buys:</p>
+        </div>
+
+        <div class='tight'>
+          <div class='realTotalPercent fr'></div>
+          <p class="fontStand">Total Percent Bad Orders:</p>
+        </div>
+
+      </div>
+
+
+
+      <div class="infoBox">
+
+        <h2>Current Buy Order Info</h2>
+
+        <ul>
+          <li class="fontStand">State:
+            <div class="fr fontStand" id='placingBuy'></div>
+          </li>
+          <li class="fontStand">Place Price:
+            <div class="fr fontStand" id='placingPriceBuy'></div>
+          </li>
+          <li class="fontStand">Place Size:
+            <div class="fr fontStand" id='placingSizeBuy'></div>
+          </li>
+        </ul>
+
+        <h3>Updating Order:</h3>
+
+        <ul>
+          <li class="fontStand">New Price:
+            <div class="fr fontStand" id='newPriceUpdateBuy'></div>
+          </li>
+          <li class="fontStand">Old Price:
+            <div class="fr fontStand" id='oldPriceUpdateBuy'></div>
+          </li>
+          <li class="fontStand">Difference:
+            <div class="fr fontStand" id='differenceBuy'></div>
+          </li>
+        </ul>
+
+        <h3>My Buy Order Info:</h3>
+
+        <div>
+          <div class="fr miniID" id='myBuyID'></div>
+          <p class="fontStand">ID:</p>
+        </div>
+
+        <div>
+          <div class="fr" id='myBuyPrice'></div>
+          <p class="fontStand">Current Price:</p>
+        </div>
+
+        <div>
+          <div class="fr" id='myOldBuyPrice'></div>
+          <p class="fontStand">Old Price:</p>
+        </div>
+
+        <div>
+          <div class="fr" id='buyMargin'></div>
+          <p class="fontStand">Margin:</p>
+        </div>
+
+        <div>
+          <div class="fr" id='buyTotal'></div>
+          <p class="fontStand">Investment:</p>
+        </div>
+
+        <h3>Gap Info</h3>
+
+        <div>
+          <div class="fr" id='orderGapBuy'></div>
+          <p class="fontStand">Orders:</p>
+        </div>
+
+        <div>
+          <div class="fr" id='dollarGapBuy'></div>
+          <p class="fontStand">Dollars:</p>
+        </div>
+
+      </div>
+
+
+
+      <div class="infoBox">
+
+        <h2>Current Sell Order Info</h2>
+
+        <ul>
+          <li class="fontStand">State:
+            <div class="fr fontStand" id='placingSell'></div>
+          </li>
+          <li class="fontStand">Place Price:
+            <div class="fr fontStand" id='placingPriceSell'></div>
+          </li>
+          <li class="fontStand">Place Size:
+            <div class="fr fontStand" id='placingSizeSell'></div>
+          </li>
+        </ul>
+
+        <h3>My Sell Order Info:</h3>
+
+        <div>
+          <div class="fr miniID" id='mySellID'></div>
+          <p class="fontStand">ID:</p>
+        </div>
+
+        <div>
+          <div class="fr" id='mySellPrice'></div>
+          <p class="fontStand">Current Price</p>
+        </div>
+
+        <div>
+          <div class="fr" id='sellMargin'></div>
+          <p class="fontStand">Margin:</p>
+        </div>
+
+        <div>
+          <div class="fr" id='sellTotal'></div>
+          <p class="fontStand">Investment:</p>
+        </div>
+
+        <h3>Gap Info</h3>
+
+        <div>
+          <div class="fr" id='orderGapSell'></div>
+          <p class="fontStand">Orders:</p>
+        </div>
+
+        <div>
+          <div class="fr" id='dollarGapSell'></div>
+          <p class="fontStand">Dollars:</p>
+        </div>
+
+      </div>
+
+
+      <div class="infoBox">
+        <h2>Amount Made Info</h2>
+        <h3>Total Amount Made</h3>
+        <p id='totalAmountMade'></p>
+        <h3>Current Order Amount Made</h3>
+        <p id='amountMade'></p>
+      </div>
+
+    </div>
+
+    <div id='chartWrapper'>
+      <div>
+        <div id="inSell">
+          Good Sells
+        </div>
+        <div id="inBuy">
+          Good Buys
+        </div>
+        <div id="inRest">
+          Ignored Orders
+        </div>
+      </div>
+      <br><br><br>
+      <div class='outerChart'>
+        <div class='innerSell'>
+        </div>
+        <div class='innerBuy'>
+        </div>
+        <div class='innerRest'>
+        </div>
+      </div>
+      <div class="fl chartText">
+        Orders Valued Over 400 Dollars
+      </div>
+
+      <div class='outerChart'>
+        <div class='innerSell'>
+        </div>
+        <div class='innerBuy'>
+        </div>
+        <div class='innerRest'>
+        </div>
+      </div>
+      <div class="fl chartText">
+        Orders Valued Over 6000 Dollars
+      </div>
+    </div>
+    <div class="pieWrap">
+      <div id="piechart1" class="pieStyle"></div>
+      <div id="piechart2" class="pieStyle"></div>
+    </div>
+    <script src='front.js'></script>
+  </body>
+
+</html>
