@@ -1,0 +1,62 @@
+store: {
+  api: {
+    nicksinfoforcoinbase: {
+      key: value
+    }
+  }
+}
+cust_id: {
+  cust_API: {
+    self_API: {
+      key: value
+    },
+    external_API: {
+      key: value
+    }
+  },
+  'internalOrderID': {
+    externalOrderID: {
+      side: 'buyOrSell',
+      size: 0,
+      buy_filter: 0,
+      sell_filter: 0,
+      buy_start_time: 0,
+      buy_end_time: 0,
+      sell_start_time: 0,
+      sell_end_time: 0,
+      buy_price: 0,
+      buy_margin: 0,
+      sell_price: 0,
+      sell_margin: 0,
+      buy_start_gap_count: 0,
+      buy_start_gap_dollars: 0,
+      sell_start_gap_count: 0,
+      sell_start_gap_dollars: 0,
+      buy_start_total_competetion: 0,
+      buy_start_filter_competetion: 0,
+      sell_start_total_competetion: 0,
+      sell_start_filter_competetion: 0
+    },
+    externalOrderID: {
+      side: 'buyOrSell',
+      size: 0,
+      buy_filter: 0,
+      sell_filter: 0,
+      buy_start_time: 0,
+      buy_end_time: 0,
+      sell_start_time: 0,
+      sell_end_time: 0,
+      buy_price: 0,
+      buy_margin: 0,
+      sell_price: 0,
+      sell_margin: 0,
+      buy_start_gap_count: 0,
+      buy_start_gap_dollars: 0,
+      sell_start_gap_count: 0,
+      sell_start_gap_dollars: 0,
+      buy_start_total_competetion: 0,
+      buy_start_filter_competetion: 0,
+      sell_start_total_competetion: 0,
+      sell_start_filter_competetion: 0
+  }
+}
