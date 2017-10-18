@@ -9,15 +9,7 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
-        'no-console':0,
-        "indent": [
-            "error",
-            4
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
+        'no-console': 0,
         "quotes": [
             "error",
             "single"
