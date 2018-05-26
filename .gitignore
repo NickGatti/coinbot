@@ -1,9 +1,9 @@
-./node_modules
-/node_modules
-node_modules
-.eslintrc.js
-package-lock.json
+node_modules/
+
 *.log
 ./data/db/journal
 /data/db/journal
 data/db/journal
+
+storage.json.old
+storage.json.old2

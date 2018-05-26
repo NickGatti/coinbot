@@ -1,23 +1,22 @@
 {
   "name": "Blkchainbot",
   "version": "1.0.0",
+  "private": true,
   "description": "Blkchainbot",
-  "main": "server.js",
+  "main": "./server/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./server/server.js"
   },
+  "engines": {
+    "node": "8.7.0"
+  },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "eslint": "^4.9.0",
+  "dependencies": {
+    "express": "^4.16.2",
     "gdax": "^0.4.2",
-    "http": "0.0.0",
-    "mongoose": "^4.12.3",
     "util": "^0.10.3",
     "websocket": "^1.0.24"
-  },
-  "dependencies": {
-    "express": "^4.16.2"
   }
 }
