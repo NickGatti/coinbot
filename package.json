@@ -14,9 +14,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.2",
-    "gdax": "^0.4.2",
+    "express": "^4.16.3",
+    "gdax": "^0.8.0",
     "util": "^0.10.3",
-    "websocket": "^1.0.24"
+    "websocket": "^1.0.26"
   }
 }
